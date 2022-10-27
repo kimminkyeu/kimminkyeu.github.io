@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="ko"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width"/><meta name="next-head-count" content="2"/><link rel="preload" href="/_next/static/css/24f5c4934916282a.css" as="style"/><link rel="stylesheet" href="/_next/static/css/24f5c4934916282a.css" data-n-g=""/><link rel="preload" href="/_next/static/css/cf121497002c184d.css" as="style"/><link rel="stylesheet" href="/_next/static/css/cf121497002c184d.css" data-n-p=""/><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-8fa1640cc84ba8fe.js" defer=""></script><script src="/_next/static/chunks/framework-7751730b10fa0f74.js" defer=""></script><script src="/_next/static/chunks/main-591bb7ec51acdc0d.js" defer=""></script><script src="/_next/static/chunks/pages/_app-22f980d027594622.js" defer=""></script><script src="/_next/static/chunks/675-717e3cc8fb67a947.js" defer=""></script><script src="/_next/static/chunks/194-b74e21e59d8a75e2.js" defer=""></script><script src="/_next/static/chunks/pages/posts/%5B...slug%5D-e07d71ec7cb54eb2.js" defer=""></script><script src="/_next/static/zDegTnTB6Tvz6XZhi0WPA/_buildManifest.js" defer=""></script><script src="/_next/static/zDegTnTB6Tvz6XZhi0WPA/_ssgManifest.js" defer=""></script></head><body><div id="__next"><nav class="absolute w-full pt-3"><div class="container mx-auto flex flex-wrap"><a class="w-2/6 text-lg font-bold" href="/">🌎 Sunhwang&#x27;s blog</a><ul class="flex grow justify-between"><li><a class="hover:underline hover:underline-offset-8 " href="/categories">Categories</a></li><li><a class="hover:underline hover:underline-offset-8 " href="/tags">Tags</a></li><li><a class="hover:underline hover:underline-offset-8 " href="/books">Books</a></li><li><a class="hover:underline hover:underline-offset-8 " href="/about">About me</a></li></ul></div></nav><main><div class="container mx-auto pt-10"><article class="mb-32"><h1 class="mb-12 text-center text-5xl font-bold leading-tight tracking-tighter md:text-left md:text-7xl md:leading-none lg:text-4xl">윈도우 Chocolatey 설치</h1><div class="mb-8 sm:mx-0 md:mb-16"><div class="sm:mx-0"><span style="box-sizing:border-box;display:block;overflow:hidden;width:initial;height:initial;background:none;opacity:1;border:0;margin:0;padding:0"><img alt="Cover Image for 윈도우 Chocolatey 설치" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" decoding="async" data-nimg="intrinsic" class="shadow-sm" style="position:absolute;top:0;left:0;bottom:0;right:0;box-sizing:border-box;padding:0;border:none;margin:auto;display:block;width:0;height:0;min-width:100%;max-width:100%;min-height:100%;max-height:100%"/><noscript><img alt="Cover Image for 윈도우 Chocolatey 설치" src="" decoding="async" data-nimg="intrinsic" style="position:absolute;top:0;left:0;bottom:0;right:0;box-sizing:border-box;padding:0;border:none;margin:auto;display:block;width:0;height:0;min-width:100%;max-width:100%;min-height:100%;max-height:100%" class="shadow-sm" loading="lazy"/></noscript></span></div></div><div class="mx-auto max-w-2xl"><div class="mb-6 text-lg"><time dateTime="2020-06-18">June	18, 2020</time></div></div><div class="mx-auto max-w-2xl"><div class="markdown-styles_markdown__h_8de"><p>맥북을 쓰다보니 brew를 이용하면 여러 언어나 개발 프로그램을 명령어 한 줄로 설치가 가능했다.<br>
+brew search {찾고자 하는 단어}로 있는지 확인한 후에,<br>
+있으면 brew install {찾고자 하는 단어}<br>
+없으면 brew cask install {찾고자 하는 단어}<br>
+그래도 없으면 그 홈페이지 들어가서 다운로드를 해야했다.</p>
+<p>이런 식으로 사용하다 보니 집에 있는 윈도우즈도 포맷하고 저런 식으로 프로그램을 설치해 깔끔하게 깔고 싶어졌다.</p>
+<ol>
+<li>PowerShell을 꼭 관리자 모드로 연다.</li>
+<li><a href="https://chocolatey.org/install">chocolatey install</a> 링크로 넘어가 복사하라는 명령어를 실행한다.</li>
+<li>설치 완료.</li>
+</ol>
+<p>개인적으로 설치한 목록들이다.<br>
+choco install googlechrome<br>
+choco install wordweb-free<br>
+choco install 7zip.install<br>
+choco install git.install<br>
+choco install nodejs.install<br>
+choco install vscode<br>
+choco install androidstudio<br>
+choco install intellijidea-ultimate<br>
+choco install github-desktop<br>
+choco install openjdk<br>
+choco install flutter<br>
+refreshenv<br>
+choco install jekyll</p>
+<p>java같은 환경변수를 편집해야하 하는 프로그램은 알아서 환경변수 등록을 해준다.</p>
+<p>.install이 붙은게 있고 아닌게 있다.<br>
+7zip.install과 7zip 패키지가 존재하는데 일반적으로 .install이 붙은 곳이 다운로드 수가 높았다.<br>
+chocolatey는 가상패키지와 메타패키지 개념을 가지고 있다.<br>
+.install이 붙는 패키지는 웹사이트에서 다운로드 받은 것처럼 설치가 되는거 같다.<br>
+프로그램 자체가 아닌 경우에 구분하는 거 같음(git을 다른 프로그램에서 사용할 수도 있고 git을 cmd에서 실행할 수 있어서?)</p>
+<p>찾아보니 <strong>cinst</strong>라는 명령어가 있는데 choco install을 줄인 명령어였다.</p>
+<p>마지막에 설치한 jekyll은 에러가 난다.. 해결책을 찾아봐야겠다.</p>
+</div></div></article></div></main></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"post":{"title":"윈도우 Chocolatey 설치","date":"2020-06-18","slug":"others/2020/windows-chocolatey/index","content":"\u003cp\u003e맥북을 쓰다보니 brew를 이용하면 여러 언어나 개발 프로그램을 명령어 한 줄로 설치가 가능했다.\u003cbr\u003e\nbrew search {찾고자 하는 단어}로 있는지 확인한 후에,\u003cbr\u003e\n있으면 brew install {찾고자 하는 단어}\u003cbr\u003e\n없으면 brew cask install {찾고자 하는 단어}\u003cbr\u003e\n그래도 없으면 그 홈페이지 들어가서 다운로드를 해야했다.\u003c/p\u003e\n\u003cp\u003e이런 식으로 사용하다 보니 집에 있는 윈도우즈도 포맷하고 저런 식으로 프로그램을 설치해 깔끔하게 깔고 싶어졌다.\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003ePowerShell을 꼭 관리자 모드로 연다.\u003c/li\u003e\n\u003cli\u003e\u003ca href=\"https://chocolatey.org/install\"\u003echocolatey install\u003c/a\u003e 링크로 넘어가 복사하라는 명령어를 실행한다.\u003c/li\u003e\n\u003cli\u003e설치 완료.\u003c/li\u003e\n\u003c/ol\u003e\n\u003cp\u003e개인적으로 설치한 목록들이다.\u003cbr\u003e\nchoco install googlechrome\u003cbr\u003e\nchoco install wordweb-free\u003cbr\u003e\nchoco install 7zip.install\u003cbr\u003e\nchoco install git.install\u003cbr\u003e\nchoco install nodejs.install\u003cbr\u003e\nchoco install vscode\u003cbr\u003e\nchoco install androidstudio\u003cbr\u003e\nchoco install intellijidea-ultimate\u003cbr\u003e\nchoco install github-desktop\u003cbr\u003e\nchoco install openjdk\u003cbr\u003e\nchoco install flutter\u003cbr\u003e\nrefreshenv\u003cbr\u003e\nchoco install jekyll\u003c/p\u003e\n\u003cp\u003ejava같은 환경변수를 편집해야하 하는 프로그램은 알아서 환경변수 등록을 해준다.\u003c/p\u003e\n\u003cp\u003e.install이 붙은게 있고 아닌게 있다.\u003cbr\u003e\n7zip.install과 7zip 패키지가 존재하는데 일반적으로 .install이 붙은 곳이 다운로드 수가 높았다.\u003cbr\u003e\nchocolatey는 가상패키지와 메타패키지 개념을 가지고 있다.\u003cbr\u003e\n.install이 붙는 패키지는 웹사이트에서 다운로드 받은 것처럼 설치가 되는거 같다.\u003cbr\u003e\n프로그램 자체가 아닌 경우에 구분하는 거 같음(git을 다른 프로그램에서 사용할 수도 있고 git을 cmd에서 실행할 수 있어서?)\u003c/p\u003e\n\u003cp\u003e찾아보니 \u003cstrong\u003ecinst\u003c/strong\u003e라는 명령어가 있는데 choco install을 줄인 명령어였다.\u003c/p\u003e\n\u003cp\u003e마지막에 설치한 jekyll은 에러가 난다.. 해결책을 찾아봐야겠다.\u003c/p\u003e\n"}},"__N_SSG":true},"page":"/posts/[...slug]","query":{"slug":["others","2020","windows-chocolatey","index"]},"buildId":"zDegTnTB6Tvz6XZhi0WPA","isFallback":false,"gsp":true,"scriptLoader":[]}</script></body></html>
