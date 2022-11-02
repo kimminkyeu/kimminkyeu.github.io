@@ -19,7 +19,9 @@ export default function Home() {
       </Head>
 
       <main>
-        <Hero/>
+
+        {/* <Hero/> */}
+
       </main>
 
 

@@ -32,9 +32,11 @@ export default function Hero(){
 						</p>
 						<div className="flex justify-center">
 							{/* <button className="inline-flex text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-green-600 rounded text-lg">Button</button> */}
-							<button className="inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 text-lg">
-								버튼
-							</button>
+							<a href="https://github.com/kimminkyeu" target="_blank" rel="noreferrer">
+								<button className="inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 text-lg">
+									https://github.com/kimminkyeu
+								</button>
+							</a>
 						</div>
 					</div>
 				</div>
