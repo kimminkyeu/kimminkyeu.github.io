@@ -16,6 +16,18 @@ let isLocalBuild =
 
 const nextConfig = {
   reactStrictMode: true,
+
+  // WARN:  완전 바깥에서 이미지를 받아올 경우 이 도메인 정보들을 등록해야만 한다.
+  images: {
+    domains: [
+      'www.notion.so',
+      'images.unsplash.com',
+      's3.us-west-2.amazonaws.com'
+    ]
+  },
+
+
+
   swcMinify: true,
   ...withMDX({
     pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],

@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Header from './header';
 import Footer from './footer';
 
@@ -5,14 +6,16 @@ import Footer from './footer';
 export default function Layout({ children }) {
 	return (
 		<>
-			{/* 외부에서 Arg로 들어온 애들을 jsx 컴포넌트에 넣으려면 {}로 감싼다. */}
-			{/* <h1>레이아웃1</h1> */}
-			{/* <h2>레이아웃2</h2> */}
-			{/* <h3>레이아웃3</h3> */}
+			<Head>
+				{/* Head는 seo를 위한 Meta-data이자 페이지 상단 이름. Next.js에서 제공하는 컴포넌트임. */}
+				<title>Minky Graphics</title>
+				<meta name="Minky Graphics" content="컴퓨터 그래픽스 블로그" />
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
 
 			<Header/>
 
-			<div>{children}</div>
+			<div>{ children }</div>
 
 			<Footer/>
 		</>

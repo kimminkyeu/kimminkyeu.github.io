@@ -11,12 +11,7 @@ export default function Home() {
 
 
 
-      <Head>
-        {/* Head는 seo를 위한 Meta-data이자 페이지 상단 이름. Next.js에서 제공하는 컴포넌트임. */}
-        <title>Minky Graphics</title>
-        <meta name="description" content="오늘도 화이팅" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+
 
       <main>
 
