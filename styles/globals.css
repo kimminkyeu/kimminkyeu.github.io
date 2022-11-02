@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.article-card {
+	@apply
+		flex flex-col m-8 rounded-xl w-full
+		transition duration-100 transform border border-gray-300
+		hover:scale-105
+		hover:shadow-lg
+		/* hover:text-blue-400 */
+}

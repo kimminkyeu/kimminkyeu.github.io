@@ -8,25 +8,21 @@ import ArticleItem from "../components/articles/article-item";
 
 export default function Article({projects}){
 
-	// console.log(projectNames);
-	// console.log(projects);
-	// projects.results.map((aProject) => console.log(aProject.properties.Name.title[0].plain_text))
-
 	return (
-		<Layout>
+    <Layout>
+      {/* gap : 아티클 간의 간격 */}
+      <div className="mb-10 flex min-h-screen flex-col items-center justify-center px-5 py-8">
+		{/* TODO:  여기 제목이 들어갑니다. */}
 
-			{/* WARN:  React는 return에서 XXX.map(...)을 반복실행할 때,
-			첫 턴에 데이터가 아직 안들어와도 렌더링이 실행되며 당연히 그 데이터는
-			undefined로 정의되어 오류가 나는 것이다. */}
+        <div className="m-0 grid grid-cols-1 gap-8 py-10 w-full md:grid-cols-2">
+          {projects.results.map((aProject) => (
+            <ArticleItem key={aProject.id} data={aProject} />
+          ))}
+        </div>
 
-			{projects.results.map((aProject) => (
-				<ArticleItem
-					key={aProject.id}
-					data={aProject}
-				/>
-			))}
-		</Layout>
-	);
+      </div>
+    </Layout>
+  )
 }
 
 // 빌드 타임에 호출됩니다. notionAPI로 부터 데이터를 받아와서, props로 전달해줍니다.
