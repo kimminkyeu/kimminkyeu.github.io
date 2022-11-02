@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   article-item.js                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: minkyeki <minkyeki@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/02 23:51:48 by minkyeki          #+#    #+#             */
+/*   Updated: 2022/11/03 00:17:55 by minkyeki         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 import Image from "next/image"
 import { isPrivateIdentifier } from "typescript";
 
@@ -7,19 +19,20 @@ export default function ArticleItem({ key, data }) {
 	const title = data.properties.Name.title[0].plain_text;
 	const description = data.properties.Description.rich_text[0].plain_text;
 
+	// console.log(title);
+
 
 	// data.cover.file 이 없으면 external에서 url가져오기 (next.config.js에 작성한 도메인)
 	// 이때, cover가 null일 수 있음.
 	const imgSrc = data.cover?.external?.url || data.cover?.file.url;
 
-	console.log(imgSrc);
+	// console.log(imgSrc);
 	// const imgSrc = data.cover.external.url;
 
 	return (
 
 		<div className="flex flex-col p-6 m-3 bg-slate-700" rounded-md> {/* <div> */}
 
-			{/* 만약 imgSrc가 있다면 보여주고, 없다면 안보여주기 */}
 			{imgSrc != null ?
 			<Image // 노션 커버 이미지를 이용하였음
 				src = {imgSrc}

@@ -19,7 +19,7 @@ export default function Article({projects}){
 			첫 턴에 데이터가 아직 안들어와도 렌더링이 실행되며 당연히 그 데이터는
 			undefined로 정의되어 오류가 나는 것이다. */}
 
-			{projects && projects.results.map((aProject) => (
+			{projects.results.map((aProject) => (
 				<ArticleItem
 					key={aProject.id}
 					data={aProject}
