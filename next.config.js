@@ -17,8 +17,8 @@ let isLocalBuild =
 // Q: 왜 외부 이미지는 아래처럼 해야 하는가?
 // A: https://nextjs.org/docs/pages/api-reference/components/image#remotepatterns
 const nextConfig = {
+  output: 'export',
   reactStrictMode: true,
-
   images: {
     remotePatterns: [
       {
@@ -37,15 +37,6 @@ const nextConfig = {
       },
     ],
   },
-  // WARN:  완전 바깥에서 이미지를 받아올 경우 이 도메인 정보들을 등록해야만 한다.
-  // images: {
-  //   domains: [
-  //     'www.notion.so',
-  //     'images.unsplash.com',
-  //     's2.us-west-2.amazonaws.com'
-  //   ]
-  // },
-
   swcMinify: true,
   ...withMDX({
     pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
