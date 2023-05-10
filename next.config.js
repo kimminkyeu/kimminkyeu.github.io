@@ -25,7 +25,7 @@ const nextConfig = {
         protocol: 'https',
         hostname: 's2.us-west-2.amazonaws.com',
         port: '',
-        pathname: '',
+        pathname: '/',
       },
     ],
     remotePatterns: [
@@ -33,7 +33,7 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'notion.so',
         port: '',
-        pathname: '',
+        pathname: '/',
       },
     ],
   },
