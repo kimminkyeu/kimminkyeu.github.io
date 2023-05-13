@@ -2,6 +2,7 @@
  * @link https://stackoverflow.com/questions/44717164/unable-to-import-svg-files-in-typescript
  */
 
+/*
 declare module '*.svg' {
     const content: any;
     // const content: React.FunctionComponent<React.SVGAttributes<SVGElement>>;
@@ -38,3 +39,4 @@ declare module '*.gltf' {
     const value: any;
     export default value;
 }
+*/

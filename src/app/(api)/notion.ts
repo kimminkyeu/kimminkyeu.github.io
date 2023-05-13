@@ -1,7 +1,7 @@
 
 // server action
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions
-'use server';
+// 'use server';
 
 import { Config } from "@/config/config";
 import { Assert } from "@/utils/assert";

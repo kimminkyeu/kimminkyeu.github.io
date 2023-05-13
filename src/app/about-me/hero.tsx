@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import ProfileImageUrl from 'public/assets/about_me_1.jpeg';
+// import ProfileImageUrl from '';
 
 export default function Hero() {
   return (
@@ -11,7 +11,7 @@ export default function Hero() {
             {/* <img className="object-cover object-center rounded" alt="hero" src="https://dummyimage.com/720x600"/> */}
             {/* Next.js에서 사용하는 img 컴폰넌트를 사용할 예정이기 때문. */}
             <Image
-              src={ProfileImageUrl}
+              src="/assets/about_me_1.jpeg"
               alt="Picture of the author"
               width={350}
               height={350}
