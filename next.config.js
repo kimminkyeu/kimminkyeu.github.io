@@ -17,7 +17,12 @@ let isLocalBuild =
 // Q: 왜 외부 이미지는 아래처럼 해야 하는가?
 // A: https://nextjs.org/docs/pages/api-reference/components/image#remotepatterns
 const nextConfig = {
-  output: 'export',
+  // output: 'export',
+  experimental: {
+    // 서버에서 데이터를 re-fetch 하도록 하기 위함.
+    // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions
+    serverActions: true,
+  },
   reactStrictMode: true,
   images: {
     remotePatterns: [
