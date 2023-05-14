@@ -89,7 +89,31 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 ## 앞으로의 전략.
 
-3. article list는 microsoft 형식으로 깔끔하게 설정
-4. 개별 article page는 next-notion-x renderer 사용하기
+0. db 전체 검색
+
+1. article list
+
+   - medium.com 스타일 리스트
+   - pagination 사용.
+   - 글 검색 적용
+
+2. single article
+
+   - next-notion-x 시스템 적용(디자인 최소화)
+   - 글 목차는 하지 말기 (전체 글 분류 navigator 때문)
    - 이유1: fetch에서 직접 설정하지 않아도 Build 버전 ISR 적용 방법을 찾았기 때문
    - 이유2: 마크다운 형식을 보여주는 것도 좋지만, 노션 에디터만의 장점이 많기 때문.(레이아웃 기능 포함)
+
+3. Article Navigation Bar (태그 목록 활용)
+
+   - article list, single article 두개를 하나의 page로 두고,
+     글 분류 네비게이터를 옆에 page하나 더 두고 이 둘을 layyout으로 묶을 것.
+     예시 1: https://choar816.tistory.com/205
+     예시 2: https://velog.io/@seo__namu
+
+4. 블로그 전체 검색창 제공
+
+5. 노션 CMS 기능 확대
+   - 내 소개페이지 (About Me), 프로젝트 페이지도 각각 DB를 만들어서 연결하는게 좋겠다.
+     (컨텐츠 상세 내용은 모두 노션을 활용해보기)
+     예시 1: https://github.com/transitive-bullshit/nextjs-notion-starter-kit
