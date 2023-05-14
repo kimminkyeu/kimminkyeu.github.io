@@ -1,4 +1,4 @@
-import { Assert } from '@/utils/assert'
+import { Assert } from '@/utils/assert';
 
 export namespace Config {
   export const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
