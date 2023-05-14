@@ -1,4 +1,4 @@
-import { queryDatabaseByStatus } from '@/app/(api)/route';
+import { queryDatabaseByStatus } from '@/app/(api)/notion';
 
 /** ----------------------------------------------------------------------------
  * @title [ Incremental Static Regeneration (ISR) ]
