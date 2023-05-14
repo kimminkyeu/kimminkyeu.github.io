@@ -1,4 +1,4 @@
-import { queryDatabaseByStatus } from '@/app/(api)/notion';
+import { queryDatabaseByStatus } from '@/app/article/notionAPI';
 
 /** ----------------------------------------------------------------------------
  * @title [ Incremental Static Regeneration (ISR) ]
@@ -11,7 +11,7 @@ import { queryDatabaseByStatus } from '@/app/(api)/notion';
  * Note: The edge runtime is currently not compatible with ISR, although you can
  * leverage stale-while-revalidate by setting the cache-control header manually.
  */
-export const revalidate = 0;
+// export const revalidate = 0;
 // export const runtime = 'nodejs';
 // export const runtime = 'edge';
 

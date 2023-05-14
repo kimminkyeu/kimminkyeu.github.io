@@ -41,8 +41,6 @@
   ***
   - https://nextjs.org/docs/app/building-your-application/data-fetching/fetching
 
-# 왜 ISR이 안되는지 그 이유를 찾음: edge runtime 문제였음...
-
 ## @title [ Incremental Static Regeneration (ISR) ]
 
 - @description [ Next13 Route Segment Configuration ]
@@ -52,14 +50,46 @@
 
 ---
 
+주의사항! ( 일단 기본 런타임이 nodejs라서 괜찮지만... )
+
 Note: The edge runtime is currently not compatible with ISR, although you can
 leverage stale-while-revalidate by setting the cache-control header manually.
 
 ---
 
-# 0514 전략 설정
+# 0514 전략 설정, 진실 발견 (모든 인과관계 파악)
 
-1. article list는 microsoft 형식으로 깔끔하게 설정
-2. 개별 article page는 next-notion-x renderer 사용하기
+## 지금까지의 연구 결과
+
+0. 배경
+   ISR 설정을 했다. next start하니 이제 새로고침시 서버측의 컨텐츠 업데이트가 잘된다.
+   (ISR 설정 안했을 땐 이마저도 안됬음!)
+   그래서 이제 github page에 deploy하면 call이 page refresh마다 새로 될 것이라 생각했으나
+   내 사이트는 여전히 컨텐츠를 업데이트하지 않았다. 왜일까?
+
+1. 문제점
+   ghpage는 next export를 쓰는데, 이 방식은 static app을 생성한다.
+   따라서 api호출, dynamic routing 등은 static app으로 변경되는 과정에서 한번만 이뤄진다.
+   그래서 next start는 되도 막상 gh-page에 deploy하면 또 api콜이 안됬던 거다. 이건 못고친다.
+
+   - 참고1. https://stackoverflow.com/questions/61724368/what-is-the-difference-between-next-export-and-next-build-in-next-js
+   - 참고2. https://medium.com/geekculture/github-pages-with-dynamic-routes-40f512900efa
+
+2. 해결책
+   a. static app을 그대로 사용 --> github action workflow에 하루에 한번 build 되도록 수정한다. ⭕  
+   b. gitbub page를 쓰지 않고(for ISR), vercel을 사용, next-export를 쓰지 않는다. ❌
+
+   #### 나의 선택은 a. 왜냐면 github.io 경로가 마음에 들기 때문이고, a에서 b로의 전환은 쉽기 때문이다.
+
+3. 실행 결과
+   a. gitbub action에 rebuild schedule workflow를 추가한다.
+   - 참고1. https://danielsaidi.com/blog/2022/05/11/schedule-github-pages-rebuild-with-github-actions
+
+---
+
+## 앞으로의 전략.
+
+3. article list는 microsoft 형식으로 깔끔하게 설정
+4. 개별 article page는 next-notion-x renderer 사용하기
    - 이유1: fetch에서 직접 설정하지 않아도 Build 버전 ISR 적용 방법을 찾았기 때문
    - 이유2: 마크다운 형식을 보여주는 것도 좋지만, 노션 에디터만의 장점이 많기 때문.(레이아웃 기능 포함)
