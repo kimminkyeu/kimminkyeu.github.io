@@ -18,7 +18,7 @@
 
 # 노션에 글을 써도 배포된 페이지에 반영되지 않는다. 어떻게 해결할 것인가? (방법과 전략.)
 
-- [ 방법 1: use-client, use-server를 이용하기 ]
+- [ 방법 1: use-client, use-server를 이용하기(Experimental) ]
 
   ***
 
@@ -54,3 +54,12 @@
 
 Note: The edge runtime is currently not compatible with ISR, although you can
 leverage stale-while-revalidate by setting the cache-control header manually.
+
+---
+
+# 0514 전략 설정
+
+1. article list는 microsoft 형식으로 깔끔하게 설정
+2. 개별 article page는 next-notion-x renderer 사용하기
+   - 이유1: fetch에서 직접 설정하지 않아도 Build 버전 ISR 적용 방법을 찾았기 때문
+   - 이유2: 마크다운 형식을 보여주는 것도 좋지만, 노션 에디터만의 장점이 많기 때문.(레이아웃 기능 포함)

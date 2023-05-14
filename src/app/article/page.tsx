@@ -1,4 +1,4 @@
-import { queryDatabaseByStatus } from '@/app/api/route';
+import { queryDatabaseByStatus } from '@/app/(api)/route';
 
 /** ----------------------------------------------------------------------------
  * @title [ Incremental Static Regeneration (ISR) ]
@@ -10,11 +10,10 @@ import { queryDatabaseByStatus } from '@/app/api/route';
  *
  * Note: The edge runtime is currently not compatible with ISR, although you can
  * leverage stale-while-revalidate by setting the cache-control header manually.
- *
  */
 export const revalidate = 0;
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs'; // WARN: next의 기본 runtime은 edge인데, ISR에 적용되지 않음.
+// export const runtime = 'nodejs';
+// export const runtime = 'edge';
 
 export default async function SingleArticle() {
   const query = await queryDatabaseByStatus('Done');

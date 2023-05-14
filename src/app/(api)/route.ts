@@ -2,12 +2,6 @@ import { Config } from '@/config/config';
 import { Assert } from '@/utils/assert';
 
 /**
- * @description [ Next13 ServerAction (Experimental feature) ]
- * @link https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions
- */
-// 'use server';
-
-/**
  * @description [ Notion API doc ]
  * @link https://developers.notion.com/reference/post-database-query
  */
