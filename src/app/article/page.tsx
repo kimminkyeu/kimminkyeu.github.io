@@ -1,4 +1,3 @@
-
 // ------------------------------------------------------------------------------------
 // (1) article list는  노션에서 직접 다운받아서 사용하기.
 // (2) 개별 article은 next-notion-x 렌더러 사용하기.
@@ -11,11 +10,10 @@
 //    -  https://blog.hwahae.co.kr/all/tech/10960 ( ⭕ )
 //    -  https://github.com/souvikinator/notion-to-md (Block to MD)
 //    -  https://github.com/remarkjs/remark (MD to HTML)
-// 
+//
 // TODO: next-notion-x package 삭제하기.
 // TODO: Notion-API 비공식 버전도 package 삭제하기.
 // ------------------------------------------------------------------------------------
-
 
 //* -------------------------------------------------------
 //* 방법 1 (Notion Client 사용 시, fetch option을 줄 수 없어서 새로고침 시마다 계속 데이터 불러옴.)
@@ -23,23 +21,22 @@
 // Server Action을 호출해서 데이터를 re-fetch 하도록 시도.
 // [ invoke server-action ]
 //   - https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions
-// 
+//
 //* 방법 2 (Notion Client 미사용 시, Fetch의 Caching과 revalidation을 활용 가능)
 //   - https://velog.io/@dldngus5/nextjs-revalidate
 //   - https://vercel.com/docs/concepts/incremental-static-regeneration/overview
 //   - https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#revalidate
-// 
+//
 //* 추가 최적화 (Next13 Parallel Data Fetching. 여러 fetch를 날려야 할 경우.)
 //   - https://nextjs.org/docs/app/building-your-application/data-fetching/fetching
 //* -------------------------------------------------------
-
 
 // TODO: 매번 refresh 할 때마다 말고, 주기를 주고(ex 5분) 그때 서버측에서 re-fresh하도록 해볼까?
 
 // 'use client';
 // import { useEffect, useState } from 'react';
 
-import { queryDatabase_withStatusDone } from '@/app/(api)/notion';
+import { queryDatabaseByStatus } from '@/app/(api)/notion'
 // import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
 
 /*
@@ -62,8 +59,11 @@ export default function SingleArticle() {
 */
 
 export default async function SingleArticle() {
-  const query = await queryDatabase_withStatusDone();
+  const query = await queryDatabaseByStatus('Done')
   return (
-    <h1>{JSON.stringify(query)}</h1>
-  );
+    <div>
+      <h1>TEST</h1>
+      <h3>{JSON.stringify(query)}</h3>
+    </div>
+  )
 }
