@@ -6,7 +6,7 @@ import { Assert } from '@/utils/assert';
  * @link https://developers.notion.com/reference/post-database-query
  */
 import { Client } from '@notionhq/client';
-const notion = new Client({ auth: Config.NOTION_TOKEN });
+const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
 /**
  * @param status
@@ -17,7 +17,6 @@ const notion = new Client({ auth: Config.NOTION_TOKEN });
  * @returns database object
  */
 export async function queryDatabaseByStatus(status?: string) {
-  Assert.NonNullish(Config.NOTION_DATABASE_ID);
   //* 방법 1 방식.
   let filterArgs;
   if (status) {
@@ -27,7 +26,7 @@ export async function queryDatabaseByStatus(status?: string) {
     };
   }
   const query = await notion.databases.query({
-    database_id: Config.NOTION_DATABASE_ID,
+    database_id: process.env.NOTION_DATABASE_ID as string,
     filter: filterArgs,
   });
   console.log('[DEV] next13 server is fetching data from notion...');
