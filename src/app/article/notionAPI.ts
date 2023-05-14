@@ -25,8 +25,9 @@ export async function queryDatabaseByStatus(status?: string) {
       status: { equals: `${status}` }, // filter only edit done article.
     };
   }
+  Assert.NonNullish(process.env.NOTION_DATABASE_ID);
   const query = await notion.databases.query({
-    database_id: process.env.NOTION_DATABASE_ID as string,
+    database_id: process.env.NOTION_DATABASE_ID,
     filter: filterArgs,
   });
   console.log('[DEV] next13 server is fetching data from notion...');
