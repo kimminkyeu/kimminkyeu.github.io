@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Trigger GitHub pages rebuild
         env:
-          GH_USER_TOKEN: ${{ secrets.GH_USER_TOKEN }} # WARN: is this really needed?
+          GH_TOKEN: ${{ secrets.GH_USER_TOKEN }} # WARN: is this really needed?
         # execute workflow
         run: |
           gh workflow run nextjs.yml
