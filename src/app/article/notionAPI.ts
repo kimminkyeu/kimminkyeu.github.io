@@ -31,27 +31,63 @@ export async function queryDatabaseByStatus(status?: string) {
     filter: filterArgs,
   });
   console.log('[DEV] next13 server is fetching data from notion...');
+  console.log(query);
   return query;
 }
 
 export async function getBlockContent(block_id: string) {
-  /*
-  const page_size = 100;
-  const URL = `https://api.notion.com/v1/blocks/${block_id}/children?page_size=${page_size}`;
-  const res = await fetch(URL, {
-    next: { revalidate: 10 }, // revalidate time, 10s
-    method: 'POST',
-    headers: {
-      'Notion-Version': `${Config.NOTION_VERSION}`,
-      Authorization: `Bearer ${Config.NOTION_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!res.ok) {
-    // handle next13 error...
-  }
-  const query = await res.json();
-  console.log(query);
-  return query;
-  */
+
+}
+
+
+// -------------------------------------------------
+// Types for Notion API
+//  - https://www.alanjohn.dev/blog/Building-a-Developer-Portfolio-Creating-a-NextJS-blog-in-typescript-using-Notion-API
+import { DatabaseItem, QueryDatabaseResponse, IPost } from './type';
+
+const extractPosts = async (response: QueryDatabaseResponse): Promise<IPost[]> => {
+  const databaseItems: DatabaseItem[] = response.results.map(
+      (databaseItem) => databaseItem as DatabaseItem,
+  );
+  const posts: IPost[] = await Promise.all(
+      databaseItems.map(async (postInDB: DatabaseItem) => {
+          const title = postInDB.properties.Name.title[0].plain_text;
+          const date = postInDB.properties.Date.last_edited_time;
+          const description = postInDB.properties.Description.rich_text[0].plain_text;
+          const url = getCanonicalURL(title);
+          const link = postInDB.properties.Link.url || "";
+          const tags = (postInDB.properties.Tags.multi_select).map((v) => v.name); // extract tag name
+          // const cover = await getPageCover(postInDB.id);
+          const publishdate = postInDB.properties.PublishDate.date?.start;
+
+          const post: IPost = {
+              id: postInDB.id,
+              title: title,
+              modifiedDate: date,
+              description: description,
+              url: url,
+              link: link,
+              // cover: cover,
+              tags: tags,
+              publishDate: publishdate || date,
+          };
+          return post;
+      }),
+  );
+  return posts;
+};
+
+const getCanonicalURL = (title: string): string => {
+  const cleaned = title.replace(/\W/gm, " ");
+  const removedSpaces = cleaned
+      .split(" ")
+      .filter((str) => str)
+      .join("-");
+  return removedSpaces;
+};
+
+export async function convertQueryToPosts(query: QueryDatabaseResponse): Promise<IPost[]> {
+  const posts = await extractPosts(query);
+  console.log(posts);
+  return posts;
 }
