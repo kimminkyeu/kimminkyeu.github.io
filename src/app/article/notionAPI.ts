@@ -107,14 +107,15 @@ export async function convertQueryToPosts(query: QueryDatabaseResponse) {
 
 //--------------------------------------------
 // https://github.com/NotionX/react-notion-x#nextjs-examples
+// https://github.com/splitbee/react-notion
 import { NotionAPI } from 'notion-client';
-const notion_unofficial = new NotionAPI({
+export const notion_unofficial = new NotionAPI({
   activeUser: process.env.NOTION_ACTIVE_USER,
-  authToken: process.env.NOTION_TOKEN_V2,
+  authToken: process.env.NOTION_TOKEN_V0,
 });
 
 export async function getBlockContent(block_id: string) {
   const recordMap = await notion_unofficial.getPage(block_id);
-  console.log(recordMap);
+  console.log('[DEV] getting record map...');
   return recordMap;
 }

@@ -17,27 +17,17 @@ let isLocalBuild =
 const nextConfig = {
   // output: 'export', // for github pages (Fully Static App)
   reactStrictMode: true,
-
   images: {
-    // unoptimized: true,
-    // Q: 왜 외부 이미지는 아래처럼 해야 하는가?
-    // A: https://nextjs.org/docs/pages/api-reference/components/image#remotepatterns
-    //* ------------------------
-
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 's2.us-west-2.amazonaws.com',
-        port: '',
-        pathname: '/',
       },
     ],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'notion.so',
-        port: '',
-        pathname: '/',
+        hostname: 'www.notion.so',
       },
     ],
   },
