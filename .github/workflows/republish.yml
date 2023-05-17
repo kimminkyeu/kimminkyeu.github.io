@@ -6,7 +6,7 @@ name: Republish Next.js site to Pages
 
 on:
   schedule:
-    - cron: '0 4,16 * * *' # Run at 4:00 am, 4:00 pm every day.
+    - cron: '0  0,6,12,18  * * *' # Run at 00:00 am, 06:00 am, 12:00 pm. 18:00 pm every day.
     #     *      *          *           *           *
     #  | min | hour | dayOfTheMonth | month | dayOfTheWeek |
 jobs:

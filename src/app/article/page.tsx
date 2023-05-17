@@ -24,7 +24,7 @@ export default async function SingleArticle() {
 
   return (
     <div>
-      {posts.map((v, i) => (<PostCard postData={posts[i]}/>))}
+      {posts.map((v, i) => (<PostCard key={i} postData={posts[i]}/>))}
     </div>
   );
 }
