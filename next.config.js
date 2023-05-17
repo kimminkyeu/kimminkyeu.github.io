@@ -15,13 +15,13 @@ let isLocalBuild =
   'NODE_ENV=development next build && next export';
 
 const nextConfig = {
-  output: 'export', // for github pages (Fully Static App)
+  // output: 'export', // for github pages (Fully Static App)
   reactStrictMode: true,
 
-  // Q: 왜 외부 이미지는 아래처럼 해야 하는가?
-  // A: https://nextjs.org/docs/pages/api-reference/components/image#remotepatterns
   images: {
-    unoptimized: true,
+    // unoptimized: true,
+    // Q: 왜 외부 이미지는 아래처럼 해야 하는가?
+    // A: https://nextjs.org/docs/pages/api-reference/components/image#remotepatterns
     //* ------------------------
 
     remotePatterns: [

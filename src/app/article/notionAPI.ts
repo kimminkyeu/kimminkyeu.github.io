@@ -16,7 +16,6 @@ const notion = new Client({ auth: process.env.NOTION_TOKEN });
  * @returns database object
  */
 export async function queryDatabaseByStatus(status?: string) {
-
   let filterArgs;
   if (status) {
     filterArgs = {
@@ -29,7 +28,7 @@ export async function queryDatabaseByStatus(status?: string) {
   const query = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID,
     filter: filterArgs,
-    page_size: 10, // for pagination, max content size. 
+    page_size: 10, // for pagination, max content size.
     // https://developers.notion.com/reference/intro#pagination
   });
   console.log('[DEV] next13 server is fetching data from notion...');
@@ -40,48 +39,51 @@ export async function queryDatabaseByStatus(status?: string) {
 // Types for Notion API
 //  - https://www.alanjohn.dev/blog/Building-a-Developer-Portfolio-Creating-a-NextJS-blog-in-typescript-using-Notion-API
 import { DatabaseItem, IPost } from './type';
-import type { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
 
 const extractPosts = async (response: QueryDatabaseResponse) => {
   const databaseItems: DatabaseItem[] = response.results.map(
-      (databaseItem) => databaseItem as DatabaseItem,
+    (databaseItem) => databaseItem as DatabaseItem,
   );
 
   const convertToSlug = (str: string) => {
-    const slug = str.toLowerCase() // convert to lower case
-    .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-    .replace(/\s+/g, '-') // collapse whitespace and replace by -
-    .replace(/-+/g, '-'); // collapse dashes
-    return (slug);
-  }
+    const slug = str
+      .toLowerCase() // convert to lower case
+      .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+      .replace(/\s+/g, '-') // collapse whitespace and replace by -
+      .replace(/-+/g, '-'); // collapse dashes
+    return slug;
+  };
 
   const removeDash = (str: string) => {
-    const result = str.replace(/[-]/g, '') // remove dash
-    return (result);
-  }
+    const result = str.replace(/[-]/g, ''); // remove dash
+    return result;
+  };
 
   const posts: IPost[] = await Promise.all(
-      databaseItems.map(async (postInDB: DatabaseItem) => {
-          const id = removeDash(postInDB.id);
-          const last_edited_time = postInDB.last_edited_time;
-          const title = postInDB.properties.Name.title[0]?.plain_text ?? `no-title`;
-          const description = postInDB.properties.Description.rich_text[0]?.plain_text ?? 'No Description';
-          const tags = (postInDB.properties.Tags.multi_select).map((v) => v.name); // extract tag name
-          const coverImageUrl = getPageCoverUrl(postInDB.cover);
-          const publishdate = postInDB.properties.PublishDate.date?.start;
-          const slug = convertToSlug(title) + '-' + id; // for routing.
+    databaseItems.map(async (postInDB: DatabaseItem) => {
+      const id = removeDash(postInDB.id);
+      const last_edited_time = postInDB.last_edited_time;
+      const title = postInDB.properties.Name.title[0]?.plain_text ?? `no-title`;
+      const description =
+        postInDB.properties.Description.rich_text[0]?.plain_text ??
+        'No Description';
+      const tags = postInDB.properties.Tags.multi_select.map((v) => v.name); // extract tag name
+      const coverImageUrl = getPageCoverUrl(postInDB.cover);
+      const publishdate = postInDB.properties.PublishDate.date?.start;
+      const slug = convertToSlug(title) + '-' + id; // for routing.
 
-          const post: IPost = {
-              id: id,
-              title: title,
-              description: description,
-              coverImageUrl: coverImageUrl,
-              tags: tags,
-              publishDate: publishdate || last_edited_time, // if publishDate is not set, than set to default, which is "last edited time"
-              slug: slug,
-          };
-          return post;
-      }),
+      const post: IPost = {
+        id: id,
+        title: title,
+        description: description,
+        coverImageUrl: coverImageUrl,
+        tags: tags,
+        publishDate: publishdate || last_edited_time, // if publishDate is not set, than set to default, which is "last edited time"
+        slug: slug,
+      };
+      return post;
+    }),
   );
   return posts;
 };
@@ -90,13 +92,13 @@ const getPageCoverUrl = (coverObj?: any) => {
   if (!coverObj) return;
   let Url;
   const type = coverObj.type;
-  if (type === "external") {
+  if (type === 'external') {
     Url = coverObj.external.url;
-  } else if (type === "file") {
+  } else if (type === 'file') {
     Url = coverObj.file.url;
   }
   return Url;
-}
+};
 
 export async function convertQueryToPosts(query: QueryDatabaseResponse) {
   const posts = await extractPosts(query);
@@ -105,7 +107,7 @@ export async function convertQueryToPosts(query: QueryDatabaseResponse) {
 
 //--------------------------------------------
 // https://github.com/NotionX/react-notion-x#nextjs-examples
-import { NotionAPI } from 'notion-client'
+import { NotionAPI } from 'notion-client';
 const notion_unofficial = new NotionAPI({
   activeUser: process.env.NOTION_ACTIVE_USER,
   authToken: process.env.NOTION_TOKEN_V2,
