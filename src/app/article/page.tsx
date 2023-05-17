@@ -12,7 +12,7 @@ function PostCard({postData}: SinglePostCardProps) {
       <h1>{postData.title}</h1>
       <h3>{postData.description}</h3>
       <p>{postData.publishDate}</p>
-      {postData.tags.map((v, i) => (<div>{v}</div>))}
+      {postData.tags.map((v, i) => (<div key={i}>{v}</div>))}
       <p>{postData.coverImageUrl}</p>
     </div>
   )
