@@ -16,7 +16,7 @@ const notion = new Client({ auth: process.env.NOTION_TOKEN });
  * @returns database object
  */
 export async function queryDatabaseByStatus(status?: string) {
-  //* 방법 1 방식.
+
   let filterArgs;
   if (status) {
     filterArgs = {
@@ -25,18 +25,16 @@ export async function queryDatabaseByStatus(status?: string) {
     };
   }
   Assert.NonNullish(process.env.NOTION_DATABASE_ID);
+
   const query = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID,
     filter: filterArgs,
+    page_size: 10, // for pagination, max content size. 
+    // https://developers.notion.com/reference/intro#pagination
   });
   console.log('[DEV] next13 server is fetching data from notion...');
   return query;
 }
-
-export async function getBlockContent(block_id: string) {
-
-}
-
 
 // -------------------------------------------------
 // Types for Notion API
@@ -48,22 +46,39 @@ const extractPosts = async (response: QueryDatabaseResponse) => {
   const databaseItems: DatabaseItem[] = response.results.map(
       (databaseItem) => databaseItem as DatabaseItem,
   );
+
+  const convertToSlug = (str: string) => {
+    const slug = str.toLowerCase() // convert to lower case
+    .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+    .replace(/\s+/g, '-') // collapse whitespace and replace by -
+    .replace(/-+/g, '-'); // collapse dashes
+    return (slug);
+  }
+
+  const removeDash = (str: string) => {
+    const result = str.replace(/[-]/g, '') // remove dash
+    return (result);
+  }
+
   const posts: IPost[] = await Promise.all(
       databaseItems.map(async (postInDB: DatabaseItem) => {
+          const id = removeDash(postInDB.id);
           const last_edited_time = postInDB.last_edited_time;
-          const title = postInDB.properties.Name.title[0]?.plain_text ?? 'No Title'
+          const title = postInDB.properties.Name.title[0]?.plain_text ?? `no-title`;
           const description = postInDB.properties.Description.rich_text[0]?.plain_text ?? 'No Description';
           const tags = (postInDB.properties.Tags.multi_select).map((v) => v.name); // extract tag name
           const coverImageUrl = getPageCoverUrl(postInDB.cover);
           const publishdate = postInDB.properties.PublishDate.date?.start;
+          const slug = convertToSlug(title) + '-' + id; // for routing.
 
           const post: IPost = {
-              id: postInDB.id,
+              id: id,
               title: title,
               description: description,
               coverImageUrl: coverImageUrl,
               tags: tags,
               publishDate: publishdate || last_edited_time, // if publishDate is not set, than set to default, which is "last edited time"
+              slug: slug,
           };
           return post;
       }),
@@ -86,4 +101,18 @@ const getPageCoverUrl = (coverObj?: any) => {
 export async function convertQueryToPosts(query: QueryDatabaseResponse) {
   const posts = await extractPosts(query);
   return posts;
+}
+
+//--------------------------------------------
+// https://github.com/NotionX/react-notion-x#nextjs-examples
+import { NotionAPI } from 'notion-client'
+const notion_unofficial = new NotionAPI({
+  activeUser: process.env.NOTION_ACTIVE_USER,
+  authToken: process.env.NOTION_TOKEN_V2,
+});
+
+export async function getBlockContent(block_id: string) {
+  const recordMap = await notion_unofficial.getPage(block_id);
+  console.log(recordMap);
+  return recordMap;
 }

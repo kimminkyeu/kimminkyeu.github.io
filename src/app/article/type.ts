@@ -30,6 +30,7 @@ export interface IPost {
     title: string;
     description: string;
     coverImageUrl: string;
+    slug?: string; // added for routing
 }
 
 export type DatabaseItem = PostResult & {

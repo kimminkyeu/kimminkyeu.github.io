@@ -94,12 +94,14 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 1. article list
 
    - medium.com 스타일 리스트
-   - pagination 사용.
+   - pagination 사용. (한 페이지 max 10)개.
+      - 참고: https://developers.notion.com/reference/intro#pagination
    - 글 검색 적용
 
 2. single article
 
    - next-notion-x 시스템 적용(디자인 최소화)
+      - 참고: https://github.com/NotionX/react-notion-x
    - 글 목차는 하지 말기 (전체 글 분류 navigator 때문)
    - 이유1: fetch에서 직접 설정하지 않아도 Build 버전 ISR 적용 방법을 찾았기 때문
    - 이유2: 마크다운 형식을 보여주는 것도 좋지만, 노션 에디터만의 장점이 많기 때문.(레이아웃 기능 포함)
