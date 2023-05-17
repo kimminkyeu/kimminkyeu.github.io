@@ -14,7 +14,7 @@ export namespace Assert {
     _message?: string,
   ): asserts value is NonNullable<T> {
     // assertion signature
-    const varToString = (varObj: any) => Object.keys(varObj)[0]
+    const varToString = (varObj: any) => (varObj ? Object.keys(varObj)[0] : "value is null");
     if (value === null || value === undefined) {
       throw new assertModule.AssertionError({
         message: _message ?? varToString(value),

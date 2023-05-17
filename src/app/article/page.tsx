@@ -1,15 +1,22 @@
 import { convertQueryToPosts, queryDatabaseByStatus } from '@/app/article/notionAPI';
-
-import {
-  QueryDatabaseResponse, // Type
-} from "@notionhq/client/build/src/api-endpoints";
-
-export type PostResult = Extract<
-    QueryDatabaseResponse["results"][number],
-    { properties: Record<string, unknown> }
->;
+import { IPost } from './type';
 
 
+interface SinglePostCardProps {
+  postData: IPost;
+}
+
+function PostCard({postData}: SinglePostCardProps) {
+  return (
+    <div className=' border border-blue-400'>
+      <h1>{postData.title}</h1>
+      <h3>{postData.description}</h3>
+      <p>{postData.publishDate}</p>
+      {postData.tags.map((v, i) => (<div>{v}</div>))}
+      <p>{postData.coverImageUrl}</p>
+    </div>
+  )
+}
 
 export default async function SingleArticle() {
   const query = await queryDatabaseByStatus('Done');
@@ -17,7 +24,7 @@ export default async function SingleArticle() {
 
   return (
     <div>
-      <h3>{JSON.stringify(posts)}</h3>
+      {posts.map((v, i) => (<PostCard postData={posts[i]}/>))}
     </div>
   );
 }

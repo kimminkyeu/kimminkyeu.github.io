@@ -1,8 +1,6 @@
 
 import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
 
-export type { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
-
 export type PostResult = Extract<
     QueryDatabaseResponse["results"][number],
     { properties: Record<string, unknown> }
@@ -27,13 +25,11 @@ export type PropertyValueEditedTime = ExtractedPropertyValue<"last_edited_time">
 
 export interface IPost {
     id: string;
-    url: string;
     tags: string[];
-    modifiedDate: string;
     publishDate: string;
     title: string;
     description: string;
-    link?: string;
+    coverImageUrl: string;
 }
 
 export type DatabaseItem = PostResult & {
