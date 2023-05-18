@@ -24,14 +24,15 @@ export async function queryDatabaseByStatus(status?: string) {
     };
   }
   Assert.NonNullish(process.env.NOTION_DATABASE_ID);
-
   const query = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID,
     filter: filterArgs,
+    sorts: [{ property: 'Date', direction: 'descending' }],
     page_size: 10, // for pagination, max content size.
     // https://developers.notion.com/reference/intro#pagination
   });
   console.log('[DEV] next13 server is fetching data from notion...');
+  // console.log(query);
   return query;
 }
 
@@ -60,17 +61,22 @@ const extractPosts = async (response: QueryDatabaseResponse) => {
     return result;
   };
 
+  const extractDate = (str: string) => {
+    const pos = str.indexOf('T');
+    return str.substring(0, pos);
+  };
+
   const posts: IPost[] = await Promise.all(
     databaseItems.map(async (postInDB: DatabaseItem) => {
       const id = removeDash(postInDB.id);
-      const last_edited_time = postInDB.last_edited_time;
+      const last_edited_date = extractDate(postInDB.last_edited_time);
       const title = postInDB.properties.Name.title[0]?.plain_text ?? `no-title`;
       const description =
         postInDB.properties.Description.rich_text[0]?.plain_text ??
         'No Description';
       const tags = postInDB.properties.Tags.multi_select.map((v) => v.name); // extract tag name
       const coverImageUrl = getPageCoverUrl(postInDB.cover);
-      const publishdate = postInDB.properties.PublishDate.date?.start;
+      const publishdate = postInDB.properties.Date.date?.start;
       const slug = convertToSlug(title) + '-' + id; // for routing.
 
       const post: IPost = {
@@ -79,7 +85,7 @@ const extractPosts = async (response: QueryDatabaseResponse) => {
         description: description,
         coverImageUrl: coverImageUrl,
         tags: tags,
-        publishDate: publishdate || last_edited_time, // if publishDate is not set, than set to default, which is "last edited time"
+        publishDate: publishdate ?? last_edited_date, // if publishDate is not set, than set to default, which is "last edited time"
         slug: slug,
       };
       return post;
@@ -105,17 +111,26 @@ export async function convertQueryToPosts(query: QueryDatabaseResponse) {
   return posts;
 }
 
-//--------------------------------------------
+//--------------------------------------------------------------
+//    Unofficial Notino API
+//--------------------------------------------------------------
 // https://github.com/NotionX/react-notion-x#nextjs-examples
 // https://github.com/splitbee/react-notion
+// https://github.dev/transitive-bullshit/nextjs-notion-starter-kit
 import { NotionAPI } from 'notion-client';
+import { SearchParams, SearchResults } from 'notion-types';
+
 export const notion_unofficial = new NotionAPI({
   activeUser: process.env.NOTION_ACTIVE_USER,
   authToken: process.env.NOTION_TOKEN_V0,
 });
 
-export async function getBlockContent(block_id: string) {
+export async function getPage(block_id: string) {
   const recordMap = await notion_unofficial.getPage(block_id);
-  console.log('[DEV] getting record map...');
+  console.log('[DEV] getting record map of', block_id);
   return recordMap;
+}
+
+export async function search(params: SearchParams): Promise<SearchResults> {
+  return notion_unofficial.search(params);
 }

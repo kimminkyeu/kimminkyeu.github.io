@@ -1,10 +1,11 @@
 import {
   convertQueryToPosts,
   queryDatabaseByStatus,
-} from '@/app/article/notionAPI';
-import { IPost } from './type';
+} from '@/app/api/notionAPI';
+import { IPost } from '@/app/api/type';
 import Image from 'next/image';
 import Link from 'next/link';
+import ArticleCard from './client-ArticleCard';
 
 export const revalidate = 60; // 60 second revalidation
 
@@ -12,11 +13,17 @@ interface SinglePostCardProps {
   post: IPost;
 }
 
-function PostLink({ post }: SinglePostCardProps) {
+function ArticleLink({ post }: SinglePostCardProps) {
   return (
-    <div className=" mb-4 border border-blue-500 bg-slate-50">
+    <div className="mb-4 bg-slate-50">
       <Link href={`/article/${post.slug}`}>
-        <h1>{post.title}</h1>
+        <ArticleCard
+          title={post.title}
+          description={post.description}
+          image={post.coverImageUrl}
+          tags={post.tags}
+        />
+        {/* <h1>{post.title}</h1>
         <h3>{post.description}</h3>
         <p>{post.publishDate}</p>
         {post.tags.map((v, i) => (
@@ -36,21 +43,31 @@ function PostLink({ post }: SinglePostCardProps) {
         ) : (
           <div>no image</div>
         )}
-        <p>{post.id}</p>
+        <p>{post.id}</p> */}
       </Link>
     </div>
   );
 }
+
+// test mui
 
 export default async function ArticleList() {
   const query = await queryDatabaseByStatus('Done');
   const posts = await convertQueryToPosts(query);
 
   return (
-    <div>
-      {posts.map((v, i) => (
-        <PostLink key={i} post={posts[i]} />
-      ))}
+    <div className=" container mx-auto flex flex-col md:flex-row">
+      <div className=" p-5">
+        <div className=" bg-slate-100"> ---- article navigator ---- </div>
+      </div>
+      <div className=" flex-1 p-5">
+        {posts.map((v, i) => (
+          <ArticleLink key={i} post={posts[i]} />
+        ))}
+      </div>
+      {/* <div className=" hidden container bg-slate-100"> */}
+      {/* ----------Right Box---------- */}
+      {/* </div> */}
     </div>
   );
 }

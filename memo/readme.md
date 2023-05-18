@@ -126,3 +126,11 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 2. 노션 렌더러 애먹은 부분
    - notionPage는 client component이고, 그 외 부분은 전부 server component이다.
      따라서 client component 부분을 별로 파일로 빼야 한다.
+3. next13 이미지는 외부 이미지 링크에 대한 프리뷰는 없는데, 이를 가능케 하려면
+   https://blog.anishde.dev/amazing-preview-images-with-nextjs-and-lqip-modern
+   lqip-modern을 쓰면 됨.
+
+결론: preview image blur, 검색, (ok)tableofContent
+
+4. done! lets do mui + search
+   - https://velog.io/@projaguar/Next.js-13-app-Directory%EC%99%80-MUI
