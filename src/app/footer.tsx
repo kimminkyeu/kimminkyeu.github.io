@@ -1,9 +1,13 @@
-export default function Footer() {
+interface FooterProps {
+  className?: string;
+}
+
+export default function Footer(props: FooterProps) {
   return (
-    <>
+    <div className={props.className}>
       <footer className="body-font w-full text-gray-600">
-        <div className="container mx-auto flex flex-col items-center px-5 py-8 sm:flex-row">
-          <p className="mt-4 text-sm text-gray-500 sm:ml-4 sm:mt-0 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:pl-4">
+        <div className="container mx-auto flex flex-col items-center px-5 py-3 sm:flex-row">
+          <p className="mt-4 text-sm text-gray-500 sm:mt-0 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:pl-4">
             © {new Date().getFullYear()} Minky-Graphics —
             <a
               href="https://www.instagram.com/kyeu_min/"
@@ -59,6 +63,6 @@ export default function Footer() {
           </span>
         </div>
       </footer>
-    </>
-  )
+    </div>
+  );
 }

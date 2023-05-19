@@ -125,6 +125,13 @@ export const notion_unofficial = new NotionAPI({
   authToken: process.env.NOTION_TOKEN_V0,
 });
 
+// [some-title-{id}] 형식을 받아서 뒤의 id만 추출.
+export const extractIdFromUrl = (url: string) => {
+  const posOfId = url.lastIndexOf('-');
+  const id = url.substring(posOfId + 1);
+  return id;
+};
+
 export async function getPage(block_id: string) {
   const recordMap = await notion_unofficial.getPage(block_id);
   console.log('[DEV] getting record map of', block_id);
@@ -134,3 +141,8 @@ export async function getPage(block_id: string) {
 export async function search(params: SearchParams): Promise<SearchResults> {
   return notion_unofficial.search(params);
 }
+
+//--------------------------------------------------------------
+//    Splitbee Notino API
+//--------------------------------------------------------------
+// https://github.com/splitbee/notion-api-worker

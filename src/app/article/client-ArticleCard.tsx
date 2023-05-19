@@ -7,7 +7,6 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
-import Image from 'next/image';
 import { Stack } from '@mui/material';
 
 interface ArticleCardProps {
@@ -30,7 +29,6 @@ export default function ArticleCard(props: ArticleCardProps) {
       <Card
         sx={{
           display: 'flex',
-          // maxWidth: 1000,
           maxHeight: 200,
           justifyContent: 'space-between',
         }}
@@ -55,16 +53,6 @@ export default function ArticleCard(props: ArticleCardProps) {
           </CardContent>
         </Box>
         {props.image && (
-          // <Image
-          //   src={props.image}
-          //   alt={props.alt ?? 'image'}
-          //   width={100}
-          //   height={100}
-          //   // layout="fill"
-          //   sizes="(max-width: 768px) 100vw,
-          //    (max-width: 1200px) 50vw,
-          //    33vw"
-          // />
           <CardMedia
             component="img"
             sx={{ height: 130, width: '30%' }}

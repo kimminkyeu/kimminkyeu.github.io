@@ -13,6 +13,19 @@ interface SinglePostCardProps {
   post: IPost;
 }
 
+// Top Down (share to all articles)
+/*
+export async function generateStaticParams() {
+  const query = await queryDatabaseByStatus('Done');
+  const posts = await convertQueryToPosts(query);
+
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+*/
+
+// Route Function (Link)
 function ArticleLink({ post }: SinglePostCardProps) {
   return (
     <div className="mb-4 bg-slate-50">
@@ -23,33 +36,10 @@ function ArticleLink({ post }: SinglePostCardProps) {
           image={post.coverImageUrl}
           tags={post.tags}
         />
-        {/* <h1>{post.title}</h1>
-        <h3>{post.description}</h3>
-        <p>{post.publishDate}</p>
-        {post.tags.map((v, i) => (
-          <div key={i}>{v}</div>
-        ))}
-        {post.coverImageUrl ? (
-          <Image
-            src={post.coverImageUrl}
-            alt="cover"
-            width={100}
-            height={100}
-            // layout="fill"
-            sizes="(max-width: 768px) 100vw,
-        					       (max-width: 1200px) 50vw,
-            					   33vw"
-          />
-        ) : (
-          <div>no image</div>
-        )}
-        <p>{post.id}</p> */}
       </Link>
     </div>
   );
 }
-
-// test mui
 
 export default async function ArticleList() {
   const query = await queryDatabaseByStatus('Done');
