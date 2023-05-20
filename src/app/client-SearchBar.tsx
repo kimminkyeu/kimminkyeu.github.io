@@ -51,7 +51,7 @@ interface SearchBarProps {
   className?: string;
 }
 
-export default function SearchBar(props: SearchBarProps) {
+export default function SearchBarLarge(props: SearchBarProps) {
   const [input, setInput] = React.useState<string>('');
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
   const open = Boolean(anchorEl);

@@ -1,4 +1,5 @@
-import { getPage, extractIdFromUrl } from '@/app/api/notionAPI';
+import Notion from '@/app/api/notionAPI';
+// import Post from './client-MDX';
 
 interface PageProps {
   params: {
@@ -6,15 +7,22 @@ interface PageProps {
   };
 }
 
-import { NotionPage } from '@/app/article/[slug]/client-NotionPage';
-
 export default async function Page({ params }: PageProps) {
-  const pageId = extractIdFromUrl(params.slug);
-  const recordMap = await getPage(pageId);
+  const pageId = Notion.getPageIdFromUrl(params.slug);
+  const mdString = await Notion.getMarkDownString(pageId);
+  const HtmlString = await Notion.parseMarkdownToHTML(mdString); // Raw String
+
+  function createMarkup() {
+    return { __html: HtmlString };
+  }
 
   return (
-    <>
-      <NotionPage recordMap={recordMap} previewImagesEnabled={false} />
-    </>
+    <div className="container p-5">
+      <article
+        // https://tailwindcss.com/docs/typography-plugin
+        className="pros-neutral prose" // Tailwind Official Plugin
+        dangerouslySetInnerHTML={createMarkup()}
+      />
+    </div>
   );
 }

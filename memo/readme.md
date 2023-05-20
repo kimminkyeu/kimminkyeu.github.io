@@ -134,3 +134,13 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 4. done! lets do mui + search
    - https://velog.io/@projaguar/Next.js-13-app-Directory%EC%99%80-MUI
+
+
+
+# 0521 최신화
+1. c++만 안된 이유 : 노션 c++ 코드블록은 c++그대로 설정이 내보내짐.
+그런데 prismjs, markdown 등은 c++가 아닌 cpp라고 언어를 명시함...
+그래서 cpp가 안됬던 거임 시뷸...
+2. react-notion-x 버리고 notion-md + remark/rehype으로 갈아탐.
+react-notion-x의 커스터마이징, 설정 변경 등이 너무 복잡하고,
+내부에서 공식 노션 api를 쓰지 않기 때문에 두개의 api 객체를 만들어야 함...
