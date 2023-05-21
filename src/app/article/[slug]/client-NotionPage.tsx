@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { ExtendedRecordMap } from 'notion-types';
 import { NotionRenderer } from 'react-notion-x';
 import Link from 'next/link';
-import Image from 'next/image';
+// import Image from 'next/image';
 
 // core styles shared by all of react-notion-x (required)
 import 'react-notion-x/src/styles.css';
@@ -16,8 +16,6 @@ import 'katex/dist/katex.min.css';
 // prism.js
 const Code = dynamic(async () => {
   const m = await import('react-notion-x/build/third-party/code');
-  await import('prismjs/components/prism-c.js');
-  await import('prismjs/components/prism-cpp.js');
   return m.Code;
 });
 
@@ -40,7 +38,7 @@ const Modal = dynamic(
   },
 );
 
-export const NotionPage = ({
+export const NotionPage_ClientComponent = ({
   recordMap,
   rootPageId,
   rootDomain,
@@ -58,12 +56,13 @@ export const NotionPage = ({
   return (
     <NotionRenderer
       // isImageZoomable
-      fullPage={false}
+      disableHeader={true}
+      fullPage={true}
       darkMode={false}
       showCollectionViewDropdown={false}
       showTableOfContents={false}
       // minTableOfContentsItems={3}
-      // previewImages={!!recordMap.preview_images}
+      previewImages={!!recordMap.preview_images}
       // ---------------------
       recordMap={recordMap}
       rootDomain={rootDomain}

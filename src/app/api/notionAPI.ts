@@ -33,6 +33,20 @@ import rehypePrism from '@mapbox/rehype-prism';
 import remarkHtml from 'remark-html';
 import rehypeSanitize from 'rehype-sanitize';
 import { MdBlock } from 'notion-to-md/build/types';
+import { NotionAPI } from 'notion-client';
+
+class NotionUnofficialClient {
+  private _notion_unofficial = new NotionAPI({
+    activeUser: process.env.NOTION_ACTIVE_USER,
+    authToken: process.env.NOTION_TOKEN_V2,
+  });
+
+  constructor() {}
+
+  public async getPage(page_id: string) {
+    return await this._notion_unofficial.getPage(page_id);
+  }
+}
 
 class NotionAPI_Factory {
   private _notion: Client = new Client({
@@ -41,9 +55,18 @@ class NotionAPI_Factory {
   private _n2m: NotionToMarkdown = new NotionToMarkdown({
     notionClient: this._notion,
   });
+  public notion_unoffical = new NotionUnofficialClient();
+
   constructor() {
     // this._notion = new Client({ auth: process.env.NOTION_TOKEN });
     // this._n2m = new NotionToMarkdown({ notionClient: this._notion });
+  }
+
+  // db 하위 페이지들의 id 리스트만 얻고 싶을 때
+  public async getPageIdListFromDatabase(status?: string) {
+    const query = await this.queryDatabaseByStatus(status);
+    console.log('[DEV] getPageIdListFromDatabase()');
+    return query.results.map((v) => this._removeDash(v.id));
   }
 
   /**
@@ -70,37 +93,38 @@ class NotionAPI_Factory {
       page_size: 10, // for pagination, max content size.
       // https://developers.notion.com/reference/intro#pagination
     });
-    console.log('[DEV] next13 server is fetching data from notion...');
+    console.log('[DEV] queryDatabaseByStatus()');
     return query;
   }
+
+  private _convertToSlug(str: string) {
+    const slug = str
+      .toLowerCase() // convert to lower case
+      .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+      .replace(/\s+/g, '-') // collapse whitespace and replace by -
+      .replace(/-+/g, '-'); // collapse dashes
+    return slug;
+  }
+
+  private _removeDash(str: string) {
+    const result = str.replace(/[-]/g, ''); // remove dash
+    return result;
+  }
+
+  private _extractDate(str: string) {
+    const pos = str.indexOf('T');
+    return str.substring(0, pos);
+  }
+
   public async extractPosts(response: QueryDatabaseResponse) {
     const databaseItems: DatabaseItem[] = response.results.map(
       (databaseItem) => databaseItem as DatabaseItem,
     );
 
-    const convertToSlug = (str: string) => {
-      const slug = str
-        .toLowerCase() // convert to lower case
-        .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-        .replace(/\s+/g, '-') // collapse whitespace and replace by -
-        .replace(/-+/g, '-'); // collapse dashes
-      return slug;
-    };
-
-    const removeDash = (str: string) => {
-      const result = str.replace(/[-]/g, ''); // remove dash
-      return result;
-    };
-
-    const extractDate = (str: string) => {
-      const pos = str.indexOf('T');
-      return str.substring(0, pos);
-    };
-
     const posts: IPost[] = await Promise.all(
       databaseItems.map(async (postInDB: DatabaseItem) => {
-        const id = removeDash(postInDB.id);
-        const last_edited_date = extractDate(postInDB.last_edited_time);
+        const id = this._removeDash(postInDB.id);
+        const last_edited_date = this._extractDate(postInDB.last_edited_time);
         const title =
           postInDB.properties.Name.title[0]?.plain_text ?? `no-title`;
         const description =
@@ -109,7 +133,7 @@ class NotionAPI_Factory {
         const tags = postInDB.properties.Tags.multi_select.map((v) => v.name); // extract tag name
         const coverImageUrl = this.getImageUrlFromCoverObject(postInDB.cover);
         const publishdate = postInDB.properties.Date.date?.start;
-        const slug = convertToSlug(title) + '-' + id; // for routing.
+        const slug = this._convertToSlug(title) + '-' + id; // for routing.
 
         const post: IPost = {
           id: id,
@@ -163,12 +187,9 @@ class NotionAPI_Factory {
 
   // https://github.com/souvikinator/notion-to-md
   public async getMarkDownString(target_page_id: string) {
-    console.log('[DEV] next13 fetching notion page to md...');
     const mdBlocksBefore = await this._n2m.pageToMarkdown(target_page_id);
     const mdBlocksAfter = this.__fixCodeType_CPP(mdBlocksBefore);
-    console.log(mdBlocksAfter);
     const mdString = this._n2m.toMarkdownString(mdBlocksAfter);
-    console.log('[DEV] -------- done!');
     return mdString.parent;
   }
 
@@ -177,7 +198,6 @@ class NotionAPI_Factory {
   // https://nextjs.org/docs/app/building-your-application/configuring/mdx#getting-started  --> 여기가 끝판왕!
   // https://css-tricks.com/syntax-highlighting-prism-on-a-next-js-site/
   public async parseMarkdownToHTML(markdownData: any) {
-    console.log('[DEV] next13 parsing md to html...');
     // console.log('[DEV] ----------------------------');
     // console.log(markdownData);
     // console.log('[DEV] ----------------------------');
@@ -190,7 +210,6 @@ class NotionAPI_Factory {
       .use(rehypeSanitize) // Sanitize HTML input
       .use(rehypeStringify) // Convert AST into serialized HTML
       .process(markdownData);
-    console.log('[DEV] -------- done!');
     return String(file);
   }
 }

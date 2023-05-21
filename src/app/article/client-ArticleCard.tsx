@@ -18,7 +18,7 @@ interface ArticleCardProps {
   alt?: string;
 }
 
-export default function ArticleCard(props: ArticleCardProps) {
+export default function ArticleCard_ClientComponent(props: ArticleCardProps) {
   const renderTags = (strs: readonly string[]) => {
     return strs.map((nameOfTag, i) => (
       <Chip key={i} label={nameOfTag} size="small" variant="outlined" />

@@ -1,33 +1,20 @@
 import Notion from '../api/notionAPI';
 import { IPost } from '@/app/api/type';
-// import Image from 'next/image';
 import Link from 'next/link';
-import ArticleCard from './client-ArticleCard';
+import ArticleCard_ClientComponent from './client-ArticleCard';
 
-export const revalidate = 60; // 60 second revalidation
+export const revalidate = 3600; // revalidate every hour
 
 interface SinglePostCardProps {
   post: IPost;
 }
-
-// Top Down (share to all articles)
-/*
-export async function generateStaticParams() {
-  const query = await queryDatabaseByStatus('Done');
-  const posts = await convertQueryToPosts(query);
-
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-}
-*/
 
 // Route Function (Link)
 function ArticleLink({ post }: SinglePostCardProps) {
   return (
     <div className="mb-4">
       <Link href={`/article/${post.slug}`}>
-        <ArticleCard
+        <ArticleCard_ClientComponent
           title={post.title}
           description={post.description}
           image={post.coverImageUrl}
@@ -43,7 +30,7 @@ export default async function ArticleList() {
   const posts = await Notion.convertQueryToPosts(query);
 
   const renderList = () => {
-    return posts.map((v, i) => <ArticleLink key={i} post={posts[i]} />);
+    return posts.map((v, i) => <ArticleLink key={i} post={v} />);
   };
 
   return (
