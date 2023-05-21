@@ -6,22 +6,9 @@ import ArticleCard from './client-ArticleCard';
 import { shouldSkipGeneratingVar } from '@mui/material';
 
 export const revalidate = 60; // 60 second revalidation
-
 interface SinglePostCardProps {
   post: IPost;
 }
-
-// Top Down (share to all articles)
-/*
-export async function generateStaticParams() {
-  const query = await queryDatabaseByStatus('Done');
-  const posts = await convertQueryToPosts(query);
-
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-}
-*/
 
 // Route Function (Link)
 function ArticleLink({ post }: SinglePostCardProps) {
@@ -41,7 +28,11 @@ function ArticleLink({ post }: SinglePostCardProps) {
 
 // run at build time, to pass data to child's generateStaticParams
 export async function generateStaticParams() {
+  console.log('*---------------------------------------');
+  console.log('*[DEV] article page generateStaticProps');
   const postIdList = await Notion.getPageIdListFromDatabase('Done');
+  console.log(postIdList);
+  console.log('*---------------------------------------');
   return postIdList.map((id) => ({
     params: {
       slug: id,
@@ -49,14 +40,7 @@ export async function generateStaticParams() {
   }));
 }
 
-interface StaticParams {
-  params: {
-    slug: string;
-  }; // from generateStaticParams
-}
-
-export default async function ArticleList({ params }: StaticParams) {
-  // const { id } = params;
+export default async function ArticleList() {
   const query = await Notion.queryDatabaseByStatus('Done');
   const posts = await Notion.convertQueryToPosts(query);
 

@@ -51,6 +51,7 @@ class NotionAPI_Factory {
   // db 하위 페이지들의 id 리스트만 얻고 싶을 때
   public async getPageIdListFromDatabase(status?: string) {
     const query = await this.queryDatabaseByStatus(status);
+    console.log('[DEV] getPageIdListFromDatabase()');
     return query.results.map((v) => this._removeDash(v.id));
   }
 
@@ -78,7 +79,7 @@ class NotionAPI_Factory {
       page_size: 10, // for pagination, max content size.
       // https://developers.notion.com/reference/intro#pagination
     });
-    console.log('[DEV] next13 server is fetching data from notion...');
+    console.log('[DEV] queryDatabaseByStatus()');
     return query;
   }
 
