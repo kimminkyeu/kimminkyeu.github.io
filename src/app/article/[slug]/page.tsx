@@ -1,10 +1,14 @@
 import Notion from '@/app/api/notionAPI';
 // import Post from './client-MDX';
 
-interface PageProps {
+interface StaticParams {
   params: {
     slug: string;
   };
+}
+
+export async function generateStaticParams({ params }: StaticParams) {
+  console.log(params.slug);
 }
 
 export default async function Page({ params }: PageProps) {

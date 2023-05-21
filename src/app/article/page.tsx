@@ -1,8 +1,9 @@
 import Notion from '../api/notionAPI';
-import { IPost } from '@/app/api/type';
+import { IPost, PostResult } from '@/app/api/type';
 // import Image from 'next/image';
 import Link from 'next/link';
 import ArticleCard from './client-ArticleCard';
+import { shouldSkipGeneratingVar } from '@mui/material';
 
 export const revalidate = 60; // 60 second revalidation
 
@@ -38,7 +39,24 @@ function ArticleLink({ post }: SinglePostCardProps) {
   );
 }
 
-export default async function ArticleList() {
+// run at build time, to pass data to child's generateStaticParams
+export async function generateStaticParams() {
+  const postIdList = await Notion.getPageIdListFromDatabase('Done');
+  return postIdList.map((id) => ({
+    params: {
+      slug: id,
+    },
+  }));
+}
+
+interface StaticParams {
+  params: {
+    slug: string;
+  }; // from generateStaticParams
+}
+
+export default async function ArticleList({ params }: StaticParams) {
+  // const { id } = params;
   const query = await Notion.queryDatabaseByStatus('Done');
   const posts = await Notion.convertQueryToPosts(query);
 

@@ -38,12 +38,20 @@ class NotionAPI_Factory {
   private _notion: Client = new Client({
     auth: process.env.NOTION_TOKEN,
   });
+
   private _n2m: NotionToMarkdown = new NotionToMarkdown({
     notionClient: this._notion,
   });
+
   constructor() {
     // this._notion = new Client({ auth: process.env.NOTION_TOKEN });
     // this._n2m = new NotionToMarkdown({ notionClient: this._notion });
+  }
+
+  // db 하위 페이지들의 id 리스트만 얻고 싶을 때
+  public async getPageIdListFromDatabase(status?: string) {
+    const query = await this.queryDatabaseByStatus(status);
+    return query.results.map((v) => this._removeDash(v.id));
   }
 
   /**
@@ -73,34 +81,35 @@ class NotionAPI_Factory {
     console.log('[DEV] next13 server is fetching data from notion...');
     return query;
   }
+
+  private _convertToSlug(str: string) {
+    const slug = str
+      .toLowerCase() // convert to lower case
+      .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+      .replace(/\s+/g, '-') // collapse whitespace and replace by -
+      .replace(/-+/g, '-'); // collapse dashes
+    return slug;
+  }
+
+  private _removeDash(str: string) {
+    const result = str.replace(/[-]/g, ''); // remove dash
+    return result;
+  }
+
+  private _extractDate(str: string) {
+    const pos = str.indexOf('T');
+    return str.substring(0, pos);
+  }
+
   public async extractPosts(response: QueryDatabaseResponse) {
     const databaseItems: DatabaseItem[] = response.results.map(
       (databaseItem) => databaseItem as DatabaseItem,
     );
 
-    const convertToSlug = (str: string) => {
-      const slug = str
-        .toLowerCase() // convert to lower case
-        .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-        .replace(/\s+/g, '-') // collapse whitespace and replace by -
-        .replace(/-+/g, '-'); // collapse dashes
-      return slug;
-    };
-
-    const removeDash = (str: string) => {
-      const result = str.replace(/[-]/g, ''); // remove dash
-      return result;
-    };
-
-    const extractDate = (str: string) => {
-      const pos = str.indexOf('T');
-      return str.substring(0, pos);
-    };
-
     const posts: IPost[] = await Promise.all(
       databaseItems.map(async (postInDB: DatabaseItem) => {
-        const id = removeDash(postInDB.id);
-        const last_edited_date = extractDate(postInDB.last_edited_time);
+        const id = this._removeDash(postInDB.id);
+        const last_edited_date = this._extractDate(postInDB.last_edited_time);
         const title =
           postInDB.properties.Name.title[0]?.plain_text ?? `no-title`;
         const description =
@@ -109,7 +118,7 @@ class NotionAPI_Factory {
         const tags = postInDB.properties.Tags.multi_select.map((v) => v.name); // extract tag name
         const coverImageUrl = this.getImageUrlFromCoverObject(postInDB.cover);
         const publishdate = postInDB.properties.Date.date?.start;
-        const slug = convertToSlug(title) + '-' + id; // for routing.
+        const slug = this._convertToSlug(title) + '-' + id; // for routing.
 
         const post: IPost = {
           id: id,
