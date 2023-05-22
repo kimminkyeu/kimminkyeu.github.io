@@ -62,11 +62,50 @@ class NotionAPI_Factory {
     // this._n2m = new NotionToMarkdown({ notionClient: this._notion });
   }
 
+  public async getPage(target_page_id: string) {
+    const response = await this._notion.pages.retrieve({ page_id: target_page_id });
+    return response;
+  }
+
   // db 하위 페이지들의 id 리스트만 얻고 싶을 때
   public async getPageIdListFromDatabase(status?: string) {
-    const query = await this.queryDatabaseByStatus(status);
     console.log('[DEV] getPageIdListFromDatabase()');
+    const query = await this._queryDatabaseByStatus(status);
     return query.results.map((v) => this._removeDash(v.id));
+  }
+
+  public async getPostsInfoFromDatabase(status?: string) {
+    console.log('[DEV] getPostsFromDatabase()');
+    const query = await this._queryDatabaseByStatus(status);
+    const postsInfo = await this._extractPostsInfo(query);
+    return postsInfo;
+  }
+
+  // https://github.com/souvikinator/notion-to-md
+  public async getMarkDownString(target_page_id: string) {
+    console.log('[DEV] getMarkDownString()');
+    const mdBlocksBefore = await this._n2m.pageToMarkdown(target_page_id);
+    const mdBlocksAfter = this.__fixCodeType_CPP(mdBlocksBefore);
+    const mdString = this._n2m.toMarkdownString(mdBlocksAfter);
+    return mdString.parent;
+  }
+
+  // https://blog.hwahae.co.kr/all/tech/10960
+  // https://github.com/unifiedjs/unified (AST)
+  // https://nextjs.org/docs/app/building-your-application/configuring/mdx#getting-started  --> 여기가 끝판왕!
+  // https://css-tricks.com/syntax-highlighting-prism-on-a-next-js-site/
+  public async parseMarkdownToHTML(markdownData: any) {
+    console.log('[DEV] parseMarkdownToHTML()');
+    const file = await unified()
+      .use(remarkParse) // Convert into markdown AST
+      .use(remarkGfm) // Github flavored markdown
+      .use(remarkBreaks) // Line break
+      .use(remarkRehype) // Transform to HTML AST
+      .use(rehypePrism) // Add code highlight via Prismjs
+      .use(rehypeSanitize) // Sanitize HTML input
+      .use(rehypeStringify) // Convert AST into serialized HTML
+      .process(markdownData);
+    return String(file);
   }
 
   /**
@@ -77,7 +116,8 @@ class NotionAPI_Factory {
    *  (3) In progress
    * @returns database object
    */
-  public async queryDatabaseByStatus(status?: string) {
+  private async _queryDatabaseByStatus(status?: string) {
+    console.log('[DEV] queryDatabaseByStatus()');
     let filterArgs;
     if (status) {
       filterArgs = {
@@ -93,18 +133,17 @@ class NotionAPI_Factory {
       page_size: 10, // for pagination, max content size.
       // https://developers.notion.com/reference/intro#pagination
     });
-    console.log('[DEV] queryDatabaseByStatus()');
     return query;
   }
 
-  private _convertToSlug(str: string) {
-    const slug = str
-      .toLowerCase() // convert to lower case
-      .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-      .replace(/\s+/g, '-') // collapse whitespace and replace by -
-      .replace(/-+/g, '-'); // collapse dashes
-    return slug;
-  }
+  // private _convertToSlug(str: string) {
+  //   const slug = str
+  //     .toLowerCase() // convert to lower case
+  //     .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+  //     .replace(/\s+/g, '-') // collapse whitespace and replace by -
+  //     .replace(/-+/g, '-'); // collapse dashes
+  //   return slug;
+  // }
 
   private _removeDash(str: string) {
     const result = str.replace(/[-]/g, ''); // remove dash
@@ -116,14 +155,21 @@ class NotionAPI_Factory {
     return str.substring(0, pos);
   }
 
-  public async extractPosts(response: QueryDatabaseResponse) {
+  // 2023-05-12 --> Jan 12
+  private _changeDateFormat(str: string) {
+    const date = new Date(str);
+    const m = new Intl.DateTimeFormat('en-US',  {dateStyle: 'full'}).format(date);
+    const m2 = m.substring(m.indexOf(',') + 2, m.lastIndexOf(','));
+    return m2;
+  }
+
+  private async _extractPostsInfo(response: QueryDatabaseResponse) {
     const databaseItems: DatabaseItem[] = response.results.map(
       (databaseItem) => databaseItem as DatabaseItem,
     );
-
     const posts: IPost[] = await Promise.all(
       databaseItems.map(async (postInDB: DatabaseItem) => {
-        const id = this._removeDash(postInDB.id);
+        const pageId = this._removeDash(postInDB.id);
         const last_edited_date = this._extractDate(postInDB.last_edited_time);
         const title =
           postInDB.properties.Name.title[0]?.plain_text ?? `no-title`;
@@ -133,28 +179,19 @@ class NotionAPI_Factory {
         const tags = postInDB.properties.Tags.multi_select.map((v) => v.name); // extract tag name
         const coverImageUrl = this.getImageUrlFromCoverObject(postInDB.cover);
         const publishdate = postInDB.properties.Date.date?.start;
-        const slug = this._convertToSlug(title) + '-' + id; // for routing.
 
         const post: IPost = {
-          id: id,
+          pageId: pageId,
           title: title,
           description: description,
           coverImageUrl: coverImageUrl,
           tags: tags,
-          publishDate: publishdate ?? last_edited_date, // if publishDate is not set, than set to default, which is "last edited time"
-          slug: slug,
+          publishDate: this._changeDateFormat(publishdate ?? last_edited_date), // if publishDate is not set, than set to default, which is "last edited time"
         };
         return post;
       }),
     );
     return posts;
-  }
-
-  // [some-title-{id}] 형식을 받아서 뒤의 id만 추출.
-  public getPageIdFromUrl(url: string) {
-    const posOfId = url.lastIndexOf('-');
-    const id = url.substring(posOfId + 1);
-    return id;
   }
 
   public getImageUrlFromCoverObject(coverObj?: any) {
@@ -169,13 +206,9 @@ class NotionAPI_Factory {
     return Url;
   }
 
-  public async convertQueryToPosts(query: QueryDatabaseResponse) {
-    const posts = await this.extractPosts(query);
-    return posts;
-  }
-
   // need to change c++ to cpp for markdown...
   private __fixCodeType_CPP(mdBlocks: MdBlock[]) {
+    console.log('[DEV] __fixCodeType_CPP()');
     mdBlocks.forEach((v) => {
       if (v.type === 'code' && v.parent.lastIndexOf('c++', 5) != -1) {
         // if c++ exist
@@ -184,46 +217,8 @@ class NotionAPI_Factory {
     });
     return mdBlocks;
   }
-
-  // https://github.com/souvikinator/notion-to-md
-  public async getMarkDownString(target_page_id: string) {
-    const mdBlocksBefore = await this._n2m.pageToMarkdown(target_page_id);
-    const mdBlocksAfter = this.__fixCodeType_CPP(mdBlocksBefore);
-    const mdString = this._n2m.toMarkdownString(mdBlocksAfter);
-    return mdString.parent;
-  }
-
-  // https://blog.hwahae.co.kr/all/tech/10960
-  // https://github.com/unifiedjs/unified (AST)
-  // https://nextjs.org/docs/app/building-your-application/configuring/mdx#getting-started  --> 여기가 끝판왕!
-  // https://css-tricks.com/syntax-highlighting-prism-on-a-next-js-site/
-  public async parseMarkdownToHTML(markdownData: any) {
-    // console.log('[DEV] ----------------------------');
-    // console.log(markdownData);
-    // console.log('[DEV] ----------------------------');
-    const file = await unified()
-      .use(remarkParse) // Convert into markdown AST
-      .use(remarkGfm) // Github flavored markdown
-      .use(remarkBreaks) // Line break
-      .use(remarkRehype) // Transform to HTML AST
-      .use(rehypePrism) // Add code highlight via Prismjs
-      .use(rehypeSanitize) // Sanitize HTML input
-      .use(rehypeStringify) // Convert AST into serialized HTML
-      .process(markdownData);
-    return String(file);
-  }
 }
 
-export default new NotionAPI_Factory();
+const NotionAPI_Instance = new NotionAPI_Factory();
 
-//--------------------------------------------------------------
-//    Unofficial Notino API
-//--------------------------------------------------------------
-// https://github.com/NotionX/react-notion-x#nextjs-examples
-// https://github.com/splitbee/react-notion
-// https://github.dev/transitive-bullshit/nextjs-notion-starter-kit
-
-//--------------------------------------------------------------
-//    Splitbee Notion API
-//--------------------------------------------------------------
-// https://github.com/splitbee/notion-api-worker
+export default NotionAPI_Instance;

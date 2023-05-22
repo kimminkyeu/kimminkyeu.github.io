@@ -24,13 +24,12 @@ export type PropertyValueEditedTime =
   ExtractedPropertyValue<'last_edited_time'>;
 
 export interface IPost {
-  id: string;
+  pageId: string;
   tags: string[];
   publishDate: string;
   title: string;
   description: string;
   coverImageUrl: string;
-  slug?: string; // added for routing
 }
 
 export type DatabaseItem = PostResult & {

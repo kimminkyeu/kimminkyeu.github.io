@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-  // output: 'export', // for github pages (Fully Static App)
+  output: 'export', // (Fully Static App)
   reactStrictMode: true,
   compiler: {
     styledComponents: true,

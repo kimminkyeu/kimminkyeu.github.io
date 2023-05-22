@@ -143,3 +143,8 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 2. react-notion-x 버리고 notion-md + remark/rehype으로 갈아탐.
    react-notion-x의 커스터마이징, 설정 변경 등이 너무 복잡하고,
    내부에서 공식 노션 api를 쓰지 않기 때문에 두개의 api 객체를 만들어야 함...
+
+# 0522
+
+1. 설명글이 없을 경우 -> 내용을 가져오기 + 길이 제한 이상이 되면 ...으로 교체
+2. npx next export로 변경. 성능 문제 + 서버에서 굳이 뭘 처리할 내용이 없기 때문.

@@ -1,6 +1,7 @@
 import { Config } from 'src/config/config';
 import Link from 'next/link';
-import SearchBarLarge from './client-SearchBar';
+import SearchBarLarge from './client-SearchBarLarge';
+import SearchBarSmall from './client-SearchBarSmall';
 
 interface NavbarProps {
   className?: string;
@@ -17,8 +18,11 @@ export default function Navbar(props: NavbarProps) {
         >
           {Config.BLOG_TITLE}
         </Link>
-        <SearchBarLarge className=" invisible hidden md:visible md:block" />
         <nav className="ml-auto flex flex-wrap items-center justify-center text-base md:ml-auto">
+          {/* -------------------------------------------------------------- */}
+          <SearchBarLarge className=" invisible hidden md:visible md:block" />
+          <SearchBarSmall className=" visible block md:invisible md:hidden " />
+          {/* -------------------------------------------------------------- */}
           <Link
             href="/article"
             className="ml-2 p-1 hover:underline hover:underline-offset-8"
