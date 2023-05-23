@@ -1,4 +1,5 @@
 import Notion from '@/app/api/notionAPI';
+import ArticleHeader from './(client-component)/client-ArticleHeader';
 import { IPost } from '@/app/api/type';
 
 export async function generateStaticParams() {
@@ -17,29 +18,17 @@ interface StaticParams {
 
 export default async function Page({ params }: StaticParams) {
   const posts = await Notion.getPostsInfoFromDatabase('Done');
-  const postInfo = posts.find((p) => p.pageId === params.pageId)
+  const postInfo = posts.find((p) => p.pageId === params.pageId);
   const mdString = await Notion.getMarkDownString(params.pageId);
   const HtmlString = await Notion.parseMarkdownToHTML(mdString); // Raw String
   function createMarkup() {
     return { __html: HtmlString };
   }
+  // Tailwind Official Plugin (Prose)
   return (
-    <div className="container p-5">
-      <Header postInfo={postInfo}/>
-      <article
-        // https://tailwindcss.com/docs/typography-plugin
-        className="pros-neutral prose" // Tailwind Official Plugin
-        dangerouslySetInnerHTML={createMarkup()}
-      />
-    </div>
-  );
-}
-
-function Header({postInfo}: {postInfo: IPost}) {
-  return (
-    <div className='border-2'>
-    <div>title: {postInfo.title}</div>
-    <div>date: {postInfo.publishDate}</div>
+    <div className=" container prose prose-neutral mx-auto p-5">
+      <ArticleHeader postInfo={postInfo} />
+      <article dangerouslySetInnerHTML={createMarkup()} />
     </div>
   );
 }

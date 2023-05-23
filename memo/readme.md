@@ -148,3 +148,5 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 1. 설명글이 없을 경우 -> 내용을 가져오기 + 길이 제한 이상이 되면 ...으로 교체
 2. npx next export로 변경. 성능 문제 + 서버에서 굳이 뭘 처리할 내용이 없기 때문.
+3. medium 처럼 home을 없애고, 메뉴 선택도 밑으로 빼자.
+4. mui를 header로 사용하기

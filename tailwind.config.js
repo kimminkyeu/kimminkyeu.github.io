@@ -6,7 +6,11 @@ module.exports = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      boxShadow: {
+        custom_innerUnderline: 'inset 0 -1px 0px 0px rgb(220, 220, 220) ',
+      },
+    },
   },
   plugins: [require('@tailwindcss/typography')],
 };
