@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Header className=" border-b px-5 py-3" />
         <div className="container mx-auto flex max-w-2xl flex-col px-5">
-          <Navbar />
+          <Navbar className=" mt-5" />
           <main className=" ">{children}</main>
         </div>
         <Footer className=" border-t" />
