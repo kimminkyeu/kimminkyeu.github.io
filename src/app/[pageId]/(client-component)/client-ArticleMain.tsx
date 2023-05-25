@@ -8,8 +8,8 @@ interface ArticleMainProps {
 
 export default function ArticleMain_MDX({ source }: ArticleMainProps) {
   return (
-    <div className="prose">
+    // <div className="prose prose-neutral">
       <MDXRemote {...source} />
-    </div>
+    // </div>
   );
 }

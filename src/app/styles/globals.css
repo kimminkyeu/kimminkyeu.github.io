@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.prose .anchor {
+    @apply invisible absolute no-underline;
+
+    margin-left: -1em;
+    padding-right: 0.5em;
+    cursor: pointer;
+}
+
+.prose .anchor:after {
+    @apply text-gray-300 dark:text-gray-700;
+    content: '#';
+}
+
+.anchor:hover,
+.prose *:hover > .anchor {
+    @apply visible;
+}
+
+.prose .rehype-code-title {
+    /* ... */
+    @apply rounded-t-lg border border-b-0 px-5 py-3 text-sm font-bold;
+}

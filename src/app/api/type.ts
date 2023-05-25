@@ -1,4 +1,4 @@
-import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
+import {QueryDatabaseResponse} from '@notionhq/client/build/src/api-endpoints';
 
 export type PostResult = Extract<
   QueryDatabaseResponse['results'][number],
@@ -30,6 +30,8 @@ export interface IPost {
   title: string;
   description: string;
   coverImageUrl: string;
+  markdown: string;
+  readingTime: string; // 게시글을 다 읽는데 걸리는 추정 시간.
 }
 
 export type DatabaseItem = PostResult & {

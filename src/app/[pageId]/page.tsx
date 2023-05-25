@@ -1,8 +1,8 @@
 import Notion from '@/app/api/notionAPI';
-import { serializeMdx } from '../api/mdxAPI';
+import {processMdx} from '../api/mdxAPI';
 import ArticleHeader from './(client-component)/client-ArticleHeader';
 import ArticleMain_MDX from './(client-component)/client-ArticleMain';
-import { Metadata, ResolvingMetadata } from 'next';
+import {Metadata, ResolvingMetadata} from 'next';
 
 type Props = {
   params: { pageId: string };
@@ -11,16 +11,16 @@ type Props = {
 
 // https://nextjs.org/docs/app/building-your-application/optimizing/metadata
 export async function generateMetadata(
-  { params, searchParams }: Props,
+  {params, searchParams}: Props,
   parent?: ResolvingMetadata,
 ): Promise<Metadata> {
   // read route params
-  const posts = await Notion.getPostsInfoFromDatabase('Done');
+  const posts = await Notion.getPostsFromDatabase('Done');
   const postInfo = posts.find((p) => p.pageId === params.pageId);
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
 
-  return {
+  const metaData: Metadata = {
     title: postInfo.title,
     description: postInfo.description,
     openGraph: {
@@ -29,14 +29,14 @@ export async function generateMetadata(
       images: [postInfo.coverImageUrl, ...previousImages],
       tags: [...postInfo.tags],
     },
-  };
+  }
+  return metaData;
 }
 
 export async function generateStaticParams() {
-  const postsInfo = await Notion.getPostsInfoFromDatabase('Done');
-
-  return postsInfo.map((post) => ({
-    pageId: post.pageId,
+  const pageIdList = await Notion.getPageIdListFromDatabase('Done');
+  return pageIdList.map((_pageId) => ({
+    pageId: _pageId,
   }));
 }
 
@@ -46,31 +46,16 @@ interface StaticParams {
   };
 }
 
-export default async function Page({ params }: StaticParams) {
-  const posts = await Notion.getPostsInfoFromDatabase('Done');
-  const postInfo = posts.find((p) => p.pageId === params.pageId);
-  const mdString = await Notion.getMarkDownString(params.pageId);
+export default async function Page({params}: StaticParams) {
+  const posts = await Notion.getPostsFromDatabase('Done');
+  const currentPost = posts.find((p) => p.pageId === params.pageId);
 
-  // ---------------------  Without MDX  ------------------------------
-  // const HtmlString = await Notion.parseMarkdownToHTML(mdString); // Raw String
-  // function createMarkup() {
-  //   return { __html: HtmlString };
-  // }
-  // // Tailwind Official Plugin (Prose)
-  // return (
-  //   <div className=" container prose prose-neutral mx-auto p-5">
-  //     <ArticleHeader postInfo={postInfo} />
-  //     <article dangerouslySetInnerHTML={createMarkup()} />
-  //   </div>
-  // );
-  // -----------------------------------------------------------------
-
-  const mdx = await serializeMdx(mdString);
+  const processed_mdx = await processMdx(currentPost.markdown);
   return (
-    <div className=" container prose prose-neutral mx-auto p-5">
-      <ArticleHeader postInfo={postInfo} />
+    <div className=" container prose prose-neutral mx-auto p-5 ">
+      <ArticleHeader post={currentPost}/>
       <article>
-        <ArticleMain_MDX source={mdx} />
+        <ArticleMain_MDX source={processed_mdx.serializedMdx}/>
       </article>
     </div>
   );

@@ -1,17 +1,17 @@
 import Notion from '@/app/api/notionAPI';
 import ArticleCard from '@/app/(client-components)/client-ArticleCard';
-import { IPost } from './api/type';
+import {IPost} from './api/type';
 
 interface ArticleListProps {
   posts: IPost[];
   className?: string;
 }
 
-function ArticleList({ posts, className }: ArticleListProps) {
+function ArticleList({posts, className}: ArticleListProps) {
   const renderList = () => {
     return posts.map((post, i) => (
       <div className="mb-4" key={i}>
-        <ArticleCard post={post} />
+        <ArticleCard post={post}/>
       </div>
     ));
   };
@@ -20,7 +20,7 @@ function ArticleList({ posts, className }: ArticleListProps) {
 }
 
 export default async function Page() {
-  const posts = await Notion.getPostsInfoFromDatabase('Done');
+  const posts = await Notion.getPostsFromDatabase('Done');
 
-  return <ArticleList posts={posts} className=" flex flex-col" />;
+  return <ArticleList posts={posts} className=" flex flex-col"/>;
 }

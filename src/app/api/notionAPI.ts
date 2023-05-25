@@ -1,39 +1,40 @@
-import { Assert } from '@/utils/assert';
+import {Assert} from '@/utils/assert';
 /**
  * @description [ Notion API doc ]
  * @link https://developers.notion.com/reference/post-database-query */
-import { Client } from '@notionhq/client';
+import {Client} from '@notionhq/client';
 /**
  * @description [ Notion to Markdown ]
  * @link https://github.com/souvikinator/notion-to-md */
-import { NotionToMarkdown } from 'notion-to-md';
+import {NotionToMarkdown} from 'notion-to-md';
 
 /**
  * @description [ Types for notion API ]
  * @link https://www.alanjohn.dev/blog/Building-a-Developer-Portfolio-Creating-a-NextJS-blog-in-typescript-using-Notion-API */
-import { DatabaseItem, IPost } from './type';
-import type { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
+import {DatabaseItem, IPost} from './type';
+import type {QueryDatabaseResponse} from '@notionhq/client/build/src/api-endpoints';
 
 /**
  * @description [ Converting mardown object to HTML ]
  * @link https://blog.hwahae.co.kr/all/tech/10960
  */
-import { unified } from 'unified';
+import {unified} from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
-import { reporter } from 'vfile-reporter';
-import { read } from 'to-vfile';
+import {reporter} from 'vfile-reporter';
+import {read} from 'to-vfile';
 import remarkPrism from 'remark-prism';
 // https://unifiedjs.com/explore/package/rehype-prism-plus/
 // https://github.com/mapbox/rehype-prism
 import rehypePrism from '@mapbox/rehype-prism';
 import remarkHtml from 'remark-html';
 import rehypeSanitize from 'rehype-sanitize';
-import { MdBlock } from 'notion-to-md/build/types';
-import { NotionAPI } from 'notion-client';
+import {MdBlock} from 'notion-to-md/build/types';
+import {NotionAPI} from 'notion-client';
+import readingTime from "reading-time";
 
 class NotionUnofficialClient {
   private _notion_unofficial = new NotionAPI({
@@ -41,7 +42,8 @@ class NotionUnofficialClient {
     authToken: process.env.NOTION_TOKEN_V2,
   });
 
-  constructor() {}
+  constructor() {
+  }
 
   public async getPage(page_id: string) {
     return await this._notion_unofficial.getPage(page_id);
@@ -75,10 +77,10 @@ class NotionAPI_Factory {
     return query.results.map((v) => this._removeDash(v.id));
   }
 
-  public async getPostsInfoFromDatabase(status?: string) {
+  public async getPostsFromDatabase(status?: string) {
     const query = await this._queryDatabaseByStatus(status);
-    const postsInfo = await this._extractPostsInfo(query);
-    return postsInfo;
+    const posts = await this._extractPostsFromDBQuery(query);
+    return posts;
   }
 
   // https://github.com/souvikinator/notion-to-md
@@ -93,6 +95,8 @@ class NotionAPI_Factory {
   // https://github.com/unifiedjs/unified (AST)
   // https://nextjs.org/docs/app/building-your-application/configuring/mdx#getting-started  --> 여기가 끝판왕!
   // https://css-tricks.com/syntax-highlighting-prism-on-a-next-js-site/
+  /**
+   * @deprecated */
   public async parseMarkdownToHTML(markdownData: any) {
     const file = await unified()
       .use(remarkParse) // Convert into markdown AST
@@ -119,14 +123,14 @@ class NotionAPI_Factory {
     if (status) {
       filterArgs = {
         property: 'Status',
-        status: { equals: `${status}` }, // filter only edit done article.
+        status: {equals: `${status}`}, // filter only edit done article.
       };
     }
     Assert.NonNullish(process.env.NOTION_DATABASE_ID);
     const query = await this._notion.databases.query({
       database_id: process.env.NOTION_DATABASE_ID,
       filter: filterArgs,
-      sorts: [{ property: 'Date', direction: 'descending' }],
+      sorts: [{property: 'Date', direction: 'descending'}],
       page_size: 10, // for pagination, max content size.
       // https://developers.notion.com/reference/intro#pagination
     });
@@ -154,38 +158,61 @@ class NotionAPI_Factory {
 
   // 2023-05-12 --> Jan 12
   private _changeDateFormat(str: string) {
-    const date = new Date(str);
-    const m = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(
-      date,
-    );
-    const m2 = m.substring(m.indexOf(',') + 2, m.lastIndexOf(','));
-    return m2;
+    // 만약 몇일 내라면 '몇일 전' 이라고 표기.
+    // 만약 1달 이상이면 날짜를 표기.
+    const dateDiffInDays = (prev: Date, curr: Date) => {
+      const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+      // Discard the time and time-zone information.
+      const utc_prev = Date.UTC(prev.getFullYear(), prev.getMonth(), prev.getDate());
+      const utc_curr = Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate());
+      return Math.floor((utc_curr - utc_prev) / _MS_PER_DAY);
+    }
+
+    const publish_date = new Date(str);
+    const today = new Date();
+    const dateDiff = dateDiffInDays(publish_date, today);
+
+    let dateFormatResult: string;
+    if (dateDiff === 0) {
+      dateFormatResult = 'today';
+    } else if (dateDiff < 7) {
+      dateFormatResult = `${dateDiff} days ago`;
+    } else if (dateDiff < 30) {
+      dateFormatResult = `${Math.floor(dateDiff / 7)} weeks ago`;
+    } else { // if more than a month, show [ month | date ]
+      const raw_date = new Intl.DateTimeFormat('en-US', {dateStyle: 'full'}).format(publish_date);
+      dateFormatResult = raw_date.substring(raw_date.indexOf(',') + 2, raw_date.lastIndexOf(','));
+    }
+    return (dateFormatResult);
   }
 
-  private async _extractPostsInfo(response: QueryDatabaseResponse) {
+  private async _extractPostsFromDBQuery(response: QueryDatabaseResponse) {
     const databaseItems: DatabaseItem[] = response.results.map(
       (databaseItem) => databaseItem as DatabaseItem,
     );
     const posts: IPost[] = await Promise.all(
       databaseItems.map(async (postInDB: DatabaseItem) => {
-        const pageId = this._removeDash(postInDB.id);
-        const last_edited_date = this._extractDate(postInDB.last_edited_time);
-        const title =
+        const _pageId = this._removeDash(postInDB.id);
+        const _last_edited_date = this._extractDate(postInDB.last_edited_time);
+        const _title =
           postInDB.properties.Name.title[0]?.plain_text ?? `no-title`;
-        const description =
+        const _description =
           postInDB.properties.Description.rich_text[0]?.plain_text ??
           'No Description';
-        const tags = postInDB.properties.Tags.multi_select.map((v) => v.name); // extract tag name
-        const coverImageUrl = this.getImageUrlFromCoverObject(postInDB.cover);
-        const publishdate = postInDB.properties.Date.date?.start;
+        const _tags = postInDB.properties.Tags.multi_select.map((v) => v.name); // extract tag name
+        const _coverImageUrl = this.getImageUrlFromCoverObject(postInDB.cover);
+        const _publishdate = postInDB.properties.Date.date?.start;
+        const _markdown = await this.getMarkDownString(_pageId);
 
         const post: IPost = {
-          pageId: pageId,
-          title: title,
-          description: description,
-          coverImageUrl: coverImageUrl,
-          tags: tags,
-          publishDate: this._changeDateFormat(publishdate ?? last_edited_date), // if publishDate is not set, than set to default, which is "last edited time"
+          pageId: _pageId,
+          title: _title,
+          description: _description,
+          coverImageUrl: _coverImageUrl,
+          tags: _tags,
+          publishDate: this._changeDateFormat(_publishdate ?? _last_edited_date), // if publishDate is not set, than set to default, which is "last edited time"
+          markdown: _markdown,
+          readingTime: readingTime(_markdown).text,
         };
         return post;
       }),
