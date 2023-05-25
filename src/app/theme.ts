@@ -6,8 +6,6 @@ import { createTheme } from '@mui/material/styles';
 export const BlogTheme = createTheme({
   typography: {
     fontFamily: ['Noto Sans KR', 'sans-serif'].join(','),
-    // fontFamily: ['Nanum Myeongjo', 'serif'].join(','),
-    // fontFamily: ['Nanum Pen Script', 'cursive'].join(','),
   },
   palette: {
     mode: 'light',

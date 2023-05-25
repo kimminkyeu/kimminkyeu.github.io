@@ -151,3 +151,5 @@ leverage stale-while-revalidate by setting the cache-control header manually.
    <!-- 3. medium 처럼 home을 없애고, 메뉴 선택도 밑으로 빼자. -->
 2. mui를 header로 사용하기
 3. 설명글이 없으면 본문에서 뽑아오기.
+
+## ! 주의! mui에 직접 classname을 주지 말고 div를 넣어서 tailwind와 분리해라!

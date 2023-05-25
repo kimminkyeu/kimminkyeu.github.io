@@ -38,7 +38,7 @@ interface SearchBarProps {
 export default function SearchBarSmall(props: SearchBarProps) {
   return (
     <div className={props.className}>
-      <IconButton aria-label="delete">
+      <IconButton aria-label="search">
         <SearchIcon />
       </IconButton>
     </div>

@@ -63,19 +63,19 @@ class NotionAPI_Factory {
   }
 
   public async getPage(target_page_id: string) {
-    const response = await this._notion.pages.retrieve({ page_id: target_page_id });
+    const response = await this._notion.pages.retrieve({
+      page_id: target_page_id,
+    });
     return response;
   }
 
   // db 하위 페이지들의 id 리스트만 얻고 싶을 때
   public async getPageIdListFromDatabase(status?: string) {
-    console.log('[DEV] getPageIdListFromDatabase()');
     const query = await this._queryDatabaseByStatus(status);
     return query.results.map((v) => this._removeDash(v.id));
   }
 
   public async getPostsInfoFromDatabase(status?: string) {
-    console.log('[DEV] getPostsFromDatabase()');
     const query = await this._queryDatabaseByStatus(status);
     const postsInfo = await this._extractPostsInfo(query);
     return postsInfo;
@@ -83,7 +83,6 @@ class NotionAPI_Factory {
 
   // https://github.com/souvikinator/notion-to-md
   public async getMarkDownString(target_page_id: string) {
-    console.log('[DEV] getMarkDownString()');
     const mdBlocksBefore = await this._n2m.pageToMarkdown(target_page_id);
     const mdBlocksAfter = this.__fixCodeType_CPP(mdBlocksBefore);
     const mdString = this._n2m.toMarkdownString(mdBlocksAfter);
@@ -95,7 +94,6 @@ class NotionAPI_Factory {
   // https://nextjs.org/docs/app/building-your-application/configuring/mdx#getting-started  --> 여기가 끝판왕!
   // https://css-tricks.com/syntax-highlighting-prism-on-a-next-js-site/
   public async parseMarkdownToHTML(markdownData: any) {
-    console.log('[DEV] parseMarkdownToHTML()');
     const file = await unified()
       .use(remarkParse) // Convert into markdown AST
       .use(remarkGfm) // Github flavored markdown
@@ -117,7 +115,6 @@ class NotionAPI_Factory {
    * @returns database object
    */
   private async _queryDatabaseByStatus(status?: string) {
-    console.log('[DEV] queryDatabaseByStatus()');
     let filterArgs;
     if (status) {
       filterArgs = {
@@ -158,7 +155,9 @@ class NotionAPI_Factory {
   // 2023-05-12 --> Jan 12
   private _changeDateFormat(str: string) {
     const date = new Date(str);
-    const m = new Intl.DateTimeFormat('en-US',  {dateStyle: 'full'}).format(date);
+    const m = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(
+      date,
+    );
     const m2 = m.substring(m.indexOf(',') + 2, m.lastIndexOf(','));
     return m2;
   }
@@ -208,7 +207,6 @@ class NotionAPI_Factory {
 
   // need to change c++ to cpp for markdown...
   private __fixCodeType_CPP(mdBlocks: MdBlock[]) {
-    console.log('[DEV] __fixCodeType_CPP()');
     mdBlocks.forEach((v) => {
       if (v.type === 'code' && v.parent.lastIndexOf('c++', 5) != -1) {
         // if c++ exist

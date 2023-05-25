@@ -4,7 +4,6 @@ import Navbar from 'src/app/(client-components)/client-Navbar';
 import { Config } from 'src/config/config';
 import Footer from './footer';
 import Header from './header';
-import Head from 'next/head';
 
 const inter = Inter({ subsets: ['latin'] });
 
