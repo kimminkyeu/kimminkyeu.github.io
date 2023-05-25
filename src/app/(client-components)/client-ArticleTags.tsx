@@ -4,10 +4,9 @@ import { Typography } from '@mui/material';
 import { Stack } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import { IPost } from '../api/type';
-import IosShareIcon from '@mui/icons-material/IosShare';
 import { IconButton } from '@mui/material';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import { grey } from '@mui/material/colors';
+import { Tooltip } from '@mui/material';
 
 interface ArticleTagsProps {
   className?: string;
@@ -42,9 +41,11 @@ export default function ArticleTages({
         </Typography>
         {renderTags(postInfo.tags)}
       </Stack>
-      <IconButton aria-label="share" size="small">
-        <BookmarkBorderIcon />
-      </IconButton>
+      <Tooltip title="Share post" placement="right-start">
+        <IconButton aria-label="share" size="small">
+          <BookmarkBorderIcon />
+        </IconButton>
+      </Tooltip>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import Notion from '@/app/api/notionAPI';
 import ArticleHeader from './(client-component)/client-ArticleHeader';
-import { IPost } from '@/app/api/type';
+import ArticleMain_MDX from './(client-component)/client-ArticleMain';
 
 export async function generateStaticParams() {
   const postsInfo = await Notion.getPostsInfoFromDatabase('Done');
@@ -20,15 +20,28 @@ export default async function Page({ params }: StaticParams) {
   const posts = await Notion.getPostsInfoFromDatabase('Done');
   const postInfo = posts.find((p) => p.pageId === params.pageId);
   const mdString = await Notion.getMarkDownString(params.pageId);
-  const HtmlString = await Notion.parseMarkdownToHTML(mdString); // Raw String
-  function createMarkup() {
-    return { __html: HtmlString };
-  }
-  // Tailwind Official Plugin (Prose)
+
+  // ---------------------  Without MDX  ------------------------------
+  // const HtmlString = await Notion.parseMarkdownToHTML(mdString); // Raw String
+  // function createMarkup() {
+  //   return { __html: HtmlString };
+  // }
+  // // Tailwind Official Plugin (Prose)
+  // return (
+  //   <div className=" container prose prose-neutral mx-auto p-5">
+  //     <ArticleHeader postInfo={postInfo} />
+  //     <article dangerouslySetInnerHTML={createMarkup()} />
+  //   </div>
+  // );
+  // -----------------------------------------------------------------
+
+  const mdx = await Notion.serializeMdx(mdString);
   return (
     <div className=" container prose prose-neutral mx-auto p-5">
       <ArticleHeader postInfo={postInfo} />
-      <article dangerouslySetInnerHTML={createMarkup()} />
+      <article>
+        <ArticleMain_MDX source={mdx} />
+      </article>
     </div>
   );
 }

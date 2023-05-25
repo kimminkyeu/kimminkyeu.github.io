@@ -153,3 +153,6 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 3. 설명글이 없으면 본문에서 뽑아오기.
 
 ## ! 주의! mui에 직접 classname을 주지 말고 div를 넣어서 tailwind와 분리해라!
+
+4. https://bepyan.github.io/blog/nextjs-blog/3-mdx-plugin --> 코드 하이라이팅
+5. 안쓰는 패키지 싹다 지우기.

@@ -34,6 +34,7 @@ import remarkHtml from 'remark-html';
 import rehypeSanitize from 'rehype-sanitize';
 import { MdBlock } from 'notion-to-md/build/types';
 import { NotionAPI } from 'notion-client';
+import { serialize } from 'next-mdx-remote/serialize';
 
 class NotionUnofficialClient {
   private _notion_unofficial = new NotionAPI({
@@ -61,6 +62,21 @@ class NotionAPI_Factory {
     // this._notion = new Client({ auth: process.env.NOTION_TOKEN });
     // this._n2m = new NotionToMarkdown({ notionClient: this._notion });
   }
+
+  // ------------------------------------------
+  // [ MDX ]
+  // https://bepyan.github.io/blog/nextjs-blog/3-mdx-plugin
+  // https://nextjs.org/docs/pages/building-your-application/configuring/mdx
+  public async serializeMdx(source: string) {
+    return serialize(source, {
+      mdxOptions: {
+        remarkPlugins: [],
+        rehypePlugins: [],
+        format: 'mdx',
+      },
+    });
+  }
+  // -------------------------------------------
 
   public async getPage(target_page_id: string) {
     const response = await this._notion.pages.retrieve({

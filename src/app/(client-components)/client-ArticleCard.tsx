@@ -24,13 +24,13 @@ export default function ArticleCard({ post }: ArticleCardProps) {
         sx={{
           borderBottom: 1,
           borderBottomColor: grey[300],
-          paddingBottom: 2.5,
-          paddingTop: 1,
+          paddingBottom: 3.7,
+          paddingTop: 0.7,
         }}
       >
         <Link href={`/${post.pageId}`}>
           <Card
-            className=" max-h-[60px] sm:max-h-[100px] md:max-h-[110px]"
+            className=" max-h-[60px] sm:max-h-[100px] md:max-h-[100px]"
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -49,13 +49,15 @@ export default function ArticleCard({ post }: ArticleCardProps) {
                 paddingLeft: 0,
               }}
             >
-              <h5 className=" mb-1 line-clamp-2 overflow-hidden text-ellipsis text-base font-semibold leading-6 sm:text-lg sm:leading-6 md:text-xl ">
-                {post.title}
-              </h5>
-              <div className=" hidden sm:visible sm:block">
-                <p className=" line-clamp-2 overflow-hidden text-ellipsis text-sm font-light text-neutral-400">
-                  {post.description}
-                </p>
+              <div className=" line-clamp-2 overflow-hidden text-ellipsis sm:line-clamp-4">
+                <h5 className=" mb-1 text-base font-semibold leading-6 sm:text-lg sm:leading-6 md:text-xl ">
+                  {post.title}
+                </h5>
+                <div className=" hidden sm:visible sm:block">
+                  <p className=" text-sm font-light text-neutral-400">
+                    {post.description}
+                  </p>
+                </div>
               </div>
             </CardContent>
             {post.coverImageUrl && (
