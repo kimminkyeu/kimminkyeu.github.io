@@ -154,5 +154,14 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 ## ! 주의! mui에 직접 classname을 주지 말고 div를 넣어서 tailwind와 분리해라!
 
-4. https://bepyan.github.io/blog/nextjs-blog/3-mdx-plugin --> 코드 하이라이팅
-5. 안쓰는 패키지 싹다 지우기.
+4. MDX 코드 하이라이팅 기능 추가
+
+   - https://bepyan.github.io/blog/nextjs-blog/3-mdx-plugin --> 여기는 개꿀 remark 플러그인을 모두 알려줌. 심지어 목차까지!!!
+
+   - https://mraddict.one/blog/implement-markdown --> 일단 여기 보자!
+
+5. MetaData 최적화를 통해 SEO 향상시키기
+   - https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+   - https://leerob.io/blog/mdx
+6. 안쓰는 패키지 싹다 지우기.
+7. metaData가 실제로 잘 설정되는지 html보면서 직접 체크!

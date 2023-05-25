@@ -21,7 +21,7 @@ export default function ArticleHeader({
         {postInfo.description}
       </h5>
       <ArticleTages postInfo={postInfo} />
-      <div className=" my-5 mt-3 border-b" />
+      <div className=" mb-5 mt-5 border-b" />
     </div>
   );
 }

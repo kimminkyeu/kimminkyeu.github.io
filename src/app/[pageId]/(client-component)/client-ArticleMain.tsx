@@ -7,5 +7,9 @@ interface ArticleMainProps {
 }
 
 export default function ArticleMain_MDX({ source }: ArticleMainProps) {
-  return <MDXRemote {...source} />;
+  return (
+    <div className="prose">
+      <MDXRemote {...source} />
+    </div>
+  );
 }
