@@ -24,10 +24,12 @@ export default function ArticleCard({ post }: ArticleCardProps) {
         sx={{
           borderBottom: 1,
           borderBottomColor: grey[300],
-          paddingBottom: 3.7,
           paddingTop: 0.7,
         }}
       >
+        <p className=" text-sm font-light text-neutral-500">
+          {post.publishDate}
+        </p>
         <Link href={`/${post.pageId}`}>
           <Card
             className=" max-h-[60px] sm:max-h-[100px] md:max-h-[100px]"
@@ -36,7 +38,7 @@ export default function ArticleCard({ post }: ArticleCardProps) {
               justifyContent: 'space-between',
               boxShadow: 0, // turn of shadow
               borderRadius: 0,
-              marginBottom: 2,
+              marginTop: 1.5,
             }}
           >
             <CardContent
@@ -44,26 +46,26 @@ export default function ArticleCard({ post }: ArticleCardProps) {
                 flex: 1,
                 flexDirection: 'column',
                 paddingTop: 0,
-                paddingRight: 8,
+                paddingRight: 0,
                 paddingBottom: 1,
                 paddingLeft: 0,
               }}
             >
               <div className=" line-clamp-2 overflow-hidden text-ellipsis sm:line-clamp-4">
-                <h5 className=" mb-1 text-base font-semibold leading-6 sm:text-lg sm:leading-6 md:text-xl ">
+                <h5 className=" mb-1 text-base font-semibold leading-6 sm:text-lg sm:leading-6 md:text-xl md:font-bold ">
                   {post.title}
                 </h5>
                 <div className=" hidden sm:visible sm:block">
-                  <p className=" text-sm font-light text-neutral-400">
+                  <p className=" text-sm font-light text-neutral-500 md:font-normal">
                     {post.description}
                   </p>
                 </div>
               </div>
             </CardContent>
             {post.coverImageUrl && (
-              <div className=" w-24 sm:w-32 md:w-36">
+              <div className=" ml-6 flex w-20 sm:ml-11 sm:w-28">
                 <CardMedia
-                  width={24}
+                  loading={'lazy'}
                   component="img"
                   image={post.coverImageUrl}
                   alt={'preview image'}
@@ -72,7 +74,9 @@ export default function ArticleCard({ post }: ArticleCardProps) {
             )}
           </Card>
         </Link>
-        <ArticleTages post={post} />
+        <div className="mb-3 mt-4 md:mt-6">
+          <ArticleTages post={post} />
+        </div>
       </Box>
     </ThemeProvider>
   );

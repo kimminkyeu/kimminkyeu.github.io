@@ -37,14 +37,7 @@ export default function ArticleTags({ className, post }: ArticleTagsProps) {
     <div className={` ${className} flex justify-between`}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
         {renderTags(post.tags)}
-        <p className="text-sm font-medium text-neutral-400">
-          {' '}
-          · {post.readingTime}
-        </p>
-        <p className="text-sm font-medium text-neutral-400">
-          {' '}
-          · {post.publishDate}
-        </p>
+        <p className=" text-xs text-neutral-500">{post.readingTime}</p>
       </Stack>
       <Tooltip title="Share post" placement="right-start">
         <IconButton aria-label="share" size="small">
