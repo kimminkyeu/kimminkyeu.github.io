@@ -22,5 +22,5 @@ function ArticleList({posts, className}: ArticleListProps) {
 export default async function Page() {
   const posts = await Notion.getPostsFromDatabase('Done');
 
-  return <ArticleList posts={posts} className=" flex flex-col"/>;
+  return <ArticleList posts={posts} className="mt-5 flex flex-col"/>;
 }

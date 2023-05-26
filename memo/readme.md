@@ -4,7 +4,8 @@
 
 (2) 개별 article은 next-notion-x 렌더러 사용하기.
 
-(3) 문제점: next-notion-x는 fetch 방식이 추상화되어 있기 때문에 페이지 전반에 대한 Control이 불가능하다. --> 230514: 아니다 된다. export const revalidate 변수로 컨트롤 가능하다.
+(3) 문제점: next-notion-x는 fetch 방식이 추상화되어 있기 때문에 페이지 전반에 대한 Control이 불가능하다. --> 230514: 아니다 된다. export const revalidate
+변수로 컨트롤 가능하다.
 
 (4) 노션에는 API콜로 MD를 획득하는 공식 레퍼런스가 없다. (즉 구현이 바뀔 수 있는 불안정한 기능)
 만약 API콜로 얻은 Block 데이터를 MD로 변환만 가능하다면, 그 이후 확장성은 보장된다. 왜냐면 MD -> React Component 변환 Library는 많음.
@@ -27,19 +28,19 @@
   Server Action을 호출해서 데이터를 re-fetch 하도록 시도.
   @@invoke server-action
 
-  - https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions
+    - https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions
 
 - [ 방법 2: Fetch의 Caching과 revalidation을 활용 가능 ]
 
   ***
 
-  - https://velog.io/@dldngus5/nextjs-revalidate
-  - https://vercel.com/docs/concepts/incremental-static-regeneration/overview
-  - https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#revalidate
+    - https://velog.io/@dldngus5/nextjs-revalidate
+    - https://vercel.com/docs/concepts/incremental-static-regeneration/overview
+    - https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#revalidate
 
 - 추가 최적화 (Next13 Parallel Data Fetching. 여러 fetch를 날려야 할 경우.)
   ***
-  - https://nextjs.org/docs/app/building-your-application/data-fetching/fetching
+    - https://nextjs.org/docs/app/building-your-application/data-fetching/fetching
 
 ## @title [ Incremental Static Regeneration (ISR) ]
 
@@ -72,8 +73,9 @@ leverage stale-while-revalidate by setting the cache-control header manually.
    따라서 api호출, dynamic routing 등은 static app으로 변경되는 과정에서 한번만 이뤄진다.
    그래서 next start는 되도 막상 gh-page에 deploy하면 또 api콜이 안됬던 거다. 이건 못고친다.
 
-   - 참고1. https://stackoverflow.com/questions/61724368/what-is-the-difference-between-next-export-and-next-build-in-next-js
-   - 참고2. https://medium.com/geekculture/github-pages-with-dynamic-routes-40f512900efa
+    -
+   참고1. https://stackoverflow.com/questions/61724368/what-is-the-difference-between-next-export-and-next-build-in-next-js
+    - 참고2. https://medium.com/geekculture/github-pages-with-dynamic-routes-40f512900efa
 
 2. 해결책
    a. static app을 그대로 사용 --> github action workflow에 하루에 한번 build 되도록 수정한다. ⭕  
@@ -83,7 +85,7 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 3. 실행 결과
    a. gitbub action에 rebuild schedule workflow를 추가한다.
-   - 참고1. https://danielsaidi.com/blog/2022/05/11/schedule-github-pages-rebuild-with-github-actions
+    - 참고1. https://danielsaidi.com/blog/2022/05/11/schedule-github-pages-rebuild-with-github-actions
 
 ---
 
@@ -93,39 +95,39 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 1. article list
 
-   - medium.com 스타일 리스트
-   - pagination 사용. (한 페이지 max 10)개.
-     - 참고: https://developers.notion.com/reference/intro#pagination
-   - 글 검색 적용
+    - medium.com 스타일 리스트
+    - pagination 사용. (한 페이지 max 10)개.
+        - 참고: https://developers.notion.com/reference/intro#pagination
+    - 글 검색 적용
 
 2. single article
 
-   - next-notion-x 시스템 적용(디자인 최소화)
-     - 참고: https://github.com/NotionX/react-notion-x
-   - 글 목차는 하지 말기 (전체 글 분류 navigator 때문)
-   - 이유1: fetch에서 직접 설정하지 않아도 Build 버전 ISR 적용 방법을 찾았기 때문
-   - 이유2: 마크다운 형식을 보여주는 것도 좋지만, 노션 에디터만의 장점이 많기 때문.(레이아웃 기능 포함)
+    - next-notion-x 시스템 적용(디자인 최소화)
+        - 참고: https://github.com/NotionX/react-notion-x
+    - 글 목차는 하지 말기 (전체 글 분류 navigator 때문)
+    - 이유1: fetch에서 직접 설정하지 않아도 Build 버전 ISR 적용 방법을 찾았기 때문
+    - 이유2: 마크다운 형식을 보여주는 것도 좋지만, 노션 에디터만의 장점이 많기 때문.(레이아웃 기능 포함)
 
 3. Article Navigation Bar (태그 목록 활용)
 
-   - article list, single article 두개를 하나의 page로 두고,
-     글 분류 네비게이터를 옆에 page하나 더 두고 이 둘을 layyout으로 묶을 것.
-     예시 1: https://choar816.tistory.com/205
-     예시 2: https://velog.io/@seo__namu
+    - article list, single article 두개를 하나의 page로 두고,
+      글 분류 네비게이터를 옆에 page하나 더 두고 이 둘을 layyout으로 묶을 것.
+      예시 1: https://choar816.tistory.com/205
+      예시 2: https://velog.io/@seo__namu
 
 4. 블로그 전체 검색창 제공
 
 5. 노션 CMS 기능 확대
-   - 내 소개페이지 (About Me), 프로젝트 페이지도 각각 DB를 만들어서 연결하는게 좋겠다.
-     (컨텐츠 상세 내용은 모두 노션을 활용해보기)
-     예시 1: https://github.com/transitive-bullshit/nextjs-notion-starter-kit
+    - 내 소개페이지 (About Me), 프로젝트 페이지도 각각 DB를 만들어서 연결하는게 좋겠다.
+      (컨텐츠 상세 내용은 모두 노션을 활용해보기)
+      예시 1: https://github.com/transitive-bullshit/nextjs-notion-starter-kit
 
 # 0518
 
 1. react-notion-x, vercel로 변경
 2. 노션 렌더러 애먹은 부분
-   - notionPage는 client component이고, 그 외 부분은 전부 server component이다.
-     따라서 client component 부분을 별로 파일로 빼야 한다.
+    - notionPage는 client component이고, 그 외 부분은 전부 server component이다.
+      따라서 client component 부분을 별로 파일로 빼야 한다.
 3. next13 이미지는 외부 이미지 링크에 대한 프리뷰는 없는데, 이를 가능케 하려면
    https://blog.anishde.dev/amazing-preview-images-with-nextjs-and-lqip-modern
    lqip-modern을 쓰면 됨.
@@ -133,7 +135,7 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 결론: preview image blur, 검색, (ok)tableofContent
 
 4. done! lets do mui + search
-   - https://velog.io/@projaguar/Next.js-13-app-Directory%EC%99%80-MUI
+    - https://velog.io/@projaguar/Next.js-13-app-Directory%EC%99%80-MUI
 
 # 0521 최신화
 
@@ -156,21 +158,25 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 4. MDX 코드 하이라이팅 기능 추가 ✅
 
-   - https://bepyan.github.io/blog/nextjs-blog/3-mdx-plugin --> 여기는 개꿀 remark 플러그인을 모두 알려줌. 심지어 목차까지!!!
+    - https://bepyan.github.io/blog/nextjs-blog/3-mdx-plugin --> 여기는 개꿀 remark 플러그인을 모두 알려줌. 심지어 목차까지!!!
 
-   - https://mraddict.one/blog/implement-markdown --> 일단 여기 보자!
+    - https://mraddict.one/blog/implement-markdown --> 일단 여기 보자!
 
 5. MetaData 최적화를 통해 SEO 향상시키기 ✅
-   - https://nextjs.org/docs/app/building-your-application/optimizing/metadata
-   - https://leerob.io/blog/mdx
+    - https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+    - https://leerob.io/blog/mdx
 6. 안쓰는 패키지 싹다 지우기.
 7. metaData가 실제로 잘 설정되는지 html보면서 직접 체크! ✅
 
 ## 0536 TDL (밀린 것 포함)
 
 0. notion api에서 fetch call 하는 함수는 따로 class 빼기.
+1. 따라다니는 헤더 바 넣기.
 1. 태그에 색상 집어넣기
 2. 설명글이 없으면 본문에서 뽑아오기. ✅
 3. 안쓰는 패키지 싹다 지우기.
 4. 검색 기능 (mobile first)
 5. 태그뷰 기능 (mobile first)
+6. 목차 기능 (중요!)
+
+- https://thisyujeong.dev/blog/toc-generator#%EB%82%B4-%EB%B8%94%EB%A1%9C%EA%B7%B8%EC%97%90-toctable-of-contents-%EB%AA%A9%EC%B0%A8%EB%A5%BC-%EC%B6%94%EA%B0%80%ED%95%98%EC%9E%90

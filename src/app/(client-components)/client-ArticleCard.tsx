@@ -5,34 +5,35 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Stack } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import {Stack} from '@mui/material';
+import {grey} from '@mui/material/colors';
 import Link from 'next/link';
-import { IPost } from '@/app/api/type';
-import { ThemeProvider } from '@mui/material/styles';
-import { BlogTheme } from '@/app/theme';
+import {IPost} from '@/app/api/type';
+import {ThemeProvider} from '@mui/material/styles';
+import {BlogTheme} from '@/app/theme';
 import ArticleTages from './client-ArticleTags';
 
 interface ArticleCardProps {
   post: IPost;
 }
 
-export default function ArticleCard({ post }: ArticleCardProps) {
+export default function ArticleCard({post}: ArticleCardProps) {
   return (
     <ThemeProvider theme={BlogTheme}>
       <Box
         sx={{
+          backgroundColor: 'white',
           borderBottom: 1,
           borderBottomColor: grey[300],
           paddingTop: 0.7,
         }}
       >
-        <p className=" text-sm font-light text-neutral-500">
+        <p className=" text-sm text-neutral-500">
           {post.publishDate}
         </p>
         <Link href={`/${post.pageId}`}>
           <Card
-            className=" max-h-[60px] sm:max-h-[100px] md:max-h-[100px]"
+            className="max-h-[60px] sm:max-h-[100px] md:max-h-[100px]"
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -52,11 +53,12 @@ export default function ArticleCard({ post }: ArticleCardProps) {
               }}
             >
               <div className=" line-clamp-2 overflow-hidden text-ellipsis sm:line-clamp-4">
-                <h5 className=" mb-1 text-base font-semibold leading-6 sm:text-lg sm:leading-6 md:text-xl md:font-bold ">
+                <h5
+                  className=" mb-1 text-base font-semibold leading-6 sm:text-lg sm:leading-6 md:text-xl md:font-bold ">
                   {post.title}
                 </h5>
                 <div className=" hidden sm:visible sm:block">
-                  <p className=" text-sm font-light text-neutral-500 md:font-normal">
+                  <p className=" text-sm font-light text-neutral-500 md:text-[15px]">
                     {post.description}
                   </p>
                 </div>
@@ -75,7 +77,7 @@ export default function ArticleCard({ post }: ArticleCardProps) {
           </Card>
         </Link>
         <div className="mb-3 mt-4 md:mt-6">
-          <ArticleTages post={post} />
+          <ArticleTages post={post}/>
         </div>
       </Box>
     </ThemeProvider>
