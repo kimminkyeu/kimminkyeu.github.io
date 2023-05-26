@@ -1,4 +1,4 @@
-import {QueryDatabaseResponse} from '@notionhq/client/build/src/api-endpoints';
+import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
 
 export type PostResult = Extract<
   QueryDatabaseResponse['results'][number],
@@ -18,14 +18,31 @@ type ExtractedPropertyValue<TType extends PropertyValueType> = Extract<
 export type PropertyValueTitle = ExtractedPropertyValue<'title'>;
 export type PropertyValueRichText = ExtractedPropertyValue<'rich_text'>;
 export type PropertyValueMultiSelect = ExtractedPropertyValue<'multi_select'>;
+export type PropertyValueSelect = ExtractedPropertyValue<'select'>;
 export type PropertyValueUrl = ExtractedPropertyValue<'url'>;
 export type PropertyValueDate = ExtractedPropertyValue<'date'>;
 export type PropertyValueEditedTime =
   ExtractedPropertyValue<'last_edited_time'>;
 
+export type SelectColor =
+  | 'default'
+  | 'gray'
+  | 'brown'
+  | 'orange'
+  | 'yellow'
+  | 'green'
+  | 'blue'
+  | 'purple'
+  | 'pink'
+  | 'red';
+export type PropertyTag = {
+  name: string;
+  color: SelectColor;
+};
+
 export interface IPost {
   pageId: string;
-  tags: string[];
+  tags: PropertyTag[];
   publishDate: string;
   title: string;
   description: string;
@@ -37,7 +54,7 @@ export interface IPost {
 export type DatabaseItem = PostResult & {
   properties: {
     Name: PropertyValueTitle;
-    Tags: PropertyValueMultiSelect;
+    Tags: PropertyValueMultiSelect | PropertyValueSelect;
     Description: PropertyValueRichText;
     Link: PropertyValueUrl;
     Date: PropertyValueDate;

@@ -1,8 +1,8 @@
 import Notion from '@/app/api/notionAPI';
-import {processMdx} from '../api/mdxAPI';
+import { processMdx } from '../api/mdxAPI';
 import ArticleHeader from './(client-component)/client-ArticleHeader';
 import ArticleMain_MDX from './(client-component)/client-ArticleMain';
-import {Metadata, ResolvingMetadata} from 'next';
+import { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
   params: { pageId: string };
@@ -11,7 +11,7 @@ type Props = {
 
 // https://nextjs.org/docs/app/building-your-application/optimizing/metadata
 export async function generateMetadata(
-  {params, searchParams}: Props,
+  { params, searchParams }: Props,
   parent?: ResolvingMetadata,
 ): Promise<Metadata> {
   // read route params
@@ -19,6 +19,7 @@ export async function generateMetadata(
   const postInfo = posts.find((p) => p.pageId === params.pageId);
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
+  const tagsOnlyString = postInfo.tags.map((tag) => tag.name);
 
   const metaData: Metadata = {
     title: postInfo.title,
@@ -27,9 +28,9 @@ export async function generateMetadata(
       title: postInfo.title,
       description: postInfo.description,
       images: [postInfo.coverImageUrl, ...previousImages],
-      tags: [...postInfo.tags],
+      tags: tagsOnlyString,
     },
-  }
+  };
   return metaData;
 }
 
@@ -46,16 +47,16 @@ interface StaticParams {
   };
 }
 
-export default async function Page({params}: StaticParams) {
+export default async function Page({ params }: StaticParams) {
   const posts = await Notion.getPostsFromDatabase('Done');
   const currentPost = posts.find((p) => p.pageId === params.pageId);
 
   const processed_mdx = await processMdx(currentPost.markdown);
   return (
     <div className=" container prose prose-neutral mx-auto p-5 ">
-      <ArticleHeader post={currentPost}/>
+      <ArticleHeader post={currentPost} />
       <article>
-        <ArticleMain_MDX source={processed_mdx.serializedMdx}/>
+        <ArticleMain_MDX source={processed_mdx.serializedMdx} />
       </article>
     </div>
   );

@@ -1,4 +1,4 @@
-import {IPost} from '@/app/api/type';
+import { IPost } from '@/app/api/type';
 import ArticleTags from '@/app/(client-components)/client-ArticleTags';
 
 interface ArticleHeaderProps {
@@ -6,10 +6,7 @@ interface ArticleHeaderProps {
   post: IPost;
 }
 
-export default function ArticleHeader({
-                                        className,
-                                        post,
-                                      }: ArticleHeaderProps) {
+export default function ArticleHeader({ className, post }: ArticleHeaderProps) {
   return (
     <div className={`${className} mt-5`}>
       <div>
@@ -17,12 +14,12 @@ export default function ArticleHeader({
           {post.title}
         </h1>
       </div>
-      <h5 className=" mb-5 mt-0 font-normal leading-normal text-neutral-400">
+      <h5 className=" mb-5 mt-0 font-normal leading-normal text-neutral-500">
         {post.description}
       </h5>
-      <div className=" mt-5 mb-1 border-b"/>
-      <ArticleTags post={post}/>
-      <div className=" mb-5 mt-1 border-b"/>
+      <div className=" mb-1 mt-5 border-b" />
+      <ArticleTags post={post} />
+      <div className=" mb-5 mt-1 border-b" />
     </div>
   );
 }

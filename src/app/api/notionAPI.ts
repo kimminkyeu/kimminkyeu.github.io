@@ -1,54 +1,59 @@
-import {Assert} from '@/utils/assert';
+import { Assert } from '@/utils/assert';
 /**
  * @description [ Notion API doc ]
  * @link https://developers.notion.com/reference/post-database-query */
-import {Client} from '@notionhq/client';
+import { Client } from '@notionhq/client';
 /**
  * @description [ Notion to Markdown ]
  * @link https://github.com/souvikinator/notion-to-md */
-import {NotionToMarkdown} from 'notion-to-md';
+import { NotionToMarkdown } from 'notion-to-md';
 
 /**
  * @description [ Types for notion API ]
  * @link https://www.alanjohn.dev/blog/Building-a-Developer-Portfolio-Creating-a-NextJS-blog-in-typescript-using-Notion-API */
-import {DatabaseItem, IPost} from './type';
-import type {QueryDatabaseResponse} from '@notionhq/client/build/src/api-endpoints';
+import {
+  DatabaseItem,
+  IPost,
+  PropertyValueSelect,
+  PropertyValueMultiSelect,
+  PropertyTag,
+} from './type';
+import type { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
 
 /**
  * @description [ Converting mardown object to HTML ]
  * @link https://blog.hwahae.co.kr/all/tech/10960
  */
-import {unified} from 'unified';
+import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
-import {reporter} from 'vfile-reporter';
-import {read} from 'to-vfile';
+import { reporter } from 'vfile-reporter';
+import { read } from 'to-vfile';
 import remarkPrism from 'remark-prism';
 // https://unifiedjs.com/explore/package/rehype-prism-plus/
 // https://github.com/mapbox/rehype-prism
 import rehypePrism from '@mapbox/rehype-prism';
 import remarkHtml from 'remark-html';
 import rehypeSanitize from 'rehype-sanitize';
-import {MdBlock} from 'notion-to-md/build/types';
-import {NotionAPI} from 'notion-client';
-import readingTime from "reading-time";
+import { MdBlock } from 'notion-to-md/build/types';
+import { NotionAPI } from 'notion-client';
+import readingTime from 'reading-time';
 
-class NotionUnofficialClient {
-  private _notion_unofficial = new NotionAPI({
-    activeUser: process.env.NOTION_ACTIVE_USER,
-    authToken: process.env.NOTION_TOKEN_V2,
-  });
+// class NotionUnofficialClient {
+//   private _notion_unofficial = new NotionAPI({
+//     activeUser: process.env.NOTION_ACTIVE_USER,
+//     authToken: process.env.NOTION_TOKEN_V2,
+//   });
 
-  constructor() {
-  }
+//   constructor() {}
 
-  public async getPage(page_id: string) {
-    return await this._notion_unofficial.getPage(page_id);
-  }
-}
+//   public async getPage(page_id: string) {
+//     return await this._notion_unofficial.getPage(page_id);
+//   }
+// }
 
 class NotionAPI_Factory {
   private _notion: Client = new Client({
@@ -57,7 +62,7 @@ class NotionAPI_Factory {
   private _n2m: NotionToMarkdown = new NotionToMarkdown({
     notionClient: this._notion,
   });
-  public notion_unoffical = new NotionUnofficialClient();
+  // public notion_unoffical = new NotionUnofficialClient();
 
   constructor() {
     // this._notion = new Client({ auth: process.env.NOTION_TOKEN });
@@ -123,18 +128,27 @@ class NotionAPI_Factory {
     if (status) {
       filterArgs = {
         property: 'Status',
-        status: {equals: `${status}`}, // filter only edit done article.
+        status: { equals: `${status}` }, // filter only edit done article.
       };
     }
     Assert.NonNullish(process.env.NOTION_DATABASE_ID);
     const query = await this._notion.databases.query({
       database_id: process.env.NOTION_DATABASE_ID,
       filter: filterArgs,
-      sorts: [{property: 'Date', direction: 'descending'}],
-      page_size: 10, // for pagination, max content size.
+      sorts: [{ property: 'Date', direction: 'descending' }],
       // https://developers.notion.com/reference/intro#pagination
+      page_size: 10, // for pagination, max content size.
     });
     return query;
+  }
+
+  private async _retriveBlocks(page_id: string) {
+    const MAX_PARAGRAPH_COUNT = 5;
+    const res = await this._notion.blocks.children.list({
+      block_id: page_id,
+      page_size: MAX_PARAGRAPH_COUNT,
+    });
+    return res;
   }
 
   // private _convertToSlug(str: string) {
@@ -163,10 +177,18 @@ class NotionAPI_Factory {
     const dateDiffInDays = (prev: Date, curr: Date) => {
       const _MS_PER_DAY = 1000 * 60 * 60 * 24;
       // Discard the time and time-zone information.
-      const utc_prev = Date.UTC(prev.getFullYear(), prev.getMonth(), prev.getDate());
-      const utc_curr = Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate());
+      const utc_prev = Date.UTC(
+        prev.getFullYear(),
+        prev.getMonth(),
+        prev.getDate(),
+      );
+      const utc_curr = Date.UTC(
+        curr.getFullYear(),
+        curr.getMonth(),
+        curr.getDate(),
+      );
       return Math.floor((utc_curr - utc_prev) / _MS_PER_DAY);
-    }
+    };
 
     const publish_date = new Date(str);
     const today = new Date();
@@ -176,14 +198,60 @@ class NotionAPI_Factory {
     if (dateDiff === 0) {
       dateFormatResult = 'today';
     } else if (dateDiff < 7) {
-      dateFormatResult = `${dateDiff} days ago`;
+      dateFormatResult =
+        `${dateDiff}` + (dateDiff === 1 ? ' day ago' : ' days ago');
     } else if (dateDiff < 30) {
       dateFormatResult = `${Math.floor(dateDiff / 7)} weeks ago`;
-    } else { // if more than a month, show [ month | date ]
-      const raw_date = new Intl.DateTimeFormat('en-US', {dateStyle: 'full'}).format(publish_date);
-      dateFormatResult = raw_date.substring(raw_date.indexOf(',') + 2, raw_date.lastIndexOf(','));
+    } else {
+      // if more than a month, show [ month | date ]
+      const raw_date = new Intl.DateTimeFormat('en-US', {
+        dateStyle: 'full',
+      }).format(publish_date);
+      dateFormatResult = raw_date.substring(
+        raw_date.indexOf(',') + 2,
+        raw_date.lastIndexOf(','),
+      );
     }
-    return (dateFormatResult);
+    return dateFormatResult;
+  }
+
+  private _extractTags(_tags: PropertyValueMultiSelect | PropertyValueSelect) {
+    if (_tags.type === 'multi_select') {
+      return _tags.multi_select.map<PropertyTag>((tag) => ({
+        name: tag.name,
+        color: tag.color,
+      }));
+    } else if (_tags.type === 'select') {
+      return Array<PropertyTag>({
+        name: _tags.select.name,
+        color: _tags.select.color,
+      });
+    } else {
+      Assert.NonNullish(null, '[DEV] _extractTags(): Unsupported tag type.');
+    }
+  }
+
+  // 만약 설명글이 없다면, 헤딩을 제외한 본문의 markdown 내용을 뽑아와서 설명글로 대체하기.
+  private async _extractDescription(
+    _postInDB: DatabaseItem,
+    _markdown: string,
+    _pageId: string,
+  ) {
+    const description =
+      _postInDB.properties.Description.rich_text[0]?.plain_text;
+    if (!description) {
+      const blocks = await this._retriveBlocks(_pageId);
+      let paragraphs = '';
+      blocks.results.map((block) => {
+        if (block['type'] === 'paragraph') {
+          const text: string =
+            (block['paragraph']?.['rich_text'][0])['text']['content'];
+          paragraphs += text.replaceAll('\n', ' ') + ' ';
+        }
+      });
+      return paragraphs;
+    }
+    return description;
   }
 
   private async _extractPostsFromDBQuery(response: QueryDatabaseResponse) {
@@ -195,14 +263,16 @@ class NotionAPI_Factory {
         const _pageId = this._removeDash(postInDB.id);
         const _last_edited_date = this._extractDate(postInDB.last_edited_time);
         const _title =
-          postInDB.properties.Name.title[0]?.plain_text ?? `no-title`;
-        const _description =
-          postInDB.properties.Description.rich_text[0]?.plain_text ??
-          'No Description';
-        const _tags = postInDB.properties.Tags.multi_select.map((v) => v.name); // extract tag name
+          postInDB.properties.Name.title[0]?.plain_text ?? `No title`;
+        const _tags = this._extractTags(postInDB.properties.Tags);
         const _coverImageUrl = this.getImageUrlFromCoverObject(postInDB.cover);
         const _publishdate = postInDB.properties.Date.date?.start;
         const _markdown = await this.getMarkDownString(_pageId);
+        const _description = await this._extractDescription(
+          postInDB,
+          _markdown,
+          _pageId,
+        );
 
         const post: IPost = {
           pageId: _pageId,
@@ -210,8 +280,10 @@ class NotionAPI_Factory {
           description: _description,
           coverImageUrl: _coverImageUrl,
           tags: _tags,
-          publishDate: this._changeDateFormat(_publishdate ?? _last_edited_date), // if publishDate is not set, than set to default, which is "last edited time"
-          markdown: _markdown,
+          publishDate: this._changeDateFormat(
+            _publishdate ?? _last_edited_date,
+          ), // if publishDate is not set, than set to default, which is "last edited time"
+          markdown: _markdown, // 본문 마크다운 데이터 (후속 처리 필요한 데이터)
           readingTime: readingTime(_markdown).text,
         };
         return post;
@@ -220,6 +292,7 @@ class NotionAPI_Factory {
     return posts;
   }
 
+  // Notion API에서 Cover Image의 URL을 뽑아오기 위한 함수.
   public getImageUrlFromCoverObject(coverObj?: any) {
     if (!coverObj) return;
     let Url;

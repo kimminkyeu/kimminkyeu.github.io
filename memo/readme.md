@@ -146,22 +146,31 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 # 0522
 
-1. 설명글이 없을 경우 -> 내용을 가져오기 + 길이 제한 이상이 되면 ...으로 교체
+1. 설명글이 없을 경우 -> 내용을 가져오기 + 길이 제한 이상이 되면 ...으로 교체 ✅
    <!-- 2. npx next export로 변경. 성능 문제 + 서버에서 굳이 뭘 처리할 내용이 없기 때문. -->
    <!-- 3. medium 처럼 home을 없애고, 메뉴 선택도 밑으로 빼자. -->
-2. mui를 header로 사용하기
+2. mui를 header로 사용하기 ✅
 3. 설명글이 없으면 본문에서 뽑아오기.
 
 ## ! 주의! mui에 직접 classname을 주지 말고 div를 넣어서 tailwind와 분리해라!
 
-4. MDX 코드 하이라이팅 기능 추가
+4. MDX 코드 하이라이팅 기능 추가 ✅
 
    - https://bepyan.github.io/blog/nextjs-blog/3-mdx-plugin --> 여기는 개꿀 remark 플러그인을 모두 알려줌. 심지어 목차까지!!!
 
    - https://mraddict.one/blog/implement-markdown --> 일단 여기 보자!
 
-5. MetaData 최적화를 통해 SEO 향상시키기
+5. MetaData 최적화를 통해 SEO 향상시키기 ✅
    - https://nextjs.org/docs/app/building-your-application/optimizing/metadata
    - https://leerob.io/blog/mdx
 6. 안쓰는 패키지 싹다 지우기.
-7. metaData가 실제로 잘 설정되는지 html보면서 직접 체크!
+7. metaData가 실제로 잘 설정되는지 html보면서 직접 체크! ✅
+
+## 0536 TDL (밀린 것 포함)
+
+0. notion api에서 fetch call 하는 함수는 따로 class 빼기.
+1. 태그에 색상 집어넣기
+2. 설명글이 없으면 본문에서 뽑아오기. ✅
+3. 안쓰는 패키지 싹다 지우기.
+4. 검색 기능 (mobile first)
+5. 태그뷰 기능 (mobile first)
