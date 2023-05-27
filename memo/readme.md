@@ -152,21 +152,22 @@ leverage stale-while-revalidate by setting the cache-control header manually.
    <!-- 2. npx next export로 변경. 성능 문제 + 서버에서 굳이 뭘 처리할 내용이 없기 때문. -->
    <!-- 3. medium 처럼 home을 없애고, 메뉴 선택도 밑으로 빼자. -->
 2. mui를 header로 사용하기 ✅
-3. 설명글이 없으면 본문에서 뽑아오기.
+3. 설명글이 없으면 본문에서 뽑아오기. ✅
 
 ## ! 주의! mui에 직접 classname을 주지 말고 div를 넣어서 tailwind와 분리해라!
 
 4. MDX 코드 하이라이팅 기능 추가 ✅
-
     - https://bepyan.github.io/blog/nextjs-blog/3-mdx-plugin --> 여기는 개꿀 remark 플러그인을 모두 알려줌. 심지어 목차까지!!!
-
     - https://mraddict.one/blog/implement-markdown --> 일단 여기 보자!
 
 5. MetaData 최적화를 통해 SEO 향상시키기 ✅
     - https://nextjs.org/docs/app/building-your-application/optimizing/metadata
     - https://leerob.io/blog/mdx
-6. 안쓰는 패키지 싹다 지우기.
+6. 안쓰는 패키지 싹다 지우기. ✅
 7. metaData가 실제로 잘 설정되는지 html보면서 직접 체크! ✅
+8. (OPTION 목차): 목차는 구현 안하기로 함.
+
+- https://thisyujeong.dev/blog/toc-generator#%EB%82%B4-%EB%B8%94%EB%A1%9C%EA%B7%B8%EC%97%90-toctable-of-contents-%EB%AA%A9%EC%B0%A8%EB%A5%BC-%EC%B6%94%EA%B0%80%ED%95%98%EC%9E%90
 
 ## 0536 TDL (밀린 것 포함)
 
@@ -177,5 +178,15 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 4. 검색 기능 (mobile first)
 5. 태그뷰 기능 (mobile first)
+6. mdx 동영상 임베드, 사진 커스텀 컴포넌트 기능 테스트 + 이미지의 경우 3개를 나란히 놓는 방법은...?
+    - 아이디어
+      -
+            1. A-fetch. 노션에 직접 page 데이터 요청, 이미지에 대한 url과 정보를 뽑아옴. --> 저장해두기
+        -
+            2. B-fetch. mdx img 태그 커스텀 컴포넌트에서 해당 url과 동일한 데이터를 가져와서, 가로 세로 정보를 컴포넌트에 삽입
+        - 단점: 2번의 fetch, 느린 빌드타임 걱정....
+    - 테스트 결과: 이미지의 가로 세로 넓이 정보는 들어오지 않는다.
 
-- https://thisyujeong.dev/blog/toc-generator#%EB%82%B4-%EB%B8%94%EB%A1%9C%EA%B7%B8%EC%97%90-toctable-of-contents-%EB%AA%A9%EC%B0%A8%EB%A5%BC-%EC%B6%94%EA%B0%80%ED%95%98%EC%9E%90
+합의 결과:
+1. 단일 이미지의 경우, max-height만 별도로 정리하고, 두개 이상의 이미지도 함께 보여주기 (추후 구현할 것)
+

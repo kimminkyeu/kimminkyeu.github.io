@@ -21,9 +21,12 @@ module.exports = {
                         'h1,h2,h3,h4': {
                             'scroll-margin-top': spacing[32],
                         },
-                        // img: {
-                        //     maxHeight: '20rem',
-                        // }
+                        img: {
+                            maxHeight: '27rem',
+                            margin: 'auto',
+                            // width: '100%',
+                            // objectFit: 'cover',
+                        }
                     },
                 },
             }),

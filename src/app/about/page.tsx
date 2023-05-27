@@ -10,9 +10,13 @@ export default async function AboutMe() {
   const aboutMePage = (await Notion.getPageDataFromDatabase(Config.STATUS_ABOUT_ME))[0];
   // serialize markdown
   const processed_mdx = await processMdx(aboutMePage.markdown);
+  // const testData = await Notion.retrieveBlocksFromNotionPage(aboutMePage.pageId, 10);
+  // console.log('----------------------------------');
+  // console.log(JSON.stringify(testData.results, null, 4));
+  // console.log('----------------------------------');
 
   return (
-    <div className=" container prose prose-neutral mx-auto">
+    <div className=" container prose prose-neutral mx-auto mt-9">
       <article>
         <MDXRenderer source={processed_mdx.serializedMdx}/>
       </article>
