@@ -1,5 +1,7 @@
 export namespace Config {
   export const BLOG_TITLE = 'Minky Graphics';
   export const BLOG_DESCRIPTION = '민규 블로그';
-  export const NOTION_VERSION = '2022-06-28';
+// for notion api Status
+  export const STATUS_PUBLISHED_ARTICLE = 'Publish';
+  export const STATUS_ABOUT_ME = 'About me';
 }

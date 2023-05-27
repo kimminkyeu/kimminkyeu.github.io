@@ -1,8 +1,9 @@
 import Notion from '@/app/api/notionAPI';
 import {processMdx} from '../api/mdxAPI';
-import ArticleHeader from './(client-component)/client-ArticleHeader';
-import ArticleMain_MDX from './(client-component)/client-ArticleMain';
+import ArticleHeader from '../(client-components)/client-ArticleHeader';
+import MDXRenderer from '../(client-components)/client-MdxRenderer';
 import {Metadata, ResolvingMetadata} from 'next';
+import {Config} from "@/config/config";
 
 type Props = {
   params: { pageId: string };
@@ -15,7 +16,7 @@ export async function generateMetadata(
   parent?: ResolvingMetadata,
 ): Promise<Metadata> {
   // read route params
-  const posts = await Notion.getPostsFromDatabase('Done');
+  const posts = await Notion.getPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
   const postInfo = posts.find((p) => p.pageId === params.pageId);
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
@@ -27,7 +28,7 @@ export async function generateMetadata(
     openGraph: {
       title: postInfo.title,
       description: postInfo.description,
-      images: [postInfo.coverImageUrl, ...previousImages],
+      images: [postInfo.coverImageUrl ?? '', ...previousImages],
       tags: tagsOnlyString,
     },
   };
@@ -35,7 +36,7 @@ export async function generateMetadata(
 }
 
 export async function generateStaticParams() {
-  const pageIdList = await Notion.getPageIdListFromDatabase('Done');
+  const pageIdList = await Notion.getPageIdListFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
   return pageIdList.map((_pageId) => ({
     pageId: _pageId,
   }));
@@ -48,15 +49,15 @@ interface StaticParams {
 }
 
 export default async function Page({params}: StaticParams) {
-  const posts = await Notion.getPostsFromDatabase('Done');
+  const posts = await Notion.getPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
   const currentPost = posts.find((p) => p.pageId === params.pageId);
-
   const processed_mdx = await processMdx(currentPost.markdown);
+
   return (
     <div className=" container prose prose-neutral mx-auto">
       <ArticleHeader post={currentPost}/>
       <article>
-        <ArticleMain_MDX source={processed_mdx.serializedMdx}/>
+        <MDXRenderer source={processed_mdx.serializedMdx}/>
       </article>
     </div>
   );

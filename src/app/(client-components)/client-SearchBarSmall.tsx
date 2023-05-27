@@ -1,11 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import {styled, alpha} from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, Button, IconButton } from '@mui/material';
+import {Box, Button, IconButton} from '@mui/material';
+import Link from "next/link";
 
-const Search = styled('div')(({ theme }) => ({
+const Search = styled('div')(({theme}) => ({
   position: 'relative',
   borderRadius: 100,
   backgroundColor: alpha(theme.palette.common.black, 0.03),
@@ -21,7 +22,7 @@ const Search = styled('div')(({ theme }) => ({
   },
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
+const SearchIconWrapper = styled('div')(({theme}) => ({
   padding: theme.spacing(0, 2),
   height: '100%',
   position: 'absolute',
@@ -35,12 +36,22 @@ interface SearchBarProps {
   className?: string;
 }
 
+import * as MuiColors from '@mui/material/colors';
+import {Tooltip} from "@mui/material";
+
 export default function SearchBarSmall(props: SearchBarProps) {
+  // const [openDialog, setOpen] = React.useState<boolean>(false);
   return (
     <div className={props.className}>
-      <IconButton aria-label="search">
-        <SearchIcon />
-      </IconButton>
+      <Link href={'/search'}>
+        <Tooltip title="Search" placement="bottom-start">
+          <IconButton aria-label="search">
+            <SearchIcon style={{
+              color: MuiColors.grey[700]
+            }}/>
+          </IconButton>
+        </Tooltip>
+      </Link>
     </div>
   );
 }

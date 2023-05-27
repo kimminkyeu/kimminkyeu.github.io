@@ -38,11 +38,12 @@ class NotionAPI_Factory {
   constructor() {
   }
 
-  public async getPage(target_page_id: string) {
-    const response = await this._notion.pages.retrieve({
-      page_id: target_page_id,
+  public async retrieveBlocksFromNotionPage(page_id: string, block_size: number) {
+    const res = await this._notion.blocks.children.list({
+      block_id: page_id,
+      page_size: block_size,
     });
-    return response;
+    return res;
   }
 
   // db 하위 페이지들의 id 리스트만 얻고 싶을 때
@@ -51,10 +52,10 @@ class NotionAPI_Factory {
     return query.results.map((v) => this._removeDash(v.id));
   }
 
-  public async getPostsFromDatabase(status?: string) {
+  public async getPageDataFromDatabase(status?: string) {
     const query = await this._queryDatabaseByStatus(status);
-    const posts = await this._extractPostsFromDBQuery(query);
-    return posts;
+    const pageData = await this._extractPageDataFromDBQuery(query);
+    return pageData;
   }
 
   // https://github.com/souvikinator/notion-to-md
@@ -67,10 +68,6 @@ class NotionAPI_Factory {
 
   /**
    * @param status
-   *  (0) If status is undefined, query every data
-   *  (1) Done
-   *  (2) Not started
-   *  (3) In progress
    * @returns database object
    */
   private async _queryDatabaseByStatus(status?: string) {
@@ -90,15 +87,6 @@ class NotionAPI_Factory {
       page_size: 10, // for pagination, max content size.
     });
     return query;
-  }
-
-  private async _retriveBlocks(page_id: string) {
-    const MAX_PARAGRAPH_COUNT = 5;
-    const res = await this._notion.blocks.children.list({
-      block_id: page_id,
-      page_size: MAX_PARAGRAPH_COUNT,
-    });
-    return res;
   }
 
   private _removeDash(str: string) {
@@ -163,10 +151,13 @@ class NotionAPI_Factory {
         color: tag.color,
       }));
     } else if (_tags.type === 'select') {
-      return Array<PropertyTag>({
-        name: _tags.select.name,
-        color: _tags.select.color,
-      });
+      if (_tags.select?.name) {
+        return Array<PropertyTag>({
+          name: _tags.select.name,
+          color: _tags.select.color,
+        });
+      }
+      return null;
     } else {
       Assert.NonNullish(null, '[DEV] _extractTags(): Unsupported tag type.');
     }
@@ -181,7 +172,7 @@ class NotionAPI_Factory {
     const description =
       _postInDB.properties.Description.rich_text[0]?.plain_text;
     if (!description) {
-      const blocks = await this._retriveBlocks(_pageId);
+      const blocks = await this.retrieveBlocksFromNotionPage(_pageId, 5);
       let paragraphs = '';
       blocks.results.map((block) => {
         if (block['type'] === 'paragraph') {
@@ -197,7 +188,7 @@ class NotionAPI_Factory {
     return description;
   }
 
-  private async _extractPostsFromDBQuery(response: QueryDatabaseResponse) {
+  private async _extractPageDataFromDBQuery(response: QueryDatabaseResponse) {
     const databaseItems: DatabaseItem[] = response.results.map(
       (databaseItem) => databaseItem as DatabaseItem,
     );

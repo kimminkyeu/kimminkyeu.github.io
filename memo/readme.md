@@ -170,13 +170,12 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 ## 0536 TDL (밀린 것 포함)
 
-0. notion api에서 fetch call 하는 함수는 따로 class 빼기.
-1. 따라다니는 헤더 바 넣기.
-1. 태그에 색상 집어넣기
+1. 따라다니는 헤더 바 넣기. ✅
+1. 태그에 색상 집어넣기 ✅
 2. 설명글이 없으면 본문에서 뽑아오기. ✅
-3. 안쓰는 패키지 싹다 지우기.
+3. 안쓰는 패키지 싹다 지우기. ✅
+
 4. 검색 기능 (mobile first)
 5. 태그뷰 기능 (mobile first)
-6. 목차 기능 (중요!)
 
 - https://thisyujeong.dev/blog/toc-generator#%EB%82%B4-%EB%B8%94%EB%A1%9C%EA%B7%B8%EC%97%90-toctable-of-contents-%EB%AA%A9%EC%B0%A8%EB%A5%BC-%EC%B6%94%EA%B0%80%ED%95%98%EC%9E%90

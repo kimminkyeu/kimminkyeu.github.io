@@ -1,4 +1,4 @@
-import { serialize } from 'next-mdx-remote/serialize';
+import {serialize} from 'next-mdx-remote/serialize';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import remarkMath from 'remark-math';
@@ -9,7 +9,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings'; // 헤딩 링크 
 import rehypeKatex from 'rehype-katex'; // 수식
 import rehypeSanitize from 'rehype-sanitize'; // sanitize html
 import remarkToc from 'remark-toc'; // 목차 생성
-import { MDXRemoteSerializeResult } from 'next-mdx-remote'; // 목차 생성.
+import {MDXRemoteSerializeResult} from 'next-mdx-remote'; // 목차 생성.
 
 // you have to load css manual
 // import 'prismjs/themes/prism-coy.css'
@@ -27,9 +27,6 @@ import 'prismjs/components/';
 
 interface processResult {
   serializedMdx: MDXRemoteSerializeResult; // 최종 처리된 mdx
-  // frontMatter: {
-  //   readingTime: ReadTimeResults;
-  // }
 }
 
 export async function processMdx(source: string): Promise<processResult> {
@@ -55,13 +52,8 @@ export async function processMdx(source: string): Promise<processResult> {
       format: 'mdx',
     },
   });
-  // const _wordCount = source.split(/\s+/gu).length;
-  // const _readTime = readingTime(source);
   return {
     serializedMdx: _serializedMdx,
-    // frontMatter: {
-    //   readingTime: _readTime,
-    // }
   };
 }
 
