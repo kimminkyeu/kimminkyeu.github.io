@@ -42,7 +42,6 @@ export default function Navbar(props: NavbarProps) {
 
   return (
     <nav ref={ref} className={`${props.className}`}>
-      {/*<div className=' bg-white'>*/}
       <div className=' container mx-auto px-6 flex shadow-custom_innerUnderline '>
         <div className={`${padding} mr-5${context === 'Post' ? underline : ''}`}>
           <Link href="/" onClick={() => setContext('Post')}>
@@ -55,8 +54,6 @@ export default function Navbar(props: NavbarProps) {
           </Link>
         </div>
       </div>
-      {/*</div>*/}
     </nav>
   );
-  // }
 }

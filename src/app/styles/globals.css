@@ -9,7 +9,7 @@
     /* Navbar 그림자 효과를 위한 class */
     .navbar-shadow {
         /*@apply drop-shadow-[0_35px_-15px_rgba(0,0,0,0.25)]*/
-        @apply shadow-[0_5px_20px_-5px_rgba(0,0,0,0.25)]
+        @apply shadow-[0_3px_10px_-5px_rgba(0,0,0,0.15)]
     }
 }
 

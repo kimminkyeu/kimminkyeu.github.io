@@ -1,12 +1,12 @@
-import { Assert } from '@/utils/assert';
+import {Assert} from '@/utils/assert';
 /**
  * @description [ Notion API doc ]
  * @link https://developers.notion.com/reference/post-database-query */
-import { Client } from '@notionhq/client';
+import {Client} from '@notionhq/client';
 /**
  * @description [ Notion to Markdown ]
  * @link https://github.com/souvikinator/notion-to-md */
-import { NotionToMarkdown } from 'notion-to-md';
+import {NotionToMarkdown} from 'notion-to-md';
 
 /**
  * @description [ Types for notion API ]
@@ -18,42 +18,14 @@ import {
   PropertyValueMultiSelect,
   PropertyTag,
 } from './type';
-import type { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
+import type {QueryDatabaseResponse} from '@notionhq/client/build/src/api-endpoints';
 
 /**
  * @description [ Converting mardown object to HTML ]
  * @link https://blog.hwahae.co.kr/all/tech/10960
  */
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkGfm from 'remark-gfm';
-import remarkBreaks from 'remark-breaks';
-import remarkRehype from 'remark-rehype';
-import rehypeStringify from 'rehype-stringify';
-import { reporter } from 'vfile-reporter';
-import { read } from 'to-vfile';
-import remarkPrism from 'remark-prism';
-// https://unifiedjs.com/explore/package/rehype-prism-plus/
-// https://github.com/mapbox/rehype-prism
-import rehypePrism from '@mapbox/rehype-prism';
-import remarkHtml from 'remark-html';
-import rehypeSanitize from 'rehype-sanitize';
-import { MdBlock } from 'notion-to-md/build/types';
-import { NotionAPI } from 'notion-client';
+import {MdBlock} from 'notion-to-md/build/types';
 import readingTime from 'reading-time';
-
-// class NotionUnofficialClient {
-//   private _notion_unofficial = new NotionAPI({
-//     activeUser: process.env.NOTION_ACTIVE_USER,
-//     authToken: process.env.NOTION_TOKEN_V2,
-//   });
-
-//   constructor() {}
-
-//   public async getPage(page_id: string) {
-//     return await this._notion_unofficial.getPage(page_id);
-//   }
-// }
 
 class NotionAPI_Factory {
   private _notion: Client = new Client({
@@ -62,11 +34,8 @@ class NotionAPI_Factory {
   private _n2m: NotionToMarkdown = new NotionToMarkdown({
     notionClient: this._notion,
   });
-  // public notion_unoffical = new NotionUnofficialClient();
 
   constructor() {
-    // this._notion = new Client({ auth: process.env.NOTION_TOKEN });
-    // this._n2m = new NotionToMarkdown({ notionClient: this._notion });
   }
 
   public async getPage(target_page_id: string) {
@@ -96,25 +65,6 @@ class NotionAPI_Factory {
     return mdString.parent;
   }
 
-  // https://blog.hwahae.co.kr/all/tech/10960
-  // https://github.com/unifiedjs/unified (AST)
-  // https://nextjs.org/docs/app/building-your-application/configuring/mdx#getting-started  --> 여기가 끝판왕!
-  // https://css-tricks.com/syntax-highlighting-prism-on-a-next-js-site/
-  /**
-   * @deprecated */
-  public async parseMarkdownToHTML(markdownData: any) {
-    const file = await unified()
-      .use(remarkParse) // Convert into markdown AST
-      .use(remarkGfm) // Github flavored markdown
-      .use(remarkBreaks) // Line break
-      .use(remarkRehype) // Transform to HTML AST
-      .use(rehypePrism) // Add code highlight via Prismjs
-      .use(rehypeSanitize) // Sanitize HTML input
-      .use(rehypeStringify) // Convert AST into serialized HTML
-      .process(markdownData);
-    return String(file);
-  }
-
   /**
    * @param status
    *  (0) If status is undefined, query every data
@@ -128,14 +78,14 @@ class NotionAPI_Factory {
     if (status) {
       filterArgs = {
         property: 'Status',
-        status: { equals: `${status}` }, // filter only edit done article.
+        status: {equals: `${status}`}, // filter only edit done article.
       };
     }
     Assert.NonNullish(process.env.NOTION_DATABASE_ID);
     const query = await this._notion.databases.query({
       database_id: process.env.NOTION_DATABASE_ID,
       filter: filterArgs,
-      sorts: [{ property: 'Date', direction: 'descending' }],
+      sorts: [{property: 'Date', direction: 'descending'}],
       // https://developers.notion.com/reference/intro#pagination
       page_size: 10, // for pagination, max content size.
     });
@@ -150,15 +100,6 @@ class NotionAPI_Factory {
     });
     return res;
   }
-
-  // private _convertToSlug(str: string) {
-  //   const slug = str
-  //     .toLowerCase() // convert to lower case
-  //     .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-  //     .replace(/\s+/g, '-') // collapse whitespace and replace by -
-  //     .replace(/-+/g, '-'); // collapse dashes
-  //   return slug;
-  // }
 
   private _removeDash(str: string) {
     const result = str.replace(/[-]/g, ''); // remove dash
@@ -200,7 +141,7 @@ class NotionAPI_Factory {
     } else if (dateDiff < 7) {
       dateFormatResult =
         `${dateDiff}` + (dateDiff === 1 ? ' day ago' : ' days ago');
-    } else if (dateDiff < 30) {
+    } else if (dateDiff < 10) {
       dateFormatResult = `${Math.floor(dateDiff / 7)} weeks ago`;
     } else {
       // if more than a month, show [ month | date ]
@@ -244,9 +185,11 @@ class NotionAPI_Factory {
       let paragraphs = '';
       blocks.results.map((block) => {
         if (block['type'] === 'paragraph') {
-          const text: string =
-            (block['paragraph']?.['rich_text'][0])['text']['content'];
-          paragraphs += text.replaceAll('\n', ' ') + ' ';
+          const _data = (block['paragraph']?.['rich_text'][0]);
+          if (_data && _data['text']) {
+            const text: string = _data['text']['content'];
+            paragraphs += text.replaceAll('\n', ' ') + ' ';
+          }
         }
       });
       return paragraphs;
