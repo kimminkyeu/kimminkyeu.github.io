@@ -4,22 +4,25 @@ import {MDXProvider} from "@mdx-js/react";
 import {MDXComponents} from "mdx/types";
 import Image from 'next/image';
 
+/** ---------------------------------------------
+ * @description MDX custom component for Youtube.
+ * @param id */
+function YouTubeComponent({id}: { id: string }) {
+  return (
+    <iframe
+      width="100%"
+      height="450"
+      src={"https://www.youtube.com/embed/" + id}
+      title="YouTube video player"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    ></iframe>
+  );
+}
 
-// (1) https://github.com/hashicorp/next-mdx-remote
-// (2) https://mdxjs.com/table-of-components/
-// https://www.kevinpeters.net/remote-mdx-next-js
-// ---------------------------------------
-// MDX Remote은 내분에서 MDXProvider를 사용한다.
-// 위 링크를 잘 보면, 내부에서 특정 html 태그에 대한 컴포넌트를 직접 결정할 수 있다.
-// 이걸 바탕으로, 동영상 링크 임베드 (iframe)도 넣을 수 있지 않을 까?
-
-const components = {
-  img: (props) => <ImageCustomComponent {...props} />,
-};
-
-
-// https://fe-developers.kakaoent.com/2022/220714-next-image/
-export function ImageCustomComponent(props) {
+/** ---------------------------------------------
+ * @description MDX custom component for Image */
+function ImageCustomComponent(props) {
+  // https://fe-developers.kakaoent.com/2022/220714-next-image/
   return (
     <Image {...props} sizes="210px" width={210} height={210}/>
   );
@@ -29,15 +32,22 @@ interface ArticleMainProps {
   source: MDXRemoteProps;
 }
 
+// (1) https://github.com/hashicorp/next-mdx-remote
+// (2) https://mdxjs.com/table-of-components/
+// https://www.kevinpeters.net/remote-mdx-next-js
+const customComponents = {
+  // img: (props) => <ImageCustomComponent {...props} />,
+  // YouTubeComponent
+};
+
 export default function MdxRenderer({source}: ArticleMainProps) {
-
-
+  // console.log('------------------------------');
+  // console.log(source.compiledSource);
+  // console.log('------------------------------');
   return (
     <div className="prose prose-neutral">
-      {/*<MDXProvider components={components}>*/}
-      {/*<MDXRemote {...source} components={components}/>*/}
-      <MDXRemote {...source} />
-      {/*</MDXProvider>*/}
+      <MDXRemote {...source} components={customComponents}/>
+      {/*<MDXRemote {...source} />*/}
     </div>
   );
 }

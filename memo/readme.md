@@ -188,5 +188,27 @@ leverage stale-while-revalidate by setting the cache-control header manually.
     - 테스트 결과: 이미지의 가로 세로 넓이 정보는 들어오지 않는다.
 
 합의 결과:
+
 1. 단일 이미지의 경우, max-height만 별도로 정리하고, 두개 이상의 이미지도 함께 보여주기 (추후 구현할 것)
+
+## 0528 TDL
+
+1. Youtube 링크 임베드하기
+    - https://ndpniraj.com/blogs/how-to-embed-youtube-videos-inside-next-mdx
+
+2. Notion To MD에서 Custom Transformer를 정의해야, notion의 동영상을
+   mdx가 인지할 수 있는 태그로 변환할 수 있다.
+
+---------------------
+
+1. notion to md에서 custom transformer를 작성한다. ✅
+2. youtube가 아닌 친구의 경우,
+
+b. 이를 mdx에서 받아와서, custom component로 그려낸다.
+- https://github.com/souvikinator/notion-to-md (참고 링크)
+주의! 동영상의 type이 video로 잡히기 위해서 노션에서 동영상을 올릴때 video block을 써야만 한다.
+
+- 
+
+    
 

@@ -28,14 +28,96 @@ import {MdBlock} from 'notion-to-md/build/types';
 import readingTime from 'reading-time';
 
 class NotionAPI_Factory {
-  private _notion: Client = new Client({
-    auth: process.env.NOTION_TOKEN,
-  });
-  private _n2m: NotionToMarkdown = new NotionToMarkdown({
-    notionClient: this._notion,
-  });
+  private _notion: Client;
+  private _n2m: NotionToMarkdown;
 
   constructor() {
+    // Notion API
+    this._notion = new Client({
+      auth: process.env.NOTION_TOKEN,
+    });
+    // Notion To Markdown Library
+    this._n2m = new NotionToMarkdown({
+      notionClient: this._notion,
+    });
+
+    const isYoutube = (fileUrl: string) => {
+      return (fileUrl.includes('https://www.youtube.com/') || fileUrl.includes('https://youtu.be/'))
+    }
+
+    const isNotionFileSystem = (fileUrl: string) => {
+      return (fileUrl.includes('https://s3.us-west-2.amazonaws.com/secure.notion-static.com'))
+    }
+
+    this._n2m.setCustomTransformer("video", async (block) => {
+      const {video} = block as any;
+      const fileType: string = video.type;
+      let fileUrl = video[`${fileType}`]['url'];
+
+      if (!fileUrl) {
+        // no url
+        return "";
+      }
+
+      // YOUTUBE ----------------------------
+      // 이때 url 형식 = https://www.youtube.com/watch?v={비디오 아이디}
+      // 여기서 videoId만 분리한 뒤 https://www.youtube.com/embed/{비디오 아이디} 로 바꿔야 iframe이 작동함.
+      // 참고: https://stackoverflow.com/questions/25661182/embed-youtube-video-refused-to-display-in-a-frame-because-it-set-x-frame-opti
+      if (isYoutube(fileUrl)) {
+        if (fileUrl.includes('https://www.youtube.com/') /* YOUTUBE */) {
+          // extract youtube video id
+          const target = 'watch?v=';
+          const videoId = fileUrl.substring(fileUrl.lastIndexOf(target) + target.length);
+          fileUrl = `https://www.youtube.com/embed/${videoId}`;
+        } else if (fileUrl.includes('https://youtu.be/') /* YOUTUBE */) {
+          // extract youtube video id
+          const videoId = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+          fileUrl = `https://www.youtube.com/embed/${videoId}`;
+        } else {
+          Assert.MustBeTrue(false, '[DEV]: Error, strange youtube URL');
+        }
+        return (`
+        <figure>
+          <iframe src="${fileUrl}"></iframe>
+          <figcaption>${await this._n2m.blockToMarkdown(video?.caption)}</figcaption>
+        </figure>
+        `);
+      }
+
+      // NOTION DB file ----------------------------
+      if (isNotionFileSystem(fileUrl)) {
+        // TODO: use VIDEO.js video renderer !
+        // https://videojs.com/guides/react/
+      }
+    });
+
+    // Set Custom Transformer for [Notion Block type: caption]
+    // this._n2m.setCustomTransformer("image", async (block) => {
+    //   const {embed} = block as any;
+    //   if (!embed?.url) return "";
+    //   return (`
+    //     <figure>
+    //       <iframe src="${embed?.url}"></iframe>
+    //       <figcaption>${await this._n2m.blockToMarkdown(embed?.caption)}</figcaption>
+    //     </figure>
+    //     `);
+    // });
+
+    // Set Custom Transformer for [Notion Block type: embed]
+    // this._n2m.setCustomTransformer("embed", async (block) => {
+    //   const {embed} = block as any;
+    //   if (!embed?.url) {
+    //     console.log('[DEV] _n2m.setCustomTransformer: No url in notion embed block');
+    //     return "";
+    //   }
+    //   return (`
+    //     <figure>
+    //       <iframe src="${embed?.url}"></iframe>
+    //       <figcaption>${await this._n2m.blockToMarkdown(embed?.caption)}</figcaption>
+    //     </figure>
+    //     `);
+    // });
+    // Set Custom Transformer for [Notion Block type: video]
   }
 
   public async retrieveBlocksFromNotionPage(page_id: string, block_size: number) {

@@ -9,10 +9,13 @@ export default async function AboutMe() {
   // get Post data (including markdown)
   const aboutMePage = (await Notion.getPageDataFromDatabase(Config.STATUS_ABOUT_ME))[0];
   // serialize markdown
+  // console.log(aboutMePage.markdown);
   const processed_mdx = await processMdx(aboutMePage.markdown);
   // const testData = await Notion.retrieveBlocksFromNotionPage(aboutMePage.pageId, 10);
+
   // console.log('----------------------------------');
-  // console.log(JSON.stringify(testData.results, null, 4));
+  const test = await Notion.retrieveBlocksFromNotionPage(aboutMePage.pageId, 30);
+  // console.log(JSON.stringify(test.results, null, 4));
   // console.log('----------------------------------');
 
   return (
