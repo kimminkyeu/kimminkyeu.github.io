@@ -203,14 +203,17 @@ leverage stale-while-revalidate by setting the cache-control header manually.
 
 1. notion to md에서 custom transformer를 작성한다. ✅
 
-b. 이를 mdx에서 받아와서, custom component로 그려낸다.
+b. 이를 mdx에서 받아와서, custom component로 그려낸다. ✅
 
-- https://github.com/souvikinator/notion-to-md (참고 링크)
+- https://github.com/souvikinator/notion-to-md (참고 링크)  ✅
   주의! 동영상의 type이 video로 잡히기 위해서 노션에서 동영상을 올릴때 video block을 써야만 한다.
 
-## 0528 이후 재정리
+2. 이미지 두개 혹은 세개를 넣은 경우 해당 이미지들을 한 칸에 몰아넣는 방식으로 진행 (custom) ✅
 
-0. 블로그 비디오는 반드시 VIDEO 블록에 넣어서 embed 하기.
-1. 가로 세로 높이는 이미지랑 똑같이 진행.
-2. 이미지 두개 혹은 세개를 넣은 경우 해당 이미지들을 한 칸에 몰아넣는 방식으로 진행 (custom)
+-----------------------
+
+## 0530 TDL
+
 1. Notion DB에 저장된 VIDEO의 경우 video.js로 직접 렌더링 하도록 [ n2m + MDX 컴포넌트 수정 ]?
+2. Tag View 버튼 구현 및, 우측에 태그별 보기 창 추가.
+3. 검색 기능 추가 (Medium과 동일)

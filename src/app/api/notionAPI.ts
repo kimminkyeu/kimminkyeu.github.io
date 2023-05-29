@@ -18,7 +18,10 @@ import {
   PropertyValueMultiSelect,
   PropertyTag,
 } from './type';
-import type {ListBlockChildrenResponse, QueryDatabaseResponse} from '@notionhq/client/build/src/api-endpoints';
+import type {
+  ListBlockChildrenResponse,
+  QueryDatabaseResponse,
+} from '@notionhq/client/build/src/api-endpoints';
 
 /**
  * @description [ Converting mardown object to HTML ]
@@ -26,6 +29,7 @@ import type {ListBlockChildrenResponse, QueryDatabaseResponse} from '@notionhq/c
  */
 import {MdBlock} from 'notion-to-md/build/types';
 import readingTime from 'reading-time';
+import parse from 'date-fns/parse';
 
 class NotionAPI_Factory {
   private _notion: Client;
@@ -41,24 +45,52 @@ class NotionAPI_Factory {
       notionClient: this._notion,
     });
 
+    /**
+     * @description: caption의 경우, notion-to-md를 쓰면 정보가 나오지 않는다.
+     * 따라서 직접 객체에서 caption을 뽑아오자.
+     */
+
     const isYoutube = (fileUrl: string) => {
-      return (fileUrl.includes('https://www.youtube.com/') || fileUrl.includes('https://youtu.be/'))
-    }
+      return (
+        fileUrl.includes('https://www.youtube.com/') ||
+        fileUrl.includes('https://youtu.be/')
+      );
+    };
 
     const isNotionFileSystem = (fileUrl: string) => {
-      return (fileUrl.includes('https://s3.us-west-2.amazonaws.com/secure.notion-static.com'))
-    }
+      return fileUrl.includes(
+        'https://s3.us-west-2.amazonaws.com/secure.notion-static.com',
+      );
+    };
+
+    const __generateCaptionJSX = (captionBlocks?: readonly any[]) => {
+      if (!captionBlocks) return '';
+      let captionString = '';
+      for (let caption of captionBlocks) {
+        const text = caption['plain_text'];
+        const href = caption['href'];
+        if (href) {
+          // if has link
+          captionString += `<a href={ \"${href}\"} >${text}</a>`;
+        } else {
+          captionString += `<span>${text}</span>`;
+        }
+      }
+      // return `<p>${captionString}</p>`;
+      return captionString;
+    };
 
     /**
      * @description custom video block transformer
      * @why 비디오 플레이어를 html내에 삽입, 캡션 추가.
      */
-    this._n2m.setCustomTransformer("video", async (block) => {
+    this._n2m.setCustomTransformer('video', async (block) => {
       const {video} = block as any;
       const fileType: string = video.type;
       let fileUrl = video[`${fileType}`]['url'];
-      if (!fileUrl) { // no url
-        return "";
+      if (!fileUrl) {
+        // no url
+        return '';
       }
       // YOUTUBE ----------------------------
       // 이때 url 형식 = https://www.youtube.com/watch?v={비디오 아이디}
@@ -68,7 +100,9 @@ class NotionAPI_Factory {
         if (fileUrl.includes('https://www.youtube.com/') /* YOUTUBE */) {
           // extract youtube video id
           const target = 'watch?v=';
-          const videoId = fileUrl.substring(fileUrl.lastIndexOf(target) + target.length);
+          const videoId = fileUrl.substring(
+            fileUrl.lastIndexOf(target) + target.length,
+          );
           fileUrl = `https://www.youtube.com/embed/${videoId}`;
         } else if (fileUrl.includes('https://youtu.be/') /* YOUTUBE */) {
           // extract youtube video id
@@ -77,15 +111,16 @@ class NotionAPI_Factory {
         } else {
           Assert.MustBeTrue(false, '[DEV]: Error, strange youtube URL');
         }
-        const caption = video?.caption[0]?.plain_text;
-        return (`
+        const caption = __generateCaptionJSX(video?.caption);
+
+        return `
         <figure>
           <div style={{position: 'relative', overflow: 'hidden', width:'100%', paddingBottom: '56.25%'}} >
             <iframe style={{position: 'absolute', top:0, left:0}} width="100%" height="100%" src="${fileUrl}"></iframe>
           </div>
           <figcaption>${caption}</figcaption>
         </figure>
-        `);
+        `;
       }
       // NOTION DB file ----------------------------
       if (isNotionFileSystem(fileUrl)) {
@@ -97,32 +132,26 @@ class NotionAPI_Factory {
     /**
      * @description custom image block transformer
      * @why 이미지 캡션 추가.
+     *
+     * - (!) 속도를 위해 이후 MDXRenderer에서 Next Image API를 사용해야 한다.
+     *       따가서 image는 반드시 Markdown 형식대로 return할 것.
      */
-    this._n2m.setCustomTransformer("image", async (block) => {
+    this._n2m.setCustomTransformer('image', async (block) => {
       const {image} = block as any;
       const fileType: string = image.type;
       let fileUrl: string = image[`${fileType}`]['url'];
       if (!fileUrl) {
-        return "";
+        return '';
       } else {
-        let captionString = ''
-        // console.log(image);
-        if (image?.caption) {
-          const captionBlocks: Array<any> = image?.caption;
-          for (let caption of captionBlocks) {
-            const text = caption['plain_text'];
-            const href = caption['href'];
-            if (href) { // if has link
-              captionString += `<a href={ \"${href}\"} >${text}</a>`
-            } else {
-              captionString += `<span>${text}</span>`;
-            }
-          }
-        }
-        return `<div style={{}}>
-                  <img alt="Image" src={ \"${fileUrl}\" }/>
-                  <p style={{ margin:0 }}>${captionString}</p>
-                </div>`;
+        const caption = __generateCaptionJSX(image?.caption);
+
+        // <figure style={{margin:0}}>
+        return ` 
+          ![image](${fileUrl} "title")
+          <figure>
+            <figcaption>${caption}</figcaption>
+          </figure>
+          `;
       }
     });
 
@@ -130,51 +159,41 @@ class NotionAPI_Factory {
      * @description custom column-list block transformer
      * @link https://developers.notion.com/changelog/column-list-and-column-support
      */
-    this._n2m.setCustomTransformer("column_list", async (block) => {
+    this._n2m.setCustomTransformer('column_list', async (block) => {
       const MAX_NOTION_COLUMN_LIST = 10; // 한칸에 최대 개수.
       const retrieveBlocks_recur = async (block_id: string) => {
-        const block = await this.retrieveBlocksFromNotionPage(block_id, MAX_NOTION_COLUMN_LIST);
+        const block = await this.retrieveBlocksFromNotionPage(
+          block_id,
+          MAX_NOTION_COLUMN_LIST,
+        );
         let markdown = '';
         for (let child of block.results) {
-          if (!child["has_children"]) {
-            return `<div style={{flex:1, minWidth: '150px'}}>${await this._n2m.blockToMarkdown(child)}</div>`;
+          if (!child['has_children']) {
+            return `<div style={{flex:1, minWidth: '150px'}}>${await this._n2m.blockToMarkdown(
+              child,
+            )}</div>`;
           } else {
             markdown += await retrieveBlocks_recur(child.id);
           }
         }
 
         return markdown;
-      }
-      return (
-        `<div style={{ 
+      };
+      return `<div style={{ 
                 display: 'flex', 
                 justifyContent: 'center', 
                 flexWrap: 'wrap', 
                 gap: '1rem'
             }}>
             ${await retrieveBlocks_recur(block.id)}
-        </div>`
-      );
+        </div>`;
     });
-
-    // Set Custom Transformer for [Notion Block type: embed]
-    // this._n2m.setCustomTransformer("embed", async (block) => {
-    //   const {embed} = block as any;
-    //   if (!embed?.url) {
-    //     console.log('[DEV] _n2m.setCustomTransformer: No url in notion embed block');
-    //     return "";
-    //   }
-    //   return (`
-    //     <figure>
-    //       <iframe src="${embed?.url}"></iframe>
-    //       <figcaption>${await this._n2m.blockToMarkdown(embed?.caption)}</figcaption>
-    //     </figure>
-    //     `);
-    // });
-    // Set Custom Transformer for [Notion Block type: video]
   }
 
-  public async retrieveBlocksFromNotionPage(page_id: string, block_size: number) {
+  public async retrieveBlocksFromNotionPage(
+    page_id: string,
+    block_size: number,
+  ) {
     const res = await this._notion.blocks.children.list({
       block_id: page_id,
       page_size: block_size,
@@ -312,7 +331,7 @@ class NotionAPI_Factory {
       let paragraphs = '';
       blocks.results.map((block) => {
         if (block['type'] === 'paragraph') {
-          const _data = (block['paragraph']?.['rich_text'][0]);
+          const _data = block['paragraph']?.['rich_text'][0];
           if (_data && _data['text']) {
             const text: string = _data['text']['content'];
             paragraphs += text.replaceAll('\n', ' ') + ' ';
