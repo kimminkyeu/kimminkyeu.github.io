@@ -24,9 +24,11 @@ module.exports = {
                         img: {
                             maxHeight: '27rem',
                             margin: 'auto',
-                            // width: '100%',
-                            // objectFit: 'cover',
-                        }
+                        },
+                        // iframe: {
+                        //     maxHeight: '27rem',
+                        //     margin: 'auto',
+                        // }
                     },
                 },
             }),

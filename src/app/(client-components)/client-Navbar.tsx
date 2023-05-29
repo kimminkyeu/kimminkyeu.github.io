@@ -41,7 +41,7 @@ export default function Navbar(props: NavbarProps) {
 
   return (
     <nav ref={ref_nav} className={`${props.className}`}>
-      <div ref={ref_div} className=' container mx-auto px-6 flex shadow-custom_innerUnderline '>
+      <div ref={ref_div} className='pt-2 mx-auto px-6 flex shadow-custom_innerUnderline '>
         <div className={`${padding} mr-5${context === '/' ? underline : ''}`}>
           <Link href="/" onClick={() => setContext('/')}>
             Post

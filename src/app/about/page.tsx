@@ -14,9 +14,13 @@ export default async function AboutMe() {
   // const testData = await Notion.retrieveBlocksFromNotionPage(aboutMePage.pageId, 10);
 
   // console.log('----------------------------------');
-  const test = await Notion.retrieveBlocksFromNotionPage(aboutMePage.pageId, 30);
+  // const test = await Notion.retrieveBlocksFromNotionPage(aboutMePage.pageId, 30);
   // console.log(JSON.stringify(test.results, null, 4));
   // console.log('----------------------------------');
+
+  // console.log('markdown -----------------------------')
+  // console.log(aboutMePage.markdown);
+  // console.log('markdown -----------------------------')
 
   return (
     <div className=" container prose prose-neutral mx-auto mt-9">

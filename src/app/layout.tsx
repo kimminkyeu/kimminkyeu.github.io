@@ -29,7 +29,9 @@ export default function RootLayout({
     <body className={inter.className}>
     <div className="relative h-fit">
       <Header className="px-5 pt-2"/>
-      <Navbar className="sticky -top-1 z-50 bg-white"/>
+      <div className="sticky -top-1 z-50 bg-white ">
+        <Navbar className=""/>
+      </div>
       <div className="container mx-auto flex max-w-2xl flex-col px-6 md:px-0">
         <main className=" ">{children}</main>
       </div>

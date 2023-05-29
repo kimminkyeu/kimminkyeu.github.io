@@ -18,7 +18,7 @@ import {
   PropertyValueMultiSelect,
   PropertyTag,
 } from './type';
-import type {QueryDatabaseResponse} from '@notionhq/client/build/src/api-endpoints';
+import type {ListBlockChildrenResponse, QueryDatabaseResponse} from '@notionhq/client/build/src/api-endpoints';
 
 /**
  * @description [ Converting mardown object to HTML ]
@@ -49,16 +49,17 @@ class NotionAPI_Factory {
       return (fileUrl.includes('https://s3.us-west-2.amazonaws.com/secure.notion-static.com'))
     }
 
+    /**
+     * @description custom video block transformer
+     * @why 비디오 플레이어를 html내에 삽입, 캡션 추가.
+     */
     this._n2m.setCustomTransformer("video", async (block) => {
       const {video} = block as any;
       const fileType: string = video.type;
       let fileUrl = video[`${fileType}`]['url'];
-
-      if (!fileUrl) {
-        // no url
+      if (!fileUrl) { // no url
         return "";
       }
-
       // YOUTUBE ----------------------------
       // 이때 url 형식 = https://www.youtube.com/watch?v={비디오 아이디}
       // 여기서 videoId만 분리한 뒤 https://www.youtube.com/embed/{비디오 아이디} 로 바꿔야 iframe이 작동함.
@@ -76,14 +77,16 @@ class NotionAPI_Factory {
         } else {
           Assert.MustBeTrue(false, '[DEV]: Error, strange youtube URL');
         }
+        const caption = video?.caption[0]?.plain_text;
         return (`
         <figure>
-          <iframe src="${fileUrl}"></iframe>
-          <figcaption>${await this._n2m.blockToMarkdown(video?.caption)}</figcaption>
+          <div style={{position: 'relative', overflow: 'hidden', width:'100%', paddingBottom: '56.25%'}} >
+            <iframe style={{position: 'absolute', top:0, left:0}} width="100%" height="100%" src="${fileUrl}"></iframe>
+          </div>
+          <figcaption>${caption}</figcaption>
         </figure>
         `);
       }
-
       // NOTION DB file ----------------------------
       if (isNotionFileSystem(fileUrl)) {
         // TODO: use VIDEO.js video renderer !
@@ -91,17 +94,68 @@ class NotionAPI_Factory {
       }
     });
 
-    // Set Custom Transformer for [Notion Block type: caption]
-    // this._n2m.setCustomTransformer("image", async (block) => {
-    //   const {embed} = block as any;
-    //   if (!embed?.url) return "";
-    //   return (`
-    //     <figure>
-    //       <iframe src="${embed?.url}"></iframe>
-    //       <figcaption>${await this._n2m.blockToMarkdown(embed?.caption)}</figcaption>
-    //     </figure>
-    //     `);
-    // });
+    /**
+     * @description custom image block transformer
+     * @why 이미지 캡션 추가.
+     */
+    this._n2m.setCustomTransformer("image", async (block) => {
+      const {image} = block as any;
+      const fileType: string = image.type;
+      let fileUrl: string = image[`${fileType}`]['url'];
+      if (!fileUrl) {
+        return "";
+      } else {
+        let captionString = ''
+        // console.log(image);
+        if (image?.caption) {
+          const captionBlocks: Array<any> = image?.caption;
+          for (let caption of captionBlocks) {
+            const text = caption['plain_text'];
+            const href = caption['href'];
+            if (href) { // if has link
+              captionString += `<a href={ \"${href}\"} >${text}</a>`
+            } else {
+              captionString += `<span>${text}</span>`;
+            }
+          }
+        }
+        return `<div style={{}}>
+                  <img alt="Image" src={ \"${fileUrl}\" }/>
+                  <p style={{ margin:0 }}>${captionString}</p>
+                </div>`;
+      }
+    });
+
+    /**
+     * @description custom column-list block transformer
+     * @link https://developers.notion.com/changelog/column-list-and-column-support
+     */
+    this._n2m.setCustomTransformer("column_list", async (block) => {
+      const MAX_NOTION_COLUMN_LIST = 10; // 한칸에 최대 개수.
+      const retrieveBlocks_recur = async (block_id: string) => {
+        const block = await this.retrieveBlocksFromNotionPage(block_id, MAX_NOTION_COLUMN_LIST);
+        let markdown = '';
+        for (let child of block.results) {
+          if (!child["has_children"]) {
+            return `<div style={{flex:1, minWidth: '150px'}}>${await this._n2m.blockToMarkdown(child)}</div>`;
+          } else {
+            markdown += await retrieveBlocks_recur(child.id);
+          }
+        }
+
+        return markdown;
+      }
+      return (
+        `<div style={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                flexWrap: 'wrap', 
+                gap: '1rem'
+            }}>
+            ${await retrieveBlocks_recur(block.id)}
+        </div>`
+      );
+    });
 
     // Set Custom Transformer for [Notion Block type: embed]
     // this._n2m.setCustomTransformer("embed", async (block) => {
@@ -334,5 +388,4 @@ class NotionAPI_Factory {
 }
 
 const NotionAPI_Instance = new NotionAPI_Factory();
-
 export default NotionAPI_Instance;
