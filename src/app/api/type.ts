@@ -24,7 +24,7 @@ export type PropertyValueDate = ExtractedPropertyValue<'date'>;
 export type PropertyValueEditedTime =
   ExtractedPropertyValue<'last_edited_time'>;
 
-export type SelectColor =
+export type NotionColor =
   | 'default'
   | 'gray'
   | 'brown'
@@ -37,7 +37,7 @@ export type SelectColor =
   | 'red';
 export type PropertyTag = {
   name: string;
-  color: SelectColor;
+  color: NotionColor;
 };
 
 export interface IPost {

@@ -16,7 +16,7 @@ import {
   IPost,
   PropertyValueSelect,
   PropertyValueMultiSelect,
-  PropertyTag,
+  PropertyTag, NotionColor,
 } from './type';
 import type {
   ListBlockChildrenResponse,
@@ -63,17 +63,37 @@ class NotionAPI_Factory {
       );
     };
 
+    interface NotionTextAnnotation {
+      bold: boolean,
+      italic: boolean,
+      strikethrough: boolean,
+      underline: boolean,
+      code: boolean,
+      color: NotionColor,
+    }
+
+    const __generateTextAnnotationStyle = (annotation: NotionTextAnnotation, text: string) => {
+      (annotation.bold) && (text = `**${text}**`);
+      (annotation.italic) && (text = `*${text}*`);
+      (annotation.strikethrough) && (text = `~~${text.trim()/*공백제거*/}~~`);
+      (annotation.underline) && (text = `<ins>${text}</ins>`);
+      (annotation.code) && (text = `\`${text}\``);
+      (annotation.color !== 'default') && (text = `<span style={\"color:${annotation.color}\"}></span>`);
+      return text;
+    }
+
+    /** @description [ Convert Rich-text to markdown ] */
     const __generateTextJSX = (textBlocks?: readonly any[]) => {
       if (!textBlocks) return '';
       let textString = '';
       for (let block of textBlocks) {
         const text = block['plain_text'];
         const href = block['href'];
+        const annotations = block['annotations'];
         if (href) {
-          // if has link
-          textString += `<a href={ \"${href}\"} >${text}</a>`;
+          textString += __generateTextAnnotationStyle(annotations, `[${text}](${href})`);
         } else {
-          textString += `<span>${text}</span>`;
+          textString += __generateTextAnnotationStyle(annotations, `${text}`);
         }
       }
       return textString;
@@ -196,8 +216,7 @@ class NotionAPI_Factory {
       const textArray: Array<any> = to_do['rich_text'];
       const text = __generateTextJSX(textArray);
       const isDone: boolean = to_do['checked'];
-      return isDone ? (`* [x] ${text}`) : (`* [ ] ${text}`)
-
+      return isDone ? (`* [x] ~~${text.trim()/*공백제거*/}~~`) : (`* [ ] ${text}`)
       /*
       return (
         isDone ? (
@@ -210,11 +229,7 @@ class NotionAPI_Factory {
           </div>`
         ))
        */
-
-
     })
-
-
   }
 
 

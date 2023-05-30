@@ -2,6 +2,7 @@
 
 const {spacing} = require('tailwindcss/defaultTheme');
 const {grey} = require("@mui/material/colors");
+const {after} = require("node:test");
 
 module.exports = {
     content: [
@@ -25,6 +26,9 @@ module.exports = {
                         'h1,h2,h3,h4': {
                             'scroll-margin-top': spacing[32],
                         },
+                        del: { // strikeThrough text
+                            color: theme('colors.neutral[400]'),
+                        },
                         img: {
                             maxHeight: '27rem',
                             margin: 'auto',
@@ -32,14 +36,32 @@ module.exports = {
                         p: {
                             marginBottom: 0,
                         },
+                        a: {
+                            '--tw-prose-links': theme('colors.neutral[500]'),
+                        },
                         figure: {
                             marginTop: 0,
                         },
                         figcaption: {
                             marginLeft: 2,
                             marginTop: 6,
-                            '--tw-prose-links': theme('colors.neutral[600]'),
-                            '--tw-prose-captions': theme('colors.neutral[500]'),
+                            '--tw-prose-links': theme('colors.neutral[400]'),
+                            '--tw-prose-captions': theme('colors.neutral[400]'),
+                        },
+                        pre: false, // disable prose code block. use one-dark instead
+                        'pre code': false,
+                        'code::before': false,
+                        'code::after': false,
+                        code: {
+                            padding: '0.25rem',
+                            backgroundColor: theme('colors.neutral[200]'),
+                            color: theme('colors.red[500]'),
+                            borderRadius: '3px',
+                            margin: '0 2px',
+                        },
+                        ul: {
+                            padding: 0,
+                            listStyleType: 'none',
                         },
                     },
                 },
