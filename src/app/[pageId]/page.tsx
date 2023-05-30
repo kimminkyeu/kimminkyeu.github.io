@@ -53,6 +53,16 @@ export default async function Page({params}: StaticParams) {
   const currentPost = posts.find((p) => p.pageId === params.pageId);
   const processed_mdx = await processMdx(currentPost.markdown);
 
+
+  // console.log('===========================================');
+  // const test = await Notion.retrieveBlocksFromNotionPage(currentPost.pageId, 30);
+  // console.log(JSON.stringify(test.results, null, 4));
+  // console.log('----------------------------------');
+  // console.log(currentPost.markdown);
+  // console.log('----------------------------------');
+  // console.log('===========================================');
+
+
   return (
     <div className=" container prose prose-neutral mx-auto">
       <ArticleHeader post={currentPost}/>

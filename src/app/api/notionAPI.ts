@@ -63,21 +63,20 @@ class NotionAPI_Factory {
       );
     };
 
-    const __generateCaptionJSX = (captionBlocks?: readonly any[]) => {
-      if (!captionBlocks) return '';
-      let captionString = '';
-      for (let caption of captionBlocks) {
-        const text = caption['plain_text'];
-        const href = caption['href'];
+    const __generateTextJSX = (textBlocks?: readonly any[]) => {
+      if (!textBlocks) return '';
+      let textString = '';
+      for (let block of textBlocks) {
+        const text = block['plain_text'];
+        const href = block['href'];
         if (href) {
           // if has link
-          captionString += `<a href={ \"${href}\"} >${text}</a>`;
+          textString += `<a href={ \"${href}\"} >${text}</a>`;
         } else {
-          captionString += `<span>${text}</span>`;
+          textString += `<span>${text}</span>`;
         }
       }
-      // return `<p>${captionString}</p>`;
-      return captionString;
+      return textString;
     };
 
     /**
@@ -111,7 +110,7 @@ class NotionAPI_Factory {
         } else {
           Assert.MustBeTrue(false, '[DEV]: Error, strange youtube URL');
         }
-        const caption = __generateCaptionJSX(video?.caption);
+        const caption = __generateTextJSX(video?.caption);
 
         return `
         <figure>
@@ -143,7 +142,7 @@ class NotionAPI_Factory {
       if (!fileUrl) {
         return '';
       } else {
-        const caption = __generateCaptionJSX(image?.caption);
+        const caption = __generateTextJSX(image?.caption);
 
         // <figure style={{margin:0}}>
         return ` 
@@ -188,7 +187,36 @@ class NotionAPI_Factory {
             ${await retrieveBlocks_recur(block.id)}
         </div>`;
     });
+
+    /**
+     * @description custom GFM-checkout transformer
+     */
+    this._n2m.setCustomTransformer('to_do', async (block) => {
+      const {to_do} = block as any;
+      const textArray: Array<any> = to_do['rich_text'];
+      const text = __generateTextJSX(textArray);
+      const isDone: boolean = to_do['checked'];
+      return isDone ? (`* [x] ${text}`) : (`* [ ] ${text}`)
+
+      /*
+      return (
+        isDone ? (
+          `<div style={{listStyleType: 'none'}}>
+            <input disabled type="checkbox" checked />&nbsp;<span style={{textDecoration:'line-through'}}>${text}</span>
+          </div>`
+        ) : (
+          `<div style={{listStyleType: 'none'}}>
+            <input disabled type="checkbox" />&nbsp;<span>${text}</span>
+          </div>`
+        ))
+       */
+
+
+    })
+
+
   }
+
 
   public async retrieveBlocksFromNotionPage(
     page_id: string,

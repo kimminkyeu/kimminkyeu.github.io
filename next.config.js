@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 
 const withPlugins = require('next-compose-plugins');
-
 const withExportImages = require('next-export-optimize-images');
+const {RuntimeError} = require("next/dist/client/components/react-dev-overlay/internal/container/RuntimeError");
 
 const withMDX = require('@next/mdx')({
     extension: /\.mdx?$/,
@@ -16,16 +16,33 @@ const withMDX = require('@next/mdx')({
     },
 });
 
+let pluginsArray;
+let imageOptimizeOption;
+
+if (process.env.NODE_ENV === "production") {
+    // if Production, use (next-export-optimize-images)
+    pluginsArray = [withMDX, withExportImages];
+    imageOptimizeOption = {
+        deviceSizes: [640, 960, 1280, 1600, 1920]
+    }
+} else if (process.env.NODE_ENV === "development") {
+    imageOptimizeOption = {
+        unoptimized: true,
+    }
+    pluginsArray = [withMDX];
+} else {
+    throw Error();
+}
+
 const nextConfig = {
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-    output: 'export', // (Fully Static App)
+    output: 'export',
     reactStrictMode: true,
     compiler: {
         styledComponents: true,
     },
     images: {
-        // unoptimized: true,
-        // deviceSizes: [640, 960, 1280, 1600, 1920],
+        ...imageOptimizeOption,
         remotePatterns: [
             {
                 protocol: 'https',
@@ -44,10 +61,8 @@ const nextConfig = {
     swcMinify: true,
 };
 
+
 module.exports = withPlugins(
-    [
-        withExportImages,
-        withMDX,
-    ],
+    [...pluginsArray],
     nextConfig
 );

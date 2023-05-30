@@ -2,20 +2,20 @@
 import {MDXRemote, MDXRemoteProps} from 'next-mdx-remote';
 import Image from 'next/image';
 
-/** ---------------------------------------------
- * @description MDX custom component for Image
+/** -------------------------------------------------
+ * @description [ MDX custom component for Image ]
  * @link https://nextjs.org/docs/pages/api-reference/components/image#priority
+ * @link https://fe-developers.kakaoent.com/2022/220714-next-image/
+ * @link https://next-export-optimize-images.vercel.app/docs/comparison
  * */
 function ImageCustomComponent(props) {
-  // https://fe-developers.kakaoent.com/2022/220714-next-image/
-  // https://next-export-optimize-images.vercel.app/docs/comparison
-  return (
-    // next-image-export-optimizer 가 next/image 컴포넌트의 기능을 덮어쓰고 있음.
-    <Image {...props} alt={'Image'} sizes="210px" width={320} height={320} placeholder="blur"/>
-
+  if (process.env.NODE_ENV === "development") { // on next dev, do not use custom optimizer
+    // next-export-optimize-images
+    return <Image {...props} alt={'Image'} sizes="210px" width={320} height={320}/>
+  } else {
     // defualt image loader
-    // <Image {...props} alt={'Image'} sizes="210px" width={320} height={320}/>
-  );
+    return <Image {...props} alt={'Image'} width={320} height={320} placeholder="blur"/>
+  }
 }
 
 interface ArticleMainProps {
