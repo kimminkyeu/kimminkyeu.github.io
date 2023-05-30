@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 
 const withPlugins = require('next-compose-plugins');
+
 const withExportImages = require('next-export-optimize-images');
+
 const withMDX = require('@next/mdx')({
     extension: /\.mdx?$/,
     options: {
@@ -22,7 +24,8 @@ const nextConfig = {
         styledComponents: true,
     },
     images: {
-        deviceSizes: [640, 960, 1280, 1600, 1920],
+        // unoptimized: true,
+        // deviceSizes: [640, 960, 1280, 1600, 1920],
         remotePatterns: [
             {
                 protocol: 'https',

@@ -1,7 +1,5 @@
 'use client';
 import {MDXRemote, MDXRemoteProps} from 'next-mdx-remote';
-import {MDXProvider} from '@mdx-js/react';
-import {MDXComponents} from 'mdx/types';
 import Image from 'next/image';
 
 /** ---------------------------------------------
@@ -14,6 +12,9 @@ function ImageCustomComponent(props) {
   return (
     // next-image-export-optimizer 가 next/image 컴포넌트의 기능을 덮어쓰고 있음.
     <Image {...props} alt={'Image'} sizes="210px" width={320} height={320} placeholder="blur"/>
+
+    // defualt image loader
+    // <Image {...props} alt={'Image'} sizes="210px" width={320} height={320}/>
   );
 }
 
