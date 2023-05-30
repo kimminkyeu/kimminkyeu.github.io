@@ -10,8 +10,10 @@ import Image from 'next/image';
  * */
 function ImageCustomComponent(props) {
   // https://fe-developers.kakaoent.com/2022/220714-next-image/
+  // https://next-export-optimize-images.vercel.app/docs/comparison
   return (
-    <Image {...props} alt={'Image'} sizes="210px" width={320} height={320}/>
+    // next-image-export-optimizer 가 next/image 컴포넌트의 기능을 덮어쓰고 있음.
+    <Image {...props} alt={'Image'} sizes="210px" width={320} height={320} placeholder="blur"/>
   );
 }
 
