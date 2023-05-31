@@ -16,7 +16,7 @@ import {
   IPost,
   PropertyValueSelect,
   PropertyValueMultiSelect,
-  PropertyTag, NotionColor, ArticleStatus,
+  PropertyTag, NotionColor, ArticleStatus, Slug, PageId,
 } from './type';
 import type {
   ListBlockChildrenResponse,
@@ -266,10 +266,33 @@ class NotionAPI_Factory {
     // return query.results.map((v) => v);
   }
 
-  public async getPageDataFromDatabase(status?: ArticleStatus, tagName?: string) {
+  public extractPageIdFromSlug(slug: string) {
+    const idx = slug.lastIndexOf('-');
+    return slug.substring(idx + 1);
+  }
+
+  public async getEveryPageDataFromDatabase(status?: ArticleStatus, tagName?: string, includeMarkdown?: boolean) {
     const query = await this._queryDatabaseByStatus(status, tagName);
-    const pageData = await this._extractPageDataFromDBQuery(query);
+    const pageData = await this._extractPageDataFromDBQuery(query, includeMarkdown);
     return pageData;
+  }
+
+  public async getSlugListFromDatabase(status?: ArticleStatus, tagName?: string) {
+    const query = await this._queryDatabaseByStatus(status, tagName);
+    const databaseItems: DatabaseItem[] = query.results.map((databaseItem) => databaseItem as DatabaseItem);
+    const slugList: string[] = databaseItems.map((postInDB: DatabaseItem) => {
+      const _pageId = this._removeDash(postInDB.id);
+      const _title = postInDB.properties.Name.title[0]?.plain_text ?? `No title`;
+      const __titleSluged = this._slugify(_title);
+      let _slug;
+      if (__titleSluged) { // 일부라도 영문이 있는 경우
+        _slug = __titleSluged + '-' + _pageId;
+      } else { // empty slug (한글 제목만 있을 경우)
+        _slug = _pageId;
+      }
+      return _slug;
+    });
+    return slugList;
   }
 
   // https://github.com/souvikinator/notion-to-md
@@ -326,12 +349,13 @@ class NotionAPI_Factory {
 
   // - 와 공백, / 등 url에 포함되면 안되는 기호 제거.
   private _slugify(str: string) {
-    return str.replace(/^\s+|\s+$/g, '')
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+    // str = str.toLowerCase()  // convert string to lowercase
+    str = str.trim() // trim leading/trailing white space
+    str = str.replace(/[^A-Za-z0-9 -]/g, ''); // remove any non-alphanumeric characters
+    if (str.trim().length === 0) return ''; // replace spaces with hyphens
+    str = str.replace(/\s+/g, '-') // replace spaces with hyphens
+      .replace(/-+/g, '-'); // remove consecutive hyphens
+    return str;
   }
 
 
@@ -407,7 +431,7 @@ class NotionAPI_Factory {
   // 만약 설명글이 없다면, 헤딩을 제외한 본문의 markdown 내용을 뽑아와서 설명글로 대체하기.
   private async _extractDescription(
     _postInDB: DatabaseItem,
-    _markdown: string,
+    // _markdown: string,
     _pageId: string,
   ) {
     const description =
@@ -429,7 +453,9 @@ class NotionAPI_Factory {
     return description;
   }
 
-  private async _extractPageDataFromDBQuery(response: QueryDatabaseResponse) {
+  // ***************************************************************
+
+  private async _extractPageDataFromDBQuery(response: QueryDatabaseResponse, includeMarkdownAndReadingTime?: boolean) {
     const databaseItems: DatabaseItem[] = response.results.map(
       (databaseItem) => databaseItem as DatabaseItem,
     );
@@ -437,20 +463,27 @@ class NotionAPI_Factory {
       databaseItems.map(async (postInDB: DatabaseItem) => {
         const _pageId = this._removeDash(postInDB.id);
         const _last_edited_date = this._extractDate(postInDB.last_edited_time);
-        const _title =
-          postInDB.properties.Name.title[0]?.plain_text ?? `No title`;
+        const _title = postInDB.properties.Name.title[0]?.plain_text ?? `No title`;
         const _tags = this._extractTags(postInDB.properties.Tags);
         const _coverImageUrl = this.getImageUrlFromCoverObject(postInDB.cover);
         const _publishdate = postInDB.properties.Date.date?.start;
-        const _markdown = await this.getMarkDownString(_pageId);
+        const _markdown = includeMarkdownAndReadingTime ? (await this.getMarkDownString(_pageId)) : null;
         const _description = await this._extractDescription(
           postInDB,
-          _markdown,
           _pageId,
         );
+        const __titleSluged = this._slugify(_title);
+        let _slug;
+        if (__titleSluged) { // 일부라도 영문이 있는 경우
+          _slug = __titleSluged + '-' + _pageId;
+        } else { // empty slug (한글 제목만 있을 경우)
+          _slug = _pageId;
+        }
+
 
         const post: IPost = {
-          pageId: _pageId,
+          // pageId: _pageId,
+          slug: _slug,
           title: _title,
           description: _description,
           coverImageUrl: _coverImageUrl,
@@ -459,7 +492,7 @@ class NotionAPI_Factory {
             _publishdate ?? _last_edited_date,
           ), // if publishDate is not set, than set to default, which is "last edited time"
           markdown: _markdown, // 본문 마크다운 데이터 (후속 처리 필요한 데이터)
-          readingTime: readingTime(_markdown).text,
+          readingTime: _markdown && (readingTime(_markdown).text),
         };
         return post;
       }),

@@ -40,8 +40,12 @@ export type PropertyTag = {
   color: NotionColor;
 };
 
+export type Slug = string;
+export type PageId = string;
+
 export interface IPost {
-  pageId: string;
+  // pageId: string;
+  slug: string;
   tags: PropertyTag[];
   publishDate: string;
   title: string;

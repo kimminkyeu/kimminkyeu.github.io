@@ -4,9 +4,10 @@ import ArticleHeader from '../(client-components)/client-ArticleHeader';
 import MDXRenderer from '../(client-components)/client-MdxRenderer';
 import {Metadata, ResolvingMetadata} from 'next';
 import {Config} from "@/config/config";
+import {Slug} from "@/app/api/type";
 
 type Props = {
-  params: { pageId: string };
+  params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
@@ -16,8 +17,10 @@ export async function generateMetadata(
   parent?: ResolvingMetadata,
 ): Promise<Metadata> {
   // read route params
-  const posts = await Notion.getPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
-  const postInfo = posts.find((p) => p.pageId === params.pageId);
+  const posts = await Notion.getEveryPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
+  const postInfo = posts.find((p) => {
+    return (p.slug === params.slug);
+  });
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
   const tagsOnlyString = postInfo.tags.map((tag) => tag.name);
@@ -36,38 +39,30 @@ export async function generateMetadata(
 }
 
 export async function generateStaticParams() {
-  const pageIdList = await Notion.getPageIdListFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
-  return pageIdList.map((_pageId) => ({
-    pageId: _pageId,
+  const slugList = await Notion.getSlugListFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
+  return slugList.map((_slug) => ({
+    slug: _slug,
   }));
 }
 
 interface StaticParams {
   params: {
-    pageId: string;
+    slug: Slug;
   };
 }
 
+
 export default async function Page({params}: StaticParams) {
-  const posts = await Notion.getPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
-  const currentPost = posts.find((p) => p.pageId === params.pageId);
-  const processed_mdx = await processMdx(currentPost.markdown);
-
-
-  // console.log('===========================================');
-  // const test = await Notion.retrieveBlocksFromNotionPage(currentPost.pageId, 30);
-  // console.log(JSON.stringify(test.results, null, 4));
-  // console.log('----------------------------------');
-  // console.log(currentPost.markdown);
-  // console.log('----------------------------------');
-  // console.log('===========================================');
-
+  const posts = await Notion.getEveryPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE, null, true);
+  const currentPost = posts.find((p) => p.slug === params.slug);
+  console.log(currentPost);
+  // const processed_mdx = await processMdx(currentPost.markdown);
 
   return (
     <div className=" container prose prose-neutral mx-auto">
-      <ArticleHeader post={currentPost}/>
+      {/*<ArticleHeader post={currentPost}/>*/}
       <article>
-        <MDXRenderer source={processed_mdx.serializedMdx}/>
+        {/*<MDXRenderer source={processed_mdx.serializedMdx}/>*/}
       </article>
     </div>
   );

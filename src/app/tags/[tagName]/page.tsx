@@ -16,7 +16,7 @@ interface StaticParams {
 }
 
 export default async function Page({params}: StaticParams) {
-  const posts = await Notion.getPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE, params.tagName);
+  const posts = await Notion.getEveryPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE, params.tagName, true);
 
   const renderList = () => {
     return posts.map((post, i) => (

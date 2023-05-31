@@ -7,10 +7,14 @@ import {processMdx} from "@/app/api/mdxAPI";
 
 export default async function AboutMe() {
   // get Post data (including markdown)
-  const aboutMePage = (await Notion.getPageDataFromDatabase(Config.STATUS_ABOUT_ME))[0];
+  const aboutMePage = (await Notion.getEveryPageDataFromDatabase(Config.STATUS_ABOUT_ME))[0];
+  const processed_mdx = await processMdx(aboutMePage.markdown);
+  // const pageId = Notion.extractPageIdFromSlug(aboutMePage.slug);
+  // const markdown = await Notion.getMarkDownString(pageId);
   // serialize markdown
   // console.log(aboutMePage.markdown);
-  const processed_mdx = await processMdx(aboutMePage.markdown);
+  // const processed_mdx = await processMdx(markdown);
+  // const processed_mdx = await processMdx(markdown);
   // const testData = await Notion.retrieveBlocksFromNotionPage(aboutMePage.pageId, 10);
 
   // console.log('----------------------------------');
