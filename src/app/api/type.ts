@@ -1,4 +1,4 @@
-import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
+import {QueryDatabaseResponse} from '@notionhq/client/build/src/api-endpoints';
 
 export type PostResult = Extract<
   QueryDatabaseResponse['results'][number],
@@ -60,3 +60,5 @@ export type DatabaseItem = PostResult & {
     Date: PropertyValueDate;
   };
 };
+
+export type ArticleStatus = 'About me' | 'Publish' | 'In progress' | 'Not started';

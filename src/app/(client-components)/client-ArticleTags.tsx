@@ -7,8 +7,10 @@ import {IconButton} from '@mui/material';
 // import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 // import IosShareIcon from '@mui/icons-material/IosShare';
 import ShareIcon from '@mui/icons-material/Share';
+import {useRouter} from "next/navigation";
 import {Tooltip} from '@mui/material';
 import * as MuiColors from '@mui/material/colors';
+import React from 'react';
 
 interface ArticleTagsProps {
   className?: string;
@@ -16,12 +18,14 @@ interface ArticleTagsProps {
 }
 
 export default function ArticleTags({className, post}: ArticleTagsProps) {
-  const handleClick = () => {
-    alert('you clicked chip');
+  const router = useRouter();
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const label = event.currentTarget.innerText;
+    router.push(`/tags/${label}`);
   };
 
   const getMuiColorByTagColor = (tagColor: string) => {
-    const COLOR_VALUE = 200;
+    const COLOR_VALUE = 400;
     switch (tagColor) {
       case 'gray':
         return MuiColors.grey[COLOR_VALUE];
@@ -30,7 +34,7 @@ export default function ArticleTags({className, post}: ArticleTagsProps) {
       case 'orange':
         return MuiColors.orange[COLOR_VALUE];
       case 'yellow':
-        return MuiColors.yellow[COLOR_VALUE];
+        return MuiColors.yellow[COLOR_VALUE + 400];
       case 'green':
         return MuiColors.green[COLOR_VALUE];
       case 'blue':
@@ -38,32 +42,36 @@ export default function ArticleTags({className, post}: ArticleTagsProps) {
       case 'purple':
         return MuiColors.purple[COLOR_VALUE - 100];
       case 'pink':
-        return MuiColors.pink[COLOR_VALUE];
+        return MuiColors.pink[COLOR_VALUE - 100];
       case 'red':
-        return MuiColors.red[COLOR_VALUE];
+        return MuiColors.red[COLOR_VALUE - 100];
       default:
         return MuiColors.common[COLOR_VALUE];
     }
   }
 
   const renderTags = (tags: readonly PropertyTag[]) => {
-    // TODO: apply color to tag
+    // TODO: apply color to tags
     return tags.map((tag, i) => (
-      <Chip
-        key={i}
-        onClick={handleClick}
-        label={tag.name}
-        size="small"
-        variant="filled"
-        style={{
-          color: '#000',
-          backgroundColor: getMuiColorByTagColor(tag.color),
-          fontSize: '0.7rem',
-          fontWeight: 300,
-          borderRadius: 4,
-          height: '19px',
-        }}
-      />
+      <Tooltip key={i} title={`view all ${tag.name} posts`} placement="top-start">
+        <Chip
+          key={i}
+          onClick={handleClick}
+          label={tag.name}
+          size="small"
+          variant="outlined"
+          style={{
+            // color: '#000',
+            color: getMuiColorByTagColor(tag.color),
+            borderColor: getMuiColorByTagColor(tag.color),
+            // backgroundColor: getMuiColorByTagColor(tag.color),
+            // fontSize: '0.8rem',
+            fontWeight: 400,
+            borderRadius: 4,
+            // height: '1.3rem',
+          }}
+        />
+      </Tooltip>
     ));
   };
 
@@ -73,11 +81,11 @@ export default function ArticleTags({className, post}: ArticleTagsProps) {
         {renderTags(post.tags)}
         <p className=" text-xs text-neutral-500"> • {post.readingTime}</p>
       </Stack>
-      <Tooltip title="Share post" placement="right-start">
-        <IconButton aria-label="share" size="small">
-          <ShareIcon sx={{width: '17px', height: '17px'}}/>
-        </IconButton>
-      </Tooltip>
+      {/*<Tooltip title="Share post" placement="top-start">*/}
+      {/*<IconButton aria-label="share" size="small">*/}
+      {/*  <ShareIcon sx={{width: '1.2rem', height: '1.2rem'}}/>*/}
+      {/*</IconButton>*/}
+      {/*</Tooltip>*/}
     </div>
   );
 }
