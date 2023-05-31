@@ -8,7 +8,7 @@ import Image from 'next/image';
  * @link https://fe-developers.kakaoent.com/2022/220714-next-image/
  * @link https://next-export-optimize-images.vercel.app/docs/comparison
  * */
-function ImageCustomComponent(props) {
+export function ImageCustomComponent(props) {
   if (process.env.NODE_ENV === "development") { // on next dev, do not use custom optimizer
     // next-export-optimize-images
     return <Image {...props} alt={'Image'} sizes="210px" width={320} height={320}/>

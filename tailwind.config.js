@@ -37,7 +37,7 @@ module.exports = {
                             marginBottom: 0,
                         },
                         a: {
-                            '--tw-prose-links': theme('colors.neutral[500]'),
+                            '--tw-prose-links': theme('colors.neutral[400]'),
                         },
                         figure: {
                             marginTop: 0,
@@ -48,16 +48,14 @@ module.exports = {
                             '--tw-prose-links': theme('colors.neutral[400]'),
                             '--tw-prose-captions': theme('colors.neutral[400]'),
                         },
-                        pre: false, // disable prose code block. use one-dark instead
-                        'pre code': false,
                         'code::before': false,
                         'code::after': false,
                         code: {
-                            padding: '0.25rem',
+                            fontWeight: theme('fontWeight.light'),
+                            padding: '0.1rem 0.2rem',
                             backgroundColor: theme('colors.neutral[200]'),
                             color: theme('colors.red[500]'),
                             borderRadius: '3px',
-                            margin: '0 2px',
                         },
                         ul: {
                             padding: 0,

@@ -16,7 +16,7 @@ import {
   IPost,
   PropertyValueSelect,
   PropertyValueMultiSelect,
-  PropertyTag, NotionColor,
+  PropertyTag, NotionColor, ArticleStatus,
 } from './type';
 import type {
   ListBlockChildrenResponse,
@@ -143,8 +143,10 @@ class NotionAPI_Factory {
       }
       // NOTION DB file ----------------------------
       if (isNotionFileSystem(fileUrl)) {
-        // TODO: use VIDEO.js video renderer !
+        // Option: use VIDEO.js video renderer to enable embedded video
         // https://videojs.com/guides/react/
+        // 그러나 나는 s3-AWS 비공개 자료 정책(하루동안 접근 가능) 때문에 삭제함.
+        return ''; // show nothing.
       }
     });
 
@@ -245,13 +247,27 @@ class NotionAPI_Factory {
   }
 
   // db 하위 페이지들의 id 리스트만 얻고 싶을 때
-  public async getPageIdListFromDatabase(status?: string) {
+  public async getPageIdListFromDatabase(status?: ArticleStatus) {
     const query = await this._queryDatabaseByStatus(status);
     return query.results.map((v) => this._removeDash(v.id));
   }
 
-  public async getPageDataFromDatabase(status?: string) {
+  public async getTagSetFromDatabase(status?: ArticleStatus) {
     const query = await this._queryDatabaseByStatus(status);
+    const databaseItems: DatabaseItem[] = query.results.map(
+      (databaseItem) => databaseItem as DatabaseItem,
+    );
+    const tagSet = new Set<PropertyTag>();
+    databaseItems.forEach((postInDB: DatabaseItem) => {
+      const _tags = this._extractTags(postInDB.properties.Tags);
+      _tags.forEach((t) => tagSet.add(t));
+    })
+    return tagSet;
+    // return query.results.map((v) => v);
+  }
+
+  public async getPageDataFromDatabase(status?: ArticleStatus, tagName?: string) {
+    const query = await this._queryDatabaseByStatus(status, tagName);
     const pageData = await this._extractPageDataFromDBQuery(query);
     return pageData;
   }
@@ -266,16 +282,31 @@ class NotionAPI_Factory {
 
   /**
    * @param status
+   * @param tagName
    * @returns database object
    */
-  private async _queryDatabaseByStatus(status?: string) {
-    let filterArgs;
+
+  // https://developers.notion.com/reference/post-database-query-filter
+  private async _queryDatabaseByStatus(status?: ArticleStatus, tagName?: string) {
+    let filterArgs = {
+      and: [],
+    };
+
     if (status) {
-      filterArgs = {
+      const statusFilter = {
         property: 'Status',
-        status: {equals: `${status}`}, // filter only edit done article.
-      };
+        status: {equals: `${status}`}
+      }
+      filterArgs.and.push(statusFilter);
     }
+    if (tagName) {
+      const tagFilter = {
+        property: 'Tags',
+        multi_select: {contains: `${tagName}`}
+      }
+      filterArgs.and.push(tagFilter);
+    }
+
     Assert.NonNullish(process.env.NOTION_DATABASE_ID);
     const query = await this._notion.databases.query({
       database_id: process.env.NOTION_DATABASE_ID,
@@ -284,6 +315,7 @@ class NotionAPI_Factory {
       // https://developers.notion.com/reference/intro#pagination
       page_size: 10, // for pagination, max content size.
     });
+    // console.log(JSON.stringify(query, null, 4));
     return query;
   }
 
@@ -291,6 +323,17 @@ class NotionAPI_Factory {
     const result = str.replace(/[-]/g, ''); // remove dash
     return result;
   }
+
+  // - 와 공백, / 등 url에 포함되면 안되는 기호 제거.
+  private _slugify(str: string) {
+    return str.replace(/^\s+|\s+$/g, '')
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
 
   private _extractDate(str: string) {
     const pos = str.indexOf('T');
@@ -357,7 +400,7 @@ class NotionAPI_Factory {
       }
       return null;
     } else {
-      Assert.NonNullish(null, '[DEV] _extractTags(): Unsupported tag type.');
+      Assert.NonNullish(null, '[DEV] _extractTags(): Unsupported tags type.');
     }
   }
 

@@ -3,12 +3,9 @@ import ArticleCard from '@/app/(client-components)/client-ArticleCard';
 import {IPost} from './api/type';
 import {Config} from "@/config/config";
 
-interface ArticleListProps {
-  posts: IPost[];
-  className?: string;
-}
+export default async function Page() {
+  const posts = await Notion.getPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
 
-function ArticleList({posts, className}: ArticleListProps) {
   const renderList = () => {
     return posts.map((post, i) => (
       <div className="mb-4" key={i}>
@@ -17,11 +14,5 @@ function ArticleList({posts, className}: ArticleListProps) {
     ));
   };
 
-  return <div className={className}>{renderList()}</div>;
-}
-
-export default async function Page() {
-  const posts = await Notion.getPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
-
-  return <ArticleList posts={posts} className="mt-5 flex flex-col"/>;
+  return <div className="mt-5 flex flex-col">{renderList()}</div>;
 }

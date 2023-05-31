@@ -3,15 +3,17 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import {Stack} from '@mui/material';
+// import CardMedia from '@mui/material/CardMedia';
+// import Typography from '@mui/material/Typography';
+// import {Stack} from '@mui/material';
 import {grey} from '@mui/material/colors';
 import Link from 'next/link';
 import {IPost} from '@/app/api/type';
 import {ThemeProvider} from '@mui/material/styles';
 import {BlogTheme} from '@/app/theme';
 import ArticleTages from './client-ArticleTags';
+// import Image from 'next/image';
+import {ImageCustomComponent} from "@/app/(client-components)/client-MdxRenderer";
 
 interface ArticleCardProps {
   post: IPost;
@@ -66,12 +68,13 @@ export default function ArticleCard({post}: ArticleCardProps) {
             </CardContent>
             {post.coverImageUrl && (
               <div className=" ml-6 flex w-20 sm:ml-11 sm:w-28">
-                <CardMedia
-                  loading={'lazy'}
-                  component="img"
-                  image={post.coverImageUrl}
-                  alt={'preview image'}
-                />
+                <ImageCustomComponent src={post.coverImageUrl}/>
+                {/*<CardMedia*/}
+                {/*  loading={'lazy'}*/}
+                {/*  component="img"*/}
+                {/*  image={post.coverImageUrl}*/}
+                {/*  alt={'preview image'}*/}
+                {/*/>*/}
               </div>
             )}
           </Card>
