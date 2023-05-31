@@ -43,6 +43,7 @@ export default function ArticleCard({post}: ArticleCardProps) {
               borderRadius: 0,
               marginTop: 1.5,
             }}
+
           >
             <CardContent
               sx={{
