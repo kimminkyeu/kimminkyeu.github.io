@@ -1,18 +1,13 @@
 import Notion from '@/app/api/notionAPI';
-import ArticleCard from '@/app/(client-components)/client-ArticleCard';
-import {IPost} from './api/type';
 import {Config} from "@/config/config";
+import ArticleList from './(client-components)/client-ArticleList';
 
 export default async function Page() {
   const posts = await Notion.getPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
 
-  const renderList = () => {
-    return posts.map((post, i) => (
-      <div className="mb-4" key={i}>
-        <ArticleCard post={post}/>
+  return (
+      <div className="">
+        <ArticleList posts={posts}/>
       </div>
-    ));
-  };
-
-  return <div className="mt-5 flex flex-col">{renderList()}</div>;
+    );
 }

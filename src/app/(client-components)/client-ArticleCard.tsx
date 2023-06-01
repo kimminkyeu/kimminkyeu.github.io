@@ -8,7 +8,7 @@ import CardContent from '@mui/material/CardContent';
 // import {Stack} from '@mui/material';
 import {grey} from '@mui/material/colors';
 import Link from 'next/link';
-import {IPost} from '@/app/api/type';
+import {IPost, PropertyTag} from '@/app/api/type';
 import {ThemeProvider} from '@mui/material/styles';
 import {BlogTheme} from '@/app/theme';
 import ArticleTages from './client-ArticleTags';
@@ -17,9 +17,10 @@ import {ImageCustomComponent} from "@/app/(client-components)/client-MdxRenderer
 
 interface ArticleCardProps {
   post: IPost;
+  setChoosedTag: React.Dispatch<React.SetStateAction<PropertyTag>>;
 }
 
-export default function ArticleCard({post}: ArticleCardProps) {
+export default function ArticleCard({post, setChoosedTag}: ArticleCardProps) {
   return (
     <ThemeProvider theme={BlogTheme}>
       <Box
@@ -81,7 +82,8 @@ export default function ArticleCard({post}: ArticleCardProps) {
           </Card>
         </Link>
         <div className="mb-3 mt-4 md:mt-6">
-          <ArticleTages post={post}/>
+          <ArticleTages post={post} setChoosedTag={setChoosedTag}/>
+          {/* <ArticleTages post={post}/> */}
         </div>
       </Box>
     </ThemeProvider>
