@@ -64,7 +64,7 @@ export default async function Page({params}: StaticParams) {
 
 
   return (
-    <div className=" container prose prose-neutral mx-auto">
+    <div className="mx-6 flex flex-col max-w-3xl prose prose-neutral md:mx-auto">
       <ArticleHeader post={currentPost}/>
       <article>
         <MDXRenderer source={processed_mdx.serializedMdx}/>

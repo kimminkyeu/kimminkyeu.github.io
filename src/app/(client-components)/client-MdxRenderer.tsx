@@ -11,10 +11,10 @@ import Image from 'next/image';
 export function ImageCustomComponent(props) {
   if (process.env.NODE_ENV === "development") { // on next dev, do not use custom optimizer
     // next-export-optimize-images
-    return <Image {...props} alt={'Image'} sizes="210px" width={320} height={320}/>
+    return <Image style={{objectFit: 'cover'}} {...props} alt={'Image'} sizes="210px" width={400} height={320}/>
   } else {
     // defualt image loader
-    return <Image {...props} alt={'Image'} width={320} height={320} placeholder="blur"/>
+    return <Image style={{objectFit: 'cover'}} {...props} alt={'Image'} width={400} height={320} placeholder="blur"/>
   }
 }
 

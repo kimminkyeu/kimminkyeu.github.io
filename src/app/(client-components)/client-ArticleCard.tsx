@@ -68,7 +68,7 @@ export default function ArticleCard({post}: ArticleCardProps) {
               </div>
             </CardContent>
             {post.coverImageUrl && (
-              <div className=" ml-6 flex w-20 sm:ml-11 sm:w-28">
+              <div className=" ml-6 flex w-20 sm:ml-11 sm:w-28 md:w-36">
                 <ImageCustomComponent src={post.coverImageUrl}/>
                 {/*<CardMedia*/}
                 {/*  loading={'lazy'}*/}

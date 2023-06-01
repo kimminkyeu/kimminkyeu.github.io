@@ -5,7 +5,7 @@ import SearchBarLarge from './(client-components)/client-SearchBarLarge';
 
 export default function Header() {
   return (
-    <div className="px-5 pt-2">
+    <div className="mx-6 pt-4">
       <div className={`container flex flex-wrap items-center`}>
         <Link
           href="/"

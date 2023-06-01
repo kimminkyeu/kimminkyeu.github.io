@@ -32,9 +32,9 @@ export default function RootLayout({
       <div className="sticky -top-1 z-50">
         <Navbar/>
       </div>
-      <div className="container mx-auto flex max-w-2xl flex-col px-6 md:px-0">
+      {/* <div className="mx-auto flex max-w-3xl px-6 md:px-0"> */}
         <main>{children}</main>
-      </div>
+      {/* </div> */}
       <Footer className=" border-t"/>
     </div>
     </body>

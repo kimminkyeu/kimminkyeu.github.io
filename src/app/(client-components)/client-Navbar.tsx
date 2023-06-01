@@ -24,10 +24,10 @@ export default function Navbar() {
         const div: HTMLBodyElement = ref_div.current;
         if (entry.intersectionRatio < 1) {
           nav.classList.add('navbar-shadow');
-          div.classList.remove('shadow-custom_innerUnderline');
+          nav.classList.remove('shadow-custom_innerUnderline');
         } else {
           nav.classList.remove('navbar-shadow');
-          div.classList.add('shadow-custom_innerUnderline');
+          nav.classList.add('shadow-custom_innerUnderline');
         }
       },
       {
@@ -43,8 +43,9 @@ export default function Navbar() {
   }, [pathName]);
 
   return (
-    <nav ref={ref_nav} className='bg-white'>
-      <div ref={ref_div} className='pt-2 mx-auto px-6 flex shadow-custom_innerUnderline '>
+    <nav ref={ref_nav} className='bg-white shadow-custom_innerUnderline '>
+      {/* mx-6 flex flex-col max-w-2xl md:mx-auto */}
+      <div ref={ref_div} className='mx-6 pt-2 max-w-2xl md:mx-auto flex '>
         <div className={`${padding} mr-5${currentPath === '/' ? underline : ''}`}>
           <Link href="/" onClick={() => setCurrentPath('/')}>
             Post
@@ -55,11 +56,11 @@ export default function Navbar() {
             About
           </Link>
         </div>
-        <div className={`${padding} mr-5${currentPath === '/tags' ? underline : ''}`}>
+        {/* <div className={`${padding} mr-5${currentPath === '/tags' ? underline : ''}`}>
           <Link href="/tags" onClick={() => setCurrentPath('/tags')}>
             Tags
           </Link>
-        </div>
+        </div> */}
       </div>
     </nav>
   );
