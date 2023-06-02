@@ -63,8 +63,9 @@ export default async function Page({params}: StaticParams) {
   // console.log('===========================================');
 
 
+// mx-6 mt-5 flex flex-col max-w-2xl md:mx-auto
   return (
-    <div className="mx-6 flex flex-col max-w-3xl prose prose-neutral md:mx-auto">
+    <div className="max-w-3xl prose prose-neutral max-w-none">
       <ArticleHeader post={currentPost}/>
       <article>
         <MDXRenderer source={processed_mdx.serializedMdx}/>

@@ -2,13 +2,16 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
+import TagListSmall from './client-tagListSmall';
 // import Header from "@/app/header";
 // import {Config} from "@/config/config";
 // import SearchBarSmall from "@/app/(client-components)/client-SearchBarSmall";
+import { Config } from '@/config/config';
+import { PropertyTag } from '../api/type';
 
+export default function Navbar({tagSet}: {tagSet: Set<PropertyTag>}) {
 
-export default function Navbar() {
   const pathName = usePathname();
   const [currentPath, setCurrentPath] = React.useState(pathName); // home is Post.
   const ref_nav = React.useRef(null);
@@ -16,8 +19,17 @@ export default function Navbar() {
   const underline = ` border-b-2 border-neutral-600`;
   const padding = 'py-3';
 
+  // const [tagSet, setTagSet] = React.useState<Set<PropertyTag> | null>(null);
+
   // Scroll Shadow
   React.useEffect(() => {
+
+  //   (async () => {
+  //       const tagSet = await Notion.getTagSetFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
+  //       setTagSet(tagSet);
+  //       alert('tag loadded');
+  //   })(/** IIFE */);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         const nav: HTMLBodyElement = ref_nav.current;
@@ -45,7 +57,7 @@ export default function Navbar() {
   return (
     <nav ref={ref_nav} className='bg-white shadow-custom_innerUnderline '>
       {/* mx-6 flex flex-col max-w-2xl md:mx-auto */}
-      <div ref={ref_div} className='mx-6 pt-2 max-w-2xl md:mx-auto flex '>
+      <div ref={ref_div} className=' mx-6 sm:mx-10 pt-2 max-w-3xl flex md:text-xl'>
         <div className={`${padding} mr-5${currentPath === '/' ? underline : ''}`}>
           <Link href="/" onClick={() => setCurrentPath('/')}>
             Post
@@ -55,6 +67,10 @@ export default function Navbar() {
           <Link href="/about" onClick={() => setCurrentPath('/about')}>
             About
           </Link>
+        </div>
+        {/* <div className=' mx-auto'/> */}
+        <div className='block lg:hidden flex-1 absolute right-6 sm:right-10'>
+          <TagListSmall tagSet={tagSet} />
         </div>
         {/* <div className={`${padding} mr-5${currentPath === '/tags' ? underline : ''}`}>
           <Link href="/tags" onClick={() => setCurrentPath('/tags')}>

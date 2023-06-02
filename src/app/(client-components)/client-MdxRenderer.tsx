@@ -31,7 +31,7 @@ const customComponents = {
 
 export default function MdxRenderer({source}: ArticleMainProps) {
   return (
-    <div className="prose prose-neutral">
+    <div className="max-w-none prose prose-neutral">
       <MDXRemote {...source} components={customComponents} lazy/>
     </div>
   );

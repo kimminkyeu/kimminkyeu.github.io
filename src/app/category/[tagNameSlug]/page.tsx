@@ -4,6 +4,8 @@ import ArticleCard from "@/app/(client-components)/client-ArticleCard";
 import { slugifyTag, unslugifyTag } from '@/utils/helper';
 import CategoryView from '@/app/(client-components)/client-Category';
 import { PropertyTag } from '@/app/api/type';
+import TagList from '@/app/(client-components)/client-TagList';
+import TagListSmall from '@/app/(client-components)/client-tagListSmall';
 
 export async function generateStaticParams() {
   const tagSet = await Notion.getTagSetFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
@@ -41,11 +43,19 @@ export default async function Page({params}: StaticParams) {
 
   /* mx-6 flex flex-col max-w-2xl md:mx-auto */
   return (
-    <div className="mx-6 mt-5 flex flex-col max-w-2xl md:mx-auto">
-      <div className=' my-4'>
-        <CategoryView selectedTag={tagTypeCasted} />
-      </div> 
-      {renderList()}
+    <div className='flex flex-row'>
+      <div className="flex flex-col max-w-2xl">
+        {/* <div className='block lg:hidden'>
+          <TagListSmall tagSet={tagSet} />
+        </div> */}
+        <div className=' my-4'>
+          <CategoryView selectedTag={tagTypeCasted} />
+        </div> 
+        {renderList()}
+      </div>
+      <div className='hidden lg:block'>
+          <TagList tagSet={tagSet} />
+      </div>
     </div>
   );
 }

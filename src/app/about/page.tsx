@@ -23,10 +23,8 @@ export default async function AboutMe() {
   // console.log('markdown -----------------------------')
 
   return (
-    <div className=" container prose prose-neutral mx-auto mt-9">
-      <article>
-        <MDXRenderer source={processed_mdx.serializedMdx}/>
-      </article>
-    </div>
+    <article className="max-w-3xl">
+      <MDXRenderer source={processed_mdx.serializedMdx}/>
+    </article>
   );
 }

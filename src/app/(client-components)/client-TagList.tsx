@@ -20,8 +20,8 @@ export default function TagList({tagSet}: TagListProps) {
     }
 
     return (
-        <div className=" mr-8 w-40">
-            <h3 className=" font-bold border-b-2 p-2">Category</h3>
+        <div className="flex flex-col">
+            <h3 className=" text-neutral-500 font-bold border-b-2 px-2 pb-1">Category</h3>
             <ul>{renderTags()}</ul>
         </div>
     );
