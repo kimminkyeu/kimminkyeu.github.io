@@ -262,7 +262,7 @@ class NotionAPI_Factory {
     const tagDataMap = new Map<string, number>();
 
     let totalItemCount = 0;
-    // tagDataMap.set('All', 0);
+    tagDataMap.set('All', 0);
 
     databaseItems.forEach((postInDB: DatabaseItem) => {
       ++totalItemCount;

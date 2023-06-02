@@ -2,15 +2,11 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import React, { useEffect } from 'react';
-import TagListSmall from './client-tagListSmall';
-// import Header from "@/app/header";
-// import {Config} from "@/config/config";
-// import SearchBarSmall from "@/app/(client-components)/client-SearchBarSmall";
-import { Config } from '@/config/config';
-import { PropertyTag } from '../api/type';
+import React, {useEffect} from 'react';
+import TagListSmall from './client-tagListAccordian';
 
-export default function Navbar({tagMap}: {tagMap: Map<string, number>}) {
+
+export default function Navbar({tagMap}: { tagMap: Map<string, number> }) {
 
   const pathName = usePathname();
   const [currentPath, setCurrentPath] = React.useState(pathName); // home is Post.
@@ -18,17 +14,8 @@ export default function Navbar({tagMap}: {tagMap: Map<string, number>}) {
   const ref_div = React.useRef(null);
   const underline = ` border-b-2 border-neutral-600`;
   const padding = 'py-3';
-
-  // const [tagSet, setTagSet] = React.useState<Set<PropertyTag> | null>(null);
-
   // Scroll Shadow
   React.useEffect(() => {
-
-  //   (async () => {
-  //       const tagSet = await Notion.getTagSetFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
-  //       setTagSet(tagSet);
-  //       alert('tag loadded');
-  //   })(/** IIFE */);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -68,15 +55,9 @@ export default function Navbar({tagMap}: {tagMap: Map<string, number>}) {
             About
           </Link>
         </div>
-        {/* <div className=' mx-auto'/> */}
-        <div className='block lg:hidden flex-1 absolute right-6 sm:right-10'>
-          <TagListSmall tagMap={tagMap} />
+        <div className='top-2 block lg:hidden flex-1 absolute md:top-3 right-6 sm:right-10'>
+          <TagListSmall tagMap={tagMap}/>
         </div>
-        {/* <div className={`${padding} mr-5${currentPath === '/tags' ? underline : ''}`}>
-          <Link href="/tags" onClick={() => setCurrentPath('/tags')}>
-            Tags
-          </Link>
-        </div> */}
       </div>
     </nav>
   );

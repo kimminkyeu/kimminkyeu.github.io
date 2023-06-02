@@ -1,9 +1,9 @@
 import Notion from '@/app/api/notionAPI';
 import {Config} from "@/config/config";
 import ArticleCard from "@/app/(client-components)/client-ArticleCard";
-import { slugifyTag, unslugifyTag } from '@/utils/helper';
+import {slugifyTag, unslugifyTag} from '@/utils/helper';
 import CategoryView from '@/app/(client-components)/client-Category';
-import { PropertyTag } from '@/app/api/type';
+import {PropertyTag} from '@/app/api/type';
 import TagList from '@/app/(client-components)/client-TagList';
 
 export async function generateStaticParams() {
@@ -47,16 +47,15 @@ export default async function Page({params}: StaticParams) {
   return (
     <div className='flex flex-row'>
       <div className="flex flex-col max-w-2xl">
-        {/* <div className='block lg:hidden'>
-          <TagListSmall tagSet={tagSet} />
-        </div> */}
-        <div className=' my-4'>
-          <CategoryView selectedTag={selectedTag} />
-        </div> 
+        <div className=' mb-4'>
+          <CategoryView selectedTag={selectedTag}/>
+        </div>
+        {/*Dummy Card for 기본 형태 유지 */}
+        <div className='h-0 invisible'><ArticleCard/></div>
         {renderList()}
       </div>
       <div className='hidden lg:block mt-3 ml-20'>
-          <TagList tagMap={tagMap} />
+        <TagList tagMap={tagMap}/>
       </div>
     </div>
   );

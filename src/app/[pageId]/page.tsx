@@ -20,7 +20,7 @@ export async function generateMetadata(
   const postInfo = posts.find((p) => p.pageId === params.pageId);
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
-  const tagsOnlyString = postInfo.tags.map((tag) => tag.name);
+  const tagsOnlyString = postInfo?.tags?.map((tag) => tag.name);
 
   const metaData: Metadata = {
     title: postInfo.title,
@@ -57,10 +57,10 @@ export default async function Page({params}: StaticParams) {
   return (
     <div className="prose prose-neutral max-w-none">
       <div className='max-w-3xl'>
-      <ArticleHeader post={currentPost}/>
-      <article>
-        <MDXRenderer source={processed_mdx.serializedMdx}/>
-      </article>
+        <ArticleHeader post={currentPost}/>
+        <article>
+          <MDXRenderer source={processed_mdx.serializedMdx}/>
+        </article>
       </div>
     </div>
   );

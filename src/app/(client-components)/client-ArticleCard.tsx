@@ -16,8 +16,10 @@ import ArticleTages from './client-ArticleTags';
 import {ImageCustomComponent} from "@/app/(client-components)/client-MdxRenderer";
 
 interface ArticleCardProps {
-  post: IPost;
+  post?: IPost;
 }
+
+const DummyText = String('-').repeat(100);
 
 export default function ArticleCard({post}: ArticleCardProps) {
   return (
@@ -31,9 +33,9 @@ export default function ArticleCard({post}: ArticleCardProps) {
         }}
       >
         <p className=" text-sm text-neutral-500">
-          {post.publishDate}
+          {post ? post.publishDate : DummyText}
         </p>
-        <Link href={`/${post.pageId}`}>
+        <Link href={`/${post?.pageId}`}>
           <Card
             className="max-h-[60px] sm:max-h-[100px] md:max-h-[100px]"
             sx={{
@@ -43,7 +45,6 @@ export default function ArticleCard({post}: ArticleCardProps) {
               borderRadius: 0,
               marginTop: 1.5,
             }}
-
           >
             <CardContent
               sx={{
@@ -58,30 +59,22 @@ export default function ArticleCard({post}: ArticleCardProps) {
               <div className=" line-clamp-2 overflow-hidden text-ellipsis sm:line-clamp-4">
                 <h5
                   className=" mb-1 text-base font-semibold leading-6 sm:text-lg sm:leading-6 md:text-xl md:font-bold ">
-                  {post.title}
+                  {post ? post.title : DummyText}
                 </h5>
                 <div className=" hidden sm:visible sm:block">
                   <p className=" text-sm font-light text-neutral-500 md:text-[15px]">
-                    {post.description}
+                    {post ? post.description : DummyText}
                   </p>
                 </div>
               </div>
             </CardContent>
-            {post.coverImageUrl && (
-              <div className=" ml-6 flex w-20 sm:ml-11 sm:w-28 md:w-36">
-                <ImageCustomComponent src={post.coverImageUrl}/>
-                {/*<CardMedia*/}
-                {/*  loading={'lazy'}*/}
-                {/*  component="img"*/}
-                {/*  image={post.coverImageUrl}*/}
-                {/*  alt={'preview image'}*/}
-                {/*/>*/}
-              </div>
-            )}
+            <div className=" ml-6 flex w-20 sm:ml-11 sm:w-28 md:w-36">
+              {post && post.coverImageUrl && <ImageCustomComponent src={post.coverImageUrl}/>}
+            </div>
           </Card>
         </Link>
         <div className="mb-3 mt-4 md:mt-6">
-          <ArticleTages post={post}/>
+          {post && <ArticleTages post={post}/>}
         </div>
       </Box>
     </ThemeProvider>
