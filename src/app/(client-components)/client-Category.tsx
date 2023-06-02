@@ -9,18 +9,19 @@ import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 interface CategoryViewProps {
-    selectedTag: PropertyTag;
+    selectedTag?: {name: string, count: number};
 }
 
 export default function CategoryView({selectedTag}: CategoryViewProps) {
-
-    const color = getMuiColorByTagColor(selectedTag.color);
+    if (!selectedTag) return <></>;
     return (
         <div className=" flex ">
             <Box sx={{display: 'flex', alignItems: 'center'}}>
-                <TagIcon fontSize="small" sx={{color: color}}/>
-                <Typography borderBottom={0.7} fontStyle={'italic'} variant="subtitle1" color={color} >
-                    {selectedTag.name}
+                {/* <TagIcon fontSize="small" sx={{color: color}}/> */}
+                <TagIcon fontSize="small" />
+                {/* <Typography borderBottom={0.7} fontStyle={'italic'} variant="subtitle1" color={color} > */}
+                <Typography borderBottom={0.7} fontStyle={'italic'} variant="subtitle1" >
+                    {`${selectedTag.name} (${selectedTag.count})`}
                 </Typography>
             </Box>
         </div>

@@ -7,7 +7,7 @@ import TagListSmall from './(client-components)/client-tagListSmall';
 
 export default async function Page() {
   const posts = await Notion.getPageDataFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
-  const tagSet = await Notion.getTagSetFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
+  const tagMap = await Notion.getTagSetFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
 
   const renderList = () => {
     return posts.map((post, i) => (
@@ -27,7 +27,7 @@ export default async function Page() {
         {renderList()}
       </div>
       <div className='hidden lg:block mt-3 ml-20'>
-        <TagList tagSet={tagSet} />
+        <TagList tagMap={tagMap} />
       </div>
     </div>
   );

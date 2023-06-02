@@ -3,18 +3,23 @@ import Link from "next/link";
 import { PropertyTag } from "../api/type";
 
 interface TagListProps {
-    tagSet: Set<PropertyTag>;
+    tagMap?: Map<string, number>;
 }
 
-export default function TagList({tagSet}: TagListProps) {
-    const tagList = Array.from(tagSet);
+export default function TagList({tagMap}: TagListProps) {
+    if (!tagMap) return;
+    const tagList = Array.from(tagMap);
 
     const renderTags = () => {
-        return tagList.map((tag, i) => (
+        return tagList.map(([tag, count], i) => (
             <li key={i} className='m-2 text-neutral-500 text-sm'>
-                <Link href={`/category/${slugifyTag(tag.name)}`} >
-                    {tag.name}
-                </Link>
+               { 
+                    (tag === 'All') ? (
+                    <Link href={`/}`}> {`${tag} (${count})`} </Link>
+                ) : (
+                    <Link href={`/category/${slugifyTag(tag)}`}>{`${tag} (${count})`}</Link>
+                )
+                }
             </li>
         ))
     }

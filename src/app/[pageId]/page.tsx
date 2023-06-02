@@ -53,23 +53,15 @@ export default async function Page({params}: StaticParams) {
   const currentPost = posts.find((p) => p.pageId === params.pageId);
   const processed_mdx = await processMdx(currentPost.markdown);
 
-
-  // console.log('===========================================');
-  // const test = await Notion.retrieveBlocksFromNotionPage(currentPost.pageId, 30);
-  // console.log(JSON.stringify(test.results, null, 4));
-  // console.log('----------------------------------');
-  // console.log(currentPost.markdown);
-  // console.log('----------------------------------');
-  // console.log('===========================================');
-
-
 // mx-6 mt-5 flex flex-col max-w-2xl md:mx-auto
   return (
-    <div className="max-w-3xl prose prose-neutral max-w-none">
+    <div className="prose prose-neutral max-w-none">
+      <div className='max-w-3xl'>
       <ArticleHeader post={currentPost}/>
       <article>
         <MDXRenderer source={processed_mdx.serializedMdx}/>
       </article>
+      </div>
     </div>
   );
 }

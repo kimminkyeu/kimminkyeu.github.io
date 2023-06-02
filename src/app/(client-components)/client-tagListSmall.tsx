@@ -11,7 +11,7 @@ import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
 import { styled } from '@mui/material/styles';
 
 interface TagListProps {
-    tagSet?: Set<PropertyTag>;
+    tagMap?: Map<string, number>;
 }
 
 const Accordion = styled((props: AccordionProps) => (
@@ -31,16 +31,20 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-export default function TagListSmall({tagSet}: TagListProps) {
+export default function TagListSmall({tagMap}: TagListProps) {
 
   const renderTags = () => {
-    if (!tagSet) return;
-    const tagList = Array.from(tagSet);
-    return tagList.map((tag, i) => (
+    if (!tagMap) return;
+    const tagList = Array.from(tagMap);
+    return tagList.map(([tag, count], i) => (
         <li key={i} className='m-2 text-neutral-500 text-base lg:text-sm'>
-            <Link href={`/category/${slugifyTag(tag.name)}`} >
-                {tag.name}
-            </Link>
+          { 
+            (tag === 'All') ? (
+              <Link href={`/}`}> {`${tag} (${count})`} </Link>
+            ) : (
+              <Link href={`/category/${slugifyTag(tag)}`}>{`${tag} (${count})`}</Link>
+            )
+          }
         </li>
         ))
     }
@@ -54,10 +58,10 @@ export default function TagListSmall({tagSet}: TagListProps) {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography >Category</Typography>
+          <Typography>Category</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          {tagSet && <ul>{renderTags()}</ul>}
+          {<ul>{renderTags()}</ul>}
         </AccordionDetails>
       </Accordion>
     </div>

@@ -10,7 +10,7 @@ import TagListSmall from './client-tagListSmall';
 import { Config } from '@/config/config';
 import { PropertyTag } from '../api/type';
 
-export default function Navbar({tagSet}: {tagSet: Set<PropertyTag>}) {
+export default function Navbar({tagMap}: {tagMap: Map<string, number>}) {
 
   const pathName = usePathname();
   const [currentPath, setCurrentPath] = React.useState(pathName); // home is Post.
@@ -70,7 +70,7 @@ export default function Navbar({tagSet}: {tagSet: Set<PropertyTag>}) {
         </div>
         {/* <div className=' mx-auto'/> */}
         <div className='block lg:hidden flex-1 absolute right-6 sm:right-10'>
-          <TagListSmall tagSet={tagSet} />
+          <TagListSmall tagMap={tagMap} />
         </div>
         {/* <div className={`${padding} mr-5${currentPath === '/tags' ? underline : ''}`}>
           <Link href="/tags" onClick={() => setCurrentPath('/tags')}>

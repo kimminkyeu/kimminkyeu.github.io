@@ -2,11 +2,13 @@
 import * as MuiColors from '@mui/material/colors';
 
 export function slugifyTag(tag: string) {
-  return tag.replaceAll(' ', '-');
+  const slug = String(tag).replaceAll(' ', '-');
+  return encodeURI(slug);
 }
 
 export function unslugifyTag(sluggedTag) {
-  return sluggedTag.replaceAll('-', ' ');
+  const d = decodeURI(sluggedTag)
+  return d.replaceAll('-', ' ');
 }
 
 export const getMuiColorByTagColor = (tagColor: string) => {

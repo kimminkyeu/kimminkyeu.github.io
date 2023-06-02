@@ -257,12 +257,27 @@ class NotionAPI_Factory {
     const databaseItems: DatabaseItem[] = query.results.map(
       (databaseItem) => databaseItem as DatabaseItem,
     );
-    const tagSet = new Set<PropertyTag>();
+    // const tagSet = new Set<string>();
+    // tagSet.add('All');
+    const tagDataMap = new Map<string, number>();
+
+    let totalItemCount = 0;
+    // tagDataMap.set('All', 0);
+
     databaseItems.forEach((postInDB: DatabaseItem) => {
+      ++totalItemCount;
       const _tags = this._extractTags(postInDB.properties.Tags);
-      _tags.forEach((t) => tagSet.add(t));
+      // _tags.forEach((t) => {tagDataMap.add(t.name)});
+      _tags.forEach((tag) => {
+        if (tagDataMap.has(tag.name)) {
+          tagDataMap.set(tag.name, tagDataMap.get(tag.name) + 1) // increment tag
+        } else {
+          tagDataMap.set(tag.name, 1);
+        }
+      });
+      tagDataMap.set('All', totalItemCount);
     })
-    return tagSet;
+    return tagDataMap;
     // return query.results.map((v) => v);
   }
 

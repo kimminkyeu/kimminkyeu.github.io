@@ -27,7 +27,7 @@ export default async function RootLayout({
                                    }: {
   children: React.ReactNode;
 }) {
-  const tagSet = await Notion.getTagSetFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
+  const tagMap = await Notion.getTagSetFromDatabase(Config.STATUS_PUBLISHED_ARTICLE);
 
   return (
     <html lang="en">
@@ -35,9 +35,9 @@ export default async function RootLayout({
     <div className="relative h-fit">
       <Header/>
       <div className="sticky -top-1 z-50">
-        <Navbar tagSet={tagSet}/>
+        <Navbar tagMap={tagMap}/>
       </div>
-      <main className=' flex justify-center mx-6 mt-2 sm:mx-10'>{children}</main>
+      <main className=' flex justify-center mx-6 mt-6 sm:mx-10'>{children}</main>
       <Footer className=" border-t"/>
     </div>
     </body>
