@@ -21,8 +21,11 @@ export default function CategoryView({selectedTag}: CategoryViewProps) {
   return (
     <div className=" flex ">
       <Box sx={{display: 'flex', alignItems: 'center'}}>
-        <TagIcon fontSize="small"/>
+        <Typography variant="subtitle1" sx={{marginRight: 1}}>
+          {'Filtered by'}
+        </Typography>
         <Typography borderBottom={0.7} fontStyle={'italic'} variant="subtitle1">
+          {/*<TagIcon fontSize="small"/>*/}
           {`${selectedTag.name} (${selectedTag.count})`}
         </Typography>
         <IconButton size={'small'} aria-label="delete" onClick={handleClose}>

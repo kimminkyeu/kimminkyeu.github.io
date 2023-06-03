@@ -22,6 +22,7 @@ export default function ArticleTags({className, post}: ArticleTagsProps) {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const label = event.currentTarget.innerText;
     const sluggedLabel = slugifyTag(label);
+    // alert(sluggedLabel);
     router.push(`/category/${sluggedLabel}`);
   };
 
@@ -36,15 +37,15 @@ export default function ArticleTags({className, post}: ArticleTagsProps) {
           onClick={handleClick}
           label={tag.name}
           size="small"
-          variant="outlined"
+          variant="filled"
           style={{
             // color: '#000',
-            color: getMuiColorByTagColor(tag.color),
-            borderColor: getMuiColorByTagColor(tag.color),
+            // color: getMuiColorByTagColor(tag.color),
+            // borderColor: getMuiColorByTagColor(tag.color),
             // backgroundColor: getMuiColorByTagColor(tag.color),
-            // fontSize: '0.8rem',
-            fontWeight: 400,
-            borderRadius: 4,
+            fontSize: '0.8rem',
+            fontWeight: 350,
+            // borderRadius: 4,
             // height: '1.3rem',
           }}
         />
@@ -56,7 +57,7 @@ export default function ArticleTags({className, post}: ArticleTagsProps) {
     <div className={` ${className} flex justify-between`}>
       <Stack direction="row" spacing={1} sx={{alignItems: 'center'}}>
         {renderTags(post.tags)}
-        <p className=" text-xs text-neutral-500"> • {post.readingTime}</p>
+        <p className=" text-sm text-neutral-500"> • {post.readingTime}</p>
       </Stack>
       {/*<Tooltip title="Share post" placement="top-start">*/}
       {/*<IconButton aria-label="share" size="small">*/}
