@@ -5,6 +5,7 @@ import Chip from '@mui/material/Chip';
 import {IPost, PropertyTag} from '../api/type';
 import {IconButton} from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
+import {grey} from "@mui/material/colors";
 import {useRouter} from "next/navigation";
 import {Tooltip} from '@mui/material';
 import React from 'react';
@@ -37,12 +38,12 @@ export default function ArticleTags({className, post}: ArticleTagsProps) {
           size="small"
           variant="filled"
           style={{
-            // color: '#000',
+            color: grey[600],
             // color: getMuiColorByTagColor(tag.color),
             // borderColor: getMuiColorByTagColor(tag.color),
             // backgroundColor: getMuiColorByTagColor(tag.color),
             fontSize: '0.8rem',
-            fontWeight: 350,
+            fontWeight: 400,
             // borderRadius: 4,
             // height: '1.3rem',
           }}

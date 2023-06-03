@@ -1,9 +1,10 @@
 'use client'
 import * as React from 'react';
-// import AccordionSummary from '@mui/material/AccordionSummary';
-import MuiAccordionSummary, {
-  AccordionSummaryProps,
-} from "@mui/material/AccordionSummary";
+// import MuiAccordionSummary, {
+//   AccordionSummaryProps,
+// } from "@mui/material/AccordionSummary";
+
+import {AccordionSummary} from "@mui/material";
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {grey} from "@mui/material/colors";
@@ -46,34 +47,34 @@ const Accordion = styled((props: AccordionProps) => (
   },
 }));
 
-const AccordionSummary = styled((props: AccordionSummaryProps) => (
-  <MuiAccordionSummary
-    // expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  // backgroundColor:
-    // theme.palette.mode === "dark"
-      // ? "rgba(255, 255, 255, .05)"
-      // : "rgba(0, 0, 0, .03)",
-  // flexDirection: "row-reverse",
-  paddingRight: 0,
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    // transform: "rotate(90deg)",
-  },
-  "& .MuiAccordionSummary-content": {
-    // flexDirection: 'flex-end',
-    justifyContent: 'flex-end',
-    // marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-}));
+
 
 const AccordionDetails = styled(MuiAccordionDetails)(({theme}) => ({
   backgroundColor: 'white',
   padding: theme.spacing(2),
   border: '1px solid rgba(0, 0, 0, .125)',
 }));
+
+// const AccordionSummary = styled((props: AccordionSummaryProps) => (
+//   <MuiAccordionSummary
+//     // expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
+//     {...props}
+//   />
+// ))(({ theme }) => ({
+//   // backgroundColor:
+//     // theme.palette.mode === "dark"
+//       // ? "rgba(255, 255, 255, .05)"
+//       // : "rgba(0, 0, 0, .03)",
+//   // flexDirection: "row-reverse",
+//   paddingRight: 0,
+//   "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+//     // transform: "rotate(90deg)",
+//   },
+//   "& .MuiAccordionSummary-content": {
+//     justifyContent: 'flex-end',
+//     marginRight: theme.spacing(1),
+//   },
+// }));
 
 export default function TagListSmall({tagMap}: TagListProps) {
   const [expanded, setExpanded] = React.useState(false);
@@ -102,6 +103,13 @@ export default function TagListSmall({tagMap}: TagListProps) {
     <div>
       <Accordion expanded={expanded} onClick={handleClick} sx={{fontSize: 20}}>
         <AccordionSummary
+          sx={{
+            paddingRight: 0,
+            "& .MuiAccordionSummary-content": {
+              justifyContent: 'flex-end',
+              marginRight: theme.spacing(1),
+            },
+          }}
           expandIcon={<ExpandMoreIcon/>}
           aria-controls="panel1a-content"
           id="panel1a-header"

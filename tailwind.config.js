@@ -1,8 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
 const {spacing} = require('tailwindcss/defaultTheme');
-const {grey} = require("@mui/material/colors");
-const {after} = require("node:test");
 
 module.exports = {
     content: [
@@ -22,6 +20,12 @@ module.exports = {
             typography: (theme) => ({
                 DEFAULT: {
                     css: {
+                        h1: {
+                            marginTop:32,
+                        },
+                        h2: {
+                            marginTop:24,
+                        },
                         //...
                         'h1,h2,h3,h4': {
                             'scroll-margin-top': spacing[32],
