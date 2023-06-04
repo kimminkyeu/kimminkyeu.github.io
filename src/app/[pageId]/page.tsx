@@ -27,6 +27,7 @@ export async function generateMetadata(
   const tagsOnlyString = postInfo?.tags?.map((tag) => tag.name);
 
   const metaData: Metadata = {
+    metadataBase: new URL('https://kimminkyeu.github.io'),
     title: postInfo.title,
     description: postInfo.description,
     openGraph: {
@@ -66,7 +67,7 @@ export default async function Page({params}: StaticParams) {
           <MDXRenderer source={processed_mdx.serializedMdx}/>
         </article>
         {/*  Comments here */}
-        <div className='mt-14c flex justify-center'>
+        <div className='mt-12'>
           <ArticleTags post={currentPost} disableReadingTime tagSize={'medium'} />
         </div>
         <DisqusComments pageId={currentPost.pageId} pageTitle={currentPost.title} />
