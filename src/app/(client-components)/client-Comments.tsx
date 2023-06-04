@@ -11,7 +11,7 @@ interface DisqusCommentProps {
 const DisqusComments = ({ pageId, pageTitle }: DisqusCommentProps) => {
   const disqusShortname = "kimminkyeu-github-io";
   const disqusConfig = {
-    url: `https://kimminkyeu.github.io`,
+    url: `https://kimminkyeu.github.io/${pageId}`,
     identifier: pageId, // Single post id // or slug
     title: pageTitle, // Single post title // post title
   }
