@@ -19,6 +19,9 @@ module.exports = {
             // 필요한 설정은 위 링크에서 가져오면 됨!
             typography: (theme) => ({
                 DEFAULT: {
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                    },
                     css: {
                         h1: {
                             marginTop:32,

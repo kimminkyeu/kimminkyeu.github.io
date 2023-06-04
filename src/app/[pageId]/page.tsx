@@ -61,16 +61,16 @@ export default async function Page({params}: StaticParams) {
 
 // mx-6 mt-5 flex flex-col max-w-2xl md:mx-auto
   return (
-    <div className="prose prose-neutral max-w-none">
+    <div className="max-w-none">
       <div className='max-w-3xl'>
         {/* 최대 넓이 설정을 위한 Dummy Header */}
         <div className='h-0 invisible'><ArticleHeader /></div>
         <ArticleHeader post={currentPost}/>
-        <article>
+        <article className="prose prose-neutral">
           <MDXRenderer source={processed_mdx.serializedMdx}/>
         </article>
         {/*  Comments here */}
-        <div className='mt-12'>
+        <div className='mt-12 mb-6'>
           <ArticleTags post={currentPost} disableReadingTime tagSize={'medium'} />
         </div>
         <DisqusComments pageId={currentPost.pageId} pageTitle={currentPost.title} />

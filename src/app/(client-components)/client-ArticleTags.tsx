@@ -1,15 +1,11 @@
 'use client';
 
 import {Stack} from '@mui/material';
-import Chip from '@mui/material/Chip';
 import {IPost, PropertyTag} from '../api/type';
-import {IconButton} from '@mui/material';
-import ShareIcon from '@mui/icons-material/Share';
-import {grey} from "@mui/material/colors";
-import {useRouter} from "next/navigation";
 import {Tooltip} from '@mui/material';
 import React from 'react';
-import { getMuiColorByTagColor, slugifyTag } from '@/utils/helper';
+import { slugifyTag } from '@/utils/helper';
+import Link from "next/link";
 
 interface ArticleTagsProps {
   className?: string;
@@ -19,37 +15,13 @@ interface ArticleTagsProps {
 }
 
 export default function ArticleTags({className, post, disableReadingTime, tagSize}: ArticleTagsProps) {
-  const router = useRouter();
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    const label = event.currentTarget.innerText;
-    const sluggedLabel = slugifyTag(label);
-    // alert(sluggedLabel);
-    router.push(`/category/${sluggedLabel}`);
-  };
-
-  
-
   const renderTags = (tags: readonly PropertyTag[]) => {
     // TODO: apply color to tags
     return tags.map((tag, i) => (
       <Tooltip key={i} title={`view all ${tag.name} posts`} placement="top-start">
-        <Chip
-          key={i}
-          onClick={handleClick}
-          label={tag.name}
-          size={ tagSize ?? 'small'}
-          variant="filled"
-          style={{
-            color: grey[700],
-            // color: getMuiColorByTagColor(tag.color),
-            // borderColor: getMuiColorByTagColor(tag.color),
-            // backgroundColor: getMuiColorByTagColor(tag.color),
-            fontSize: '0.8rem',
-            fontWeight: 400,
-            // borderRadius: 4,
-            // height: '1.3rem',
-          }}
-        />
+        <Link className="hover:bg-neutral-200 px-2 py-[3px] text-[0.8rem] rounded-full font-normal text-neutral-900 bg-neutral-100" href={`/category/${slugifyTag(tag.name)}`}>
+          {tag.name}
+        </Link>
       </Tooltip>
     ));
   };
@@ -58,7 +30,7 @@ export default function ArticleTags({className, post, disableReadingTime, tagSiz
     <div className={` ${className} flex justify-between`}>
       <Stack direction="row" spacing={1} sx={{alignItems: 'center'}}>
         {renderTags(post.tags)}
-        {!disableReadingTime && <p className=" text-sm text-neutral-600"> • {post.readingTime}</p>}
+        {!disableReadingTime && <p className=" text-sm text-neutral-500"> • {post.readingTime}</p>}
       </Stack>
       {/*<Tooltip title="Share post" placement="top-start">*/}
       {/*<IconButton aria-label="share" size="small">*/}

@@ -12,17 +12,17 @@ const DummyText = String('-').repeat(100);
 export default function ArticleHeader({className, post}: ArticleHeaderProps) {
   return (
     <div className={`${className} mt-5`}>
-      <div>
-        <p className="text-neutral-500">
+      <div className="prose prose-neutral">
+        <p className="text-neutral-500 ">
           {post ? post.publishDate : DummyText}
         </p>
-        <h1 className=" my-3 text-2xl leading-[1.5] sm:text-3xl sm:leading-[1.5] md:text-[35px] md:leading-[1.5]">
+        <h1 className="my-3 leading-[1.5] text-2xl font-bold sm:text-3xl sm:leading-[1.5] sm:font-extrabold md:text-4xl md:leading-[1.5] md:font-black">
           {post ? post.title : DummyText}
         </h1>
-      </div>
-      <h3 className=" mb-5 mt-0 font-normal leading-normal text-neutral-500">
+      <h5 className=" mb-5 mt-0 leading-normal text-neutral-500">
         {post ? post.description : DummyText}
-      </h3>
+      </h5>
+      </div>
       <div className=" mb-3 mt-5 border-b"/>
       {post && <ArticleTags post={post}/>}
       <div className=" mb-5 mt-3 border-b"/>
