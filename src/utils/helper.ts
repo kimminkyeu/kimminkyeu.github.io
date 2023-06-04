@@ -3,7 +3,7 @@ import * as MuiColors from '@mui/material/colors';
 
 export function slugifyTag(tag: string) {
   let slug: string;
-  if (tag === 'C/C++') {
+  if (tag.localeCompare('C/C++') === 0) {
     slug = 'C-Cpp'
   } else {
     slug = String(tag).replaceAll(' ', '-');
