@@ -27,6 +27,7 @@ export async function generateMetadata(
   const tagsOnlyString = postInfo?.tags?.map((tag) => tag.name);
 
   const metaData: Metadata = {
+    metadataBase: new URL('https://kimminkyeu.github.io'),
     title: postInfo.title,
     description: postInfo.description,
     openGraph: {
