@@ -8,6 +8,7 @@ import {DiscussionEmbed} from "disqus-react";
 import DisqusComments from "@/app/(client-components)/client-Comments";
 import ArticleTags from "@/app/(client-components)/client-ArticleTags";
 import * as React from "react";
+import ArticleCard from "@/app/(client-components)/client-ArticleCard";
 
 type Props = {
   params: { pageId: string };
@@ -62,6 +63,8 @@ export default async function Page({params}: StaticParams) {
   return (
     <div className="prose prose-neutral max-w-none">
       <div className='max-w-3xl'>
+        {/* 최대 넓이 설정을 위한 Dummy Header */}
+        <div className='h-0 invisible'><ArticleHeader /></div>
         <ArticleHeader post={currentPost}/>
         <article>
           <MDXRenderer source={processed_mdx.serializedMdx}/>
