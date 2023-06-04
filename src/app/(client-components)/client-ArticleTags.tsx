@@ -14,9 +14,11 @@ import { getMuiColorByTagColor, slugifyTag } from '@/utils/helper';
 interface ArticleTagsProps {
   className?: string;
   post: IPost;
+  disableReadingTime?: boolean;
+  tagSize?: 'small' | 'medium';
 }
 
-export default function ArticleTags({className, post}: ArticleTagsProps) {
+export default function ArticleTags({className, post, disableReadingTime, tagSize}: ArticleTagsProps) {
   const router = useRouter();
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const label = event.currentTarget.innerText;
@@ -35,10 +37,10 @@ export default function ArticleTags({className, post}: ArticleTagsProps) {
           key={i}
           onClick={handleClick}
           label={tag.name}
-          size="small"
+          size={ tagSize ?? 'small'}
           variant="filled"
           style={{
-            color: grey[600],
+            color: grey[700],
             // color: getMuiColorByTagColor(tag.color),
             // borderColor: getMuiColorByTagColor(tag.color),
             // backgroundColor: getMuiColorByTagColor(tag.color),
@@ -56,7 +58,7 @@ export default function ArticleTags({className, post}: ArticleTagsProps) {
     <div className={` ${className} flex justify-between`}>
       <Stack direction="row" spacing={1} sx={{alignItems: 'center'}}>
         {renderTags(post.tags)}
-        <p className=" text-sm text-neutral-600"> • {post.readingTime}</p>
+        {!disableReadingTime && <p className=" text-sm text-neutral-600"> • {post.readingTime}</p>}
       </Stack>
       {/*<Tooltip title="Share post" placement="top-start">*/}
       {/*<IconButton aria-label="share" size="small">*/}

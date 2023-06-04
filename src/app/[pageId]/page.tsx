@@ -6,6 +6,8 @@ import {Metadata, ResolvingMetadata} from 'next';
 import {Config} from "@/config/config";
 import {DiscussionEmbed} from "disqus-react";
 import DisqusComments from "@/app/(client-components)/client-Comments";
+import ArticleTags from "@/app/(client-components)/client-ArticleTags";
+import * as React from "react";
 
 type Props = {
   params: { pageId: string };
@@ -64,6 +66,9 @@ export default async function Page({params}: StaticParams) {
           <MDXRenderer source={processed_mdx.serializedMdx}/>
         </article>
         {/*  Comments here */}
+        <div className='mt-14c flex justify-center'>
+          <ArticleTags post={currentPost} disableReadingTime tagSize={'medium'} />
+        </div>
         <DisqusComments pageId={currentPost.pageId} pageTitle={currentPost.title} />
       </div>
     </div>

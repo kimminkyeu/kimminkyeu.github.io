@@ -21,9 +21,9 @@ export default function ArticleHeader({className, post}: ArticleHeaderProps) {
       <h3 className=" mb-5 mt-0 font-normal leading-normal text-neutral-500">
         {post.description}
       </h3>
-      <div className=" mb-2 mt-5 border-b"/>
+      <div className=" mb-3 mt-5 border-b"/>
       <ArticleTags post={post}/>
-      <div className=" mb-5 mt-2 border-b"/>
+      <div className=" mb-5 mt-3 border-b"/>
     </div>
   );
 }
