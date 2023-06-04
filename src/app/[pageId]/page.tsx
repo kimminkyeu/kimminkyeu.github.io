@@ -4,6 +4,8 @@ import ArticleHeader from '../(client-components)/client-ArticleHeader';
 import MDXRenderer from '../(client-components)/client-MdxRenderer';
 import {Metadata, ResolvingMetadata} from 'next';
 import {Config} from "@/config/config";
+import {DiscussionEmbed} from "disqus-react";
+import DisqusComments from "@/app/(client-components)/client-Comments";
 
 type Props = {
   params: { pageId: string };
@@ -61,6 +63,8 @@ export default async function Page({params}: StaticParams) {
         <article>
           <MDXRenderer source={processed_mdx.serializedMdx}/>
         </article>
+        {/*  Comments here */}
+        <DisqusComments pageId={currentPost.pageId} pageTitle={currentPost.title} />
       </div>
     </div>
   );
