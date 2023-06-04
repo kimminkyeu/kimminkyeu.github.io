@@ -23,11 +23,17 @@ module.exports = {
                         sans: ['Noto Sans KR', 'sans-serif'],
                     },
                     css: {
+                        maxWidth: '43rem',
                         h1: {
                             marginTop:32,
+                            fontWeight: 800,
                         },
                         h2: {
                             marginTop:24,
+                            fontWeight: 700,
+                        },
+                        h4: {
+                            fontWeight: 500,
                         },
                         //...
                         'h1,h2,h3,h4': {

@@ -61,8 +61,9 @@ export default async function Page({params}: StaticParams) {
 
 // mx-6 mt-5 flex flex-col max-w-2xl md:mx-auto
   return (
-    <div className="max-w-none">
-      <div className='max-w-3xl'>
+    // <div className="flex-1 max-w-4xl ">
+    //   <div className='max-w-4xl'>
+      <div className=''>
         {/* 최대 넓이 설정을 위한 Dummy Header */}
         <div className='h-0 invisible'><ArticleHeader /></div>
         <ArticleHeader post={currentPost}/>
@@ -75,6 +76,7 @@ export default async function Page({params}: StaticParams) {
         </div>
         <DisqusComments pageId={currentPost.pageId} pageTitle={currentPost.title} />
       </div>
-    </div>
+    // {/*</div>*/}
+    // </div>
   );
 }
