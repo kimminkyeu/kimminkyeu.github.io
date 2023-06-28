@@ -1,7 +1,7 @@
 import {ArticleStatus} from "@/app/api/type";
 
 export namespace Config {
-  export const BLOG_TITLE = 'Minky Graphics';
+  export const BLOG_TITLE = 'Minky';
   export const BLOG_DESCRIPTION = '민규 블로그';
 // for notion api Status
   export const STATUS_PUBLISHED_ARTICLE: ArticleStatus = 'Publish';
