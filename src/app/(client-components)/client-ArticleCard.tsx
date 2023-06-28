@@ -61,7 +61,7 @@ export default function ArticleCard({post}: ArticleCardProps) {
                   className=" mb-1 text-base font-semibold leading-6 sm:text-lg sm:leading-6 md:text-xl md:font-bold ">
                   {post ? post.title : DummyText}
                 </h5>
-                <div className=" hidden sm:visible sm:block">
+                <div className=" hidden sm:block">
                   <p className=" text-sm font-light text-neutral-500 md:text-[15px]">
                     {post ? post.description : DummyText}
                   </p>
