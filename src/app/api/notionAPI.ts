@@ -189,10 +189,11 @@ class NotionAPI_Factory {
         );
         let markdown = '';
         for (let child of block.results) {
-          if (!child['has_children']) {
-            return `<div style={{flex:1, minWidth: '150px'}}>${await this._n2m.blockToMarkdown(
-              child,
-            )}</div>`;
+          if (!child['has_children'])
+          {
+            return `<div style={{flex:1, minWidth: '150px'}}>
+                    ${await this._n2m.blockToMarkdown(child)}
+                    </div>`;
           } else {
             markdown += await retrieveBlocks_recur(child.id);
           }
@@ -282,8 +283,8 @@ class NotionAPI_Factory {
   }
 
   public async getPageDataFromDatabase(status?: ArticleStatus, tagName?: string) {
-    const query = await this._queryDatabaseByStatus(status, tagName);
-    const pageData = await this._extractPageDataFromDBQuery(query);
+    const query: QueryDatabaseResponse = await this._queryDatabaseByStatus(status, tagName);
+    const pageData: IPost[] = await this._extractPageDataFromDBQuery(query);
     return pageData;
   }
 
@@ -302,7 +303,9 @@ class NotionAPI_Factory {
    */
 
   // https://developers.notion.com/reference/post-database-query-filter
-  private async _queryDatabaseByStatus(status?: ArticleStatus, tagName?: string) {
+  private async _queryDatabaseByStatus(status?: ArticleStatus, tagName?: string)
+      : Promise<QueryDatabaseResponse>
+  {
     let filterArgs = {
       and: [],
     };
