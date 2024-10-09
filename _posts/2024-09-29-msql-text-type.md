@@ -12,8 +12,6 @@ banner:
   tags: ["MySQL", "Database"]
 ---
 
-> ### Kernel360 Project [Github Repository](https://github.com/Kernel360/F2-TECHPICK)
-
 ## 개요
 아래는 description 길이에 대한 정보입니다.
 ```java
