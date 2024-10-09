@@ -4,7 +4,7 @@ title: "Mysql text vs blob vs longblob"
 author: "김민규"
 categories: "Kernel360 프로젝트"
 banner:
-  image: "assets/images/post/2024-09-29-mysql-test-type/1.png"
+  image: "/assets/images/post/2024-09-29-mysql-test-type/1.png"
   background: "#000"
   height: "100vh"
   min_height: "38vh"
@@ -45,7 +45,7 @@ rss 피드 데이터를 가져오는 과정에서 `https://dev.gmarket.com/rss` 
 `longblob`은 약 43억 byte까지 사용이 가능합니다. 43억자까지 데이터를 담을 수 있습니다.   
 그렇기 때문에 약 6만 글자가 넘는 데이터는 longblob을 사용하는 것이 좋을 것이라 생각합니다.   
 
-![image](assets/images/post/2024-09-29-mysql-test-type/1.png)
+![image](/assets/images/post/2024-09-29-mysql-test-type/1.png)
 
 - - -
 ### text type
@@ -101,7 +101,7 @@ public class RssRawData extends TimeTracking {
 	private String description;
 }
 ```
-![image](assets/images/post/2024-09-29-mysql-test-type/2.png)   
+![image](/assets/images/post/2024-09-29-mysql-test-type/2.png)   
 `longblob` type은 최대 43억 byte까지 저장할 수 있기 때문에 6만 글자 길이가 넘는 경우 `longblob`을 이용하여 DB에 저장을 할 수 있게 됩니다.   
 `longblob` 사용하여 `description` 약 9만 글자의 데이터를 저장한 것을 확인하실 수 있습니다.   
 - - -
