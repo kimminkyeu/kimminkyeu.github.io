@@ -9,8 +9,10 @@ banner:
   height: "100vh"
   min_height: "38vh"
   heading_style: "font-size: 4.25em; font-weight: bold; text-decoration: underline"
-  tags: ["Security", "Browser"]
+  tags: ["MySQL", "Database"]
 ---
+
+> ### Kernel360 Project [Github Repository](https://github.com/Kernel360/F2-TECHPICK)
 
 ## 개요
 아래는 description 길이에 대한 정보입니다.

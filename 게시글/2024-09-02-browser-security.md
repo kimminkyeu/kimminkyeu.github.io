@@ -12,9 +12,9 @@ banner:
   tags: ["Security", "Browser"]
 ---
 
-# 브라우저 보안 정책
+> ### Kernel360 기술 세미나 [Github Repository](https://github.com/Kernel360/F2-TECHPICK)
 
-안녕하세요! 커널360 백엔드 2기 김민규 크루입니다.
+# 브라우저 보안 정책
 
 이번 시간에는 브라우저 보안 정책에 대해 이야기해보겠습니다.
 
