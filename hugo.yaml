@@ -1,0 +1,64 @@
+
+baseURL: 'https://kimminkyeu.github.io'
+languageCode: 'ko-KR'
+title: '기록을 합시다'
+theme: 'hextra'
+
+# 참고 : https://imfing.github.io/hextra/docs/guide/configuration/
+# https://gohugo.io/content-management/summaries/
+
+summaryLength: 30
+params:
+  blog:
+    list:
+      displayTags: true
+  assets:
+    favicon: 'images/logo.png'
+  footer:
+    displayCopyright: false
+    displayPoweredBy: true
+  theme: # light | dark | system
+    default: light
+    displayToggle: false
+  comments:
+    type: 'utterances'
+    enable: true
+  navbar:  # 네이게이션 바
+    displayTitle: true
+    displayLogo: true
+    logo:
+      path: images/logo.png
+      dark: images/logo.png
+      link: /
+      width: 16
+      height: 20
+
+menu:
+  # 상단 우측 네비게이션
+  main:
+    - name: 학습
+      pageRef: /study
+      weight: 1
+    - name: 회고
+      pageRef: /diary
+      weight: 2
+    - name: Search
+      weight: 3
+      params:
+        type: search
+    - name: GitHub
+      weight: 4
+      url: "https://github.com/kimminkyeu"
+      params:
+        icon: github
+#  sidebar:
+#    - name: More
+#      params:
+#        type: separator
+#      weight: 1
+#    - name: "About"
+#      pageRef: "/about"
+#      weight: 2
+#    - name: "Hugo Docs ↗"
+#      url: "https://gohugo.io/documentation/"
+#      weight: 3
